@@ -18,10 +18,39 @@ cdef arr make_arr_from_numpy(double[:] n):
 	
 	return a
 	
-# cdef class PyRay:
-	# cdef Ray* c_data
+cdef class PyRay:
+	cdef Ray* c_data
 	
-	# def __cinit__(self, double 
+	def __cinit__(self, double[:] init not None, double[:] v not None):
+		assert tuple(init.shape) == (2, 0, 0, 0, 0, 0, 0, 0)
+		assert tuple(v.shape) == (2, 0, 0, 0, 0, 0, 0, 0)
+		
+		self.c_data = new Ray(make_arr_from_numpy(init), make_arr_from_numpy(v))
+		
+	def __dealloc__(self):
+		del self.c_data
+		
+	@property
+	def pos(self):
+		n = dereference(self.c_data).pos.size()
+		
+		ans = np.empty((n, 2), dtype=np.double)
+		
+		for i in range(n):
+			ans[i, 0] = dereference(self.c_data).pos[i][0]
+			ans[i, 1] = dereference(self.c_data).pos[i][1]
+		
+		return ans
+	
+	@property
+	def v(self):
+		return make_numpy_from_arr(dereference(self.c_data).v)
+	@v.setter
+	def v(self, double[:] v not None):
+		assert tuple(v.shape) == (2, 0, 0, 0, 0, 0, 0, 0)
+		
+		dereference(self.c_data).v = make_arr_from_numpy(v)
+	
 
 cdef class PyMirror_Plane:
 	cdef Mirror_Plane* c_data
@@ -38,7 +67,6 @@ cdef class PyMirror_Plane:
 	@property
 	def start(self):
 		return make_numpy_from_arr(dereference(self.c_data).start)
-	
 	@start.setter
 	def start(self, double[:] start):
 		assert tuple(start.shape) == (2, 0, 0, 0, 0, 0, 0, 0)
@@ -47,7 +75,6 @@ cdef class PyMirror_Plane:
 	@property
 	def end(self):
 		return make_numpy_from_arr(dereference(self.c_data).end)
-	
 	@end.setter
 	def end(self, double[:] end):
 		assert tuple(end.shape) == (2, 0, 0, 0, 0, 0, 0, 0)
