@@ -12,7 +12,9 @@ cdef extern from "Ray.cpp":
 	
 cdef extern from "Ray.h":
 	cdef cppclass Ray:
-		pass
+		Ray(arr, arr)
+		vector[arr] pos
+		arr v
 
 cdef extern from "general.cpp":
 	pass
