@@ -3,46 +3,52 @@ from libcpp.vector cimport vector
 
 
 cdef extern from "<array>" namespace "std" nogil:
-	cdef cppclass arr "std::array<double, 2>":
-		arr() except+
-		double& operator[](size_t)
+    cdef cppclass arr "std::array<double, 2>":
+        arr() except+
+        double& operator[](size_t)
 
 cdef extern from "Ray.cpp":
-	pass
-	
+    pass
+    
 cdef extern from "Ray.h":
-	cdef cppclass Ray:
-		Ray(arr, arr)
-		vector[arr] pos
-		arr v
+    cdef cppclass Ray:
+        Ray(arr, arr)
+        vector[arr] pos
+        arr v
 
 cdef extern from "general.cpp":
-	pass
+    pass
 
 cdef extern from "general.h":
-	pass
+    pass
 
 cdef extern from "Component.cpp":
-	cdef cppclass Component:
-		pass
-	
+    cdef cppclass Component:
+        pass
+    
 cdef extern from "Component.h":
-		pass
+        pass
 
 cdef extern from "Plane.cpp":
-	pass
-	
+    pass
+    
 cdef extern from "Plane.h":
-	cdef cppclass Plane(Component):
-		pass
-	
+    cdef cppclass Plane(Component):
+        pass
+    
 cdef extern from "Mirror_Plane.cpp":
-	pass
-	
+    pass
+    
 cdef extern from "Mirror_Plane.h":
-	cdef cppclass Mirror_Plane(Plane):
-		Mirror_Plane(arr, arr) except+
-		arr start, end
-		double test_hit(Ray&)
-		void hit(Ray&, int)
-	
+    cdef cppclass Mirror_Plane(Plane):
+        Mirror_Plane(arr, arr) except+
+        arr start, end
+        double test_hit(Ray&)
+        void hit(Ray&, int)
+    
+cdef extern from "trace_func.cpp":
+    pass
+
+cdef extern from "trace_func.h":
+    void trace(vector[Component*]&, vector[Ray*] &, int, bool)
+    

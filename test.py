@@ -1,4 +1,4 @@
-from tracing import *
+from tracing import PyMirror_Plane, PyRay, PyTrace
 import numpy as np
 
 a = np.array([1.2, 3.4])
@@ -20,4 +20,13 @@ print(f"Ray's v is {r.v}")
 print("Ray's position is:")
 
 print(r.pos)
+
+comps = [PyMirror_Plane(np.array([0.0, -1.0]), np.array([0.25, 0.5]))]
+
+
+rays = [PyRay(np.array([0.0, 0.0]), np.array([0.83580736, 0.54902282]))]
+
+PyTrace(comps, rays, 3)
+
+print(rays[0].pos)
 
