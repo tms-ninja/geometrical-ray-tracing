@@ -2,7 +2,7 @@
 
 // Traces an individual ray for n interactions
 template <typename T>
-void trace_ray(const T &c, Ray &ry, int n, bool fill_up)
+void trace_ray(const T &c, Ray* ry, int n, bool fill_up)
 {
 	std::vector<double> t;  // Holds t values for each component, -1.0 if no interaction
 
@@ -10,7 +10,7 @@ void trace_ray(const T &c, Ray &ry, int n, bool fill_up)
 
 	for (int i = 0; i < n; ++i)
 	{
-		arr &r{ ry.pos.back() };  // last position of ray
+		arr &r{ ry->pos.back() };  // last position of ray
 
 		// Check for all interactions
 		for (std::size_t cInd = 0; cInd < c.size(); ++cInd)
@@ -20,11 +20,11 @@ void trace_ray(const T &c, Ray &ry, int n, bool fill_up)
 
 		if (next_ind == -1 && fill_up)  // no more interactions, fill up to desired n
 		{
-			const arr end = { r[0] + ry.v[0], r[1] + ry.v[1] };
+			const arr end = { r[0] + ry->v[0], r[1] + ry->v[1] };
 
 			for (int j = 0; j < n - i; ++j)
 			{
-				ry.pos.push_back(end);
+				ry->pos.push_back(end);
 			}
 
 			return;  // Exit the function as we have nothing else to do
@@ -38,9 +38,9 @@ void trace_ray(const T &c, Ray &ry, int n, bool fill_up)
 
 // Traces a vector of rays through the components
 template <typename T>
-void trace(const T &c, std::vector<Ray> &rays, int n, bool fill_up)
+void trace(const T &c, std::vector<Ray*> &rays, int n, bool fill_up)
 {
-	for (Ray &r : rays)
+	for (Ray* r : rays)
 		trace_ray(c, r, n, fill_up);
 }
 

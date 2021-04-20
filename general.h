@@ -20,11 +20,11 @@ int next_component(const std::vector<double> &t);
 
 // Traces an individual ray for n interactions
 template <typename T>
-void trace_ray(const T &c, Ray &ry, int n, bool fill_up = true);
+void trace_ray(const T &c, Ray* ry, int n, bool fill_up = true);
 
 template <typename T>
 // Traces a vector of rays through the components
-void trace(const T &c, std::vector<Ray> &rays, int n, bool fill_up = true);
+void trace(const T &c, std::vector<Ray*> &rays, int n, bool fill_up = true);
 
 
 // Adds a component to the vector to the vector vec

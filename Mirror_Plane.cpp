@@ -5,14 +5,14 @@ Mirror_Plane::Mirror_Plane(arr start, arr end)
 {
 }
 
-void Mirror_Plane::hit(Ray & ry, int n) const
+void Mirror_Plane::hit(Ray* ry, int n) const
 {
 	arr newPos;
 	arr newV;
 
 	double t{}, tp{};
-	arr &r = ry.pos.back();
-	arr &v = ry.v;
+	arr &r = ry->pos.back();
+	arr &v = ry->v;
 
 	std::tie(t, tp) = solve(r, v);
 
@@ -28,6 +28,6 @@ void Mirror_Plane::hit(Ray & ry, int n) const
 	newV = rotate(newV, -angle);
 
 	// Finally update
-	ry.pos.push_back(newPos);
-	ry.v = newV;
+	ry->pos.push_back(newPos);
+	ry->v = newV;
 }

@@ -6,11 +6,11 @@ Plane::Plane(arr start, arr end)
 	Plane::end = end;
 }
 
-double Plane::test_hit(Ray & ry) const
+double Plane::test_hit(Ray* ry) const
 {
 	double t{}, tp{};
 
-	std::tie(t, tp) = solve(ry.pos.back(), ry.v);
+	std::tie(t, tp) = solve(ry->pos.back(), ry->v);
 
 	if (tp < 0 || tp > 1 || is_close(t, 0.0))
 		return -1.0;
