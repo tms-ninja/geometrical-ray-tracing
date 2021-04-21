@@ -8,6 +8,10 @@ from cython_header cimport *
 import numpy as np
 
 
+# Shape of 1d numpy array with 2 elements
+_arr_shape = (2, 0, 0, 0, 0, 0, 0, 0)
+
+
 cdef make_numpy_from_arr(arr& a):
     cdef double[::1] a_mem_view = <double [:a.size()]>a.data()
     
@@ -15,7 +19,7 @@ cdef make_numpy_from_arr(arr& a):
 
 cdef arr make_arr_from_numpy(double[:] n):
     cdef arr a
-    
+        
     a[0], a[1] = n[0], n[1]
     
     return a
@@ -45,8 +49,8 @@ cdef class PyRay:
     cdef Ray* c_data
     
     def __cinit__(self, double[:] init not None, double[:] v not None):
-        assert tuple(init.shape) == (2, 0, 0, 0, 0, 0, 0, 0)
-        assert tuple(v.shape) == (2, 0, 0, 0, 0, 0, 0, 0)
+        assert tuple(init.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
+        assert tuple(v.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
         
         self.c_data = new Ray(make_arr_from_numpy(init), 
                               make_arr_from_numpy(v))
@@ -71,7 +75,7 @@ cdef class PyRay:
         return make_numpy_from_arr(dereference(self.c_data).v)
     @v.setter
     def v(self, double[:] v not None):
-        assert tuple(v.shape) == (2, 0, 0, 0, 0, 0, 0, 0)
+        assert tuple(v.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
         
         dereference(self.c_data).v = make_arr_from_numpy(v)
     
@@ -84,7 +88,8 @@ cdef class _PyPlane:
         return make_numpy_from_arr(dereference(self.c_plane_ptr).start)
     @start.setter
     def start(self, double[:] start):
-        assert tuple(start.shape) == (2, 0, 0, 0, 0, 0, 0, 0)
+        assert tuple(start.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
+        
         dereference(self.c_plane_ptr).start = make_arr_from_numpy(start)
         
     @property
@@ -92,7 +97,8 @@ cdef class _PyPlane:
         return make_numpy_from_arr(dereference(self.c_plane_ptr).end)
     @end.setter
     def end(self, double[:] end):
-        assert tuple(end.shape) == (2, 0, 0, 0, 0, 0, 0, 0)
+        assert tuple(end.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
+        
         dereference(self.c_plane_ptr).end = make_arr_from_numpy(end)
 
 
@@ -100,8 +106,8 @@ cdef class PyMirror_Plane(_PyPlane):
     cdef Mirror_Plane* c_data
     
     def __cinit__(self, double[:] start, double[:] end):
-        assert tuple(start.shape) == (2, 0, 0, 0, 0, 0, 0, 0)
-        assert tuple(end.shape) == (2, 0, 0, 0, 0, 0, 0, 0)
+        assert tuple(start.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
+        assert tuple(end.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
         
         self.c_data = new Mirror_Plane(make_arr_from_numpy(start), 
                                        make_arr_from_numpy(end))
@@ -118,8 +124,8 @@ cdef class PyRefract_Plane(_PyPlane):
     def __cinit__(self, double[:] start, double[:] end, double n1=1.0, 
                   double n2=1.0):
         
-        assert tuple(start.shape) == (2, 0, 0, 0, 0, 0, 0, 0)
-        assert tuple(end.shape) == (2, 0, 0, 0, 0, 0, 0, 0)
+        assert tuple(start.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
+        assert tuple(end.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
         
         self.c_data = new Refract_Plane(make_arr_from_numpy(start), 
                                         make_arr_from_numpy(end), n1, n2)
@@ -154,7 +160,8 @@ cdef class _PySpherical:
         return make_numpy_from_arr(dereference(self.c_sph_ptr).centre)
     @centre.setter
     def centre(self, double[:] centre):
-        assert tuple(centre.shape) == (2, 0, 0, 0, 0, 0, 0, 0)
+        assert tuple(centre.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
+        
         dereference(self.c_sph_ptr).centre = make_arr_from_numpy(centre)
         
     @property
@@ -183,7 +190,7 @@ cdef class PyMirror_Sph(_PySpherical):
     cdef Mirror_Sph* c_data
     
     def __cinit__(self, double[:] centre, double R, double start, double end):
-        assert tuple(centre.shape) == (2, 0, 0, 0, 0, 0, 0, 0)
+        assert tuple(centre.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
         
         self.c_data = new Mirror_Sph(make_arr_from_numpy(centre), R, start, 
                                      end)
@@ -199,7 +206,7 @@ cdef class PyRefract_Sph(_PySpherical):
     
     def __cinit__(self, double[:] centre, double R, double start, double end,
                   double n1=1.0, double n2=1.0):
-        assert tuple(centre.shape) == (2, 0, 0, 0, 0, 0, 0, 0)
+        assert tuple(centre.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
         
         self.c_data = new Refract_Sph(make_arr_from_numpy(centre), R, start, 
                                      end, n1, n2)
