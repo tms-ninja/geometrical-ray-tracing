@@ -44,7 +44,17 @@ cdef extern from "Mirror_Plane.h":
         Mirror_Plane(arr, arr) except+
         double test_hit(Ray&)
         void hit(Ray&, int)
-    
+        
+cdef extern from "Refract_Plane.cpp":
+    pass
+
+cdef extern from "Refract_Plane.h":
+    cdef cppclass Refract_Plane(Plane):
+        Refract_Plane(arr, arr, double, double) except+
+        double n1, n2
+        double test_hit(Ray&)
+        void hit(Ray&, int)
+        
 cdef extern from "trace_func.cpp":
     pass
 

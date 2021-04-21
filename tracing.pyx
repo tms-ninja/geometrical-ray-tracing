@@ -24,7 +24,11 @@ def PyTrace(list components, list rays, int n, bool fill_up=True):
     cdef vector[Component*] vec_comp
     
     for c in components:
-        vec_comp.push_back( <Component*>( (<PyMirror_Plane>c).c_data  ) )
+        if isinstance(c, PyMirror_Plane):
+            vec_comp.push_back( <Component*>( (<PyMirror_Plane>c).c_data  ) )
+            
+        elif isinstance(c, PyRefract_Plane):
+            vec_comp.push_back( <Component*>( (<PyRefract_Plane>c).c_data  ) )
         
     cdef vector[Ray*] vec_rays
     
@@ -41,7 +45,8 @@ cdef class PyRay:
         assert tuple(init.shape) == (2, 0, 0, 0, 0, 0, 0, 0)
         assert tuple(v.shape) == (2, 0, 0, 0, 0, 0, 0, 0)
         
-        self.c_data = new Ray(make_arr_from_numpy(init), make_arr_from_numpy(v))
+        self.c_data = new Ray(make_arr_from_numpy(init), 
+                              make_arr_from_numpy(v))
         
     def __dealloc__(self):
         del self.c_data
@@ -99,10 +104,42 @@ cdef class PyMirror_Plane(_PyPlane):
         assert tuple(start.shape) == (2, 0, 0, 0, 0, 0, 0, 0)
         assert tuple(end.shape) == (2, 0, 0, 0, 0, 0, 0, 0)
         
-        self.c_data = new Mirror_Plane(make_arr_from_numpy(start), make_arr_from_numpy(end))
+        self.c_data = new Mirror_Plane(make_arr_from_numpy(start), 
+                                       make_arr_from_numpy(end))
         
         self.c_plane_ptr = <Plane*>self.c_data
         
     def __dealloc__(self):
         del self.c_data
 
+
+cdef class PyRefract_Plane(_PyPlane):
+    cdef Refract_Plane* c_data
+    
+    def __cinit__(self, double[:] start, double[:] end, double n1=1.0, 
+                  double n2=1.0):
+        
+        assert tuple(start.shape) == (2, 0, 0, 0, 0, 0, 0, 0)
+        assert tuple(end.shape) == (2, 0, 0, 0, 0, 0, 0, 0)
+        
+        self.c_data = new Refract_Plane(make_arr_from_numpy(start), 
+                                        make_arr_from_numpy(end), n1, n2)
+        
+        self.c_plane_ptr = <Plane*>self.c_data
+        
+    def __dealloc__(self):
+        del self.c_data
+    
+    @property
+    def n1(self):
+        return dereference(self.c_data).n1
+    @n1.setter
+    def n1(self, n1):
+        dereference(self.c_data).n1 = n1
+    
+    @property
+    def n2(self):
+        return dereference(self.c_data).n2
+    @n2.setter
+    def n2(self, n2):
+        dereference(self.c_data).n2 = n2
