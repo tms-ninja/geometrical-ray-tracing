@@ -34,7 +34,7 @@ cdef extern from "Plane.cpp":
     
 cdef extern from "Plane.h":
     cdef cppclass Plane(Component):
-        pass
+        arr start, end
     
 cdef extern from "Mirror_Plane.cpp":
     pass
@@ -42,7 +42,6 @@ cdef extern from "Mirror_Plane.cpp":
 cdef extern from "Mirror_Plane.h":
     cdef cppclass Mirror_Plane(Plane):
         Mirror_Plane(arr, arr) except+
-        arr start, end
         double test_hit(Ray&)
         void hit(Ray&, int)
     
