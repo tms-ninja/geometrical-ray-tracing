@@ -24,6 +24,15 @@ cdef extern from "general.cpp":
 cdef extern from "general.h":
     pass
 
+
+cdef extern from "trace_func.cpp":
+    pass
+
+cdef extern from "trace_func.h":
+    void trace(vector[Component*]&, vector[Ray*] &, int, bool)
+
+# Components
+
 cdef extern from "Component.cpp":
     cdef cppclass Component:
         pass
@@ -31,22 +40,27 @@ cdef extern from "Component.cpp":
 cdef extern from "Component.h":
         pass
 
+
+# Planar components
+
 cdef extern from "Plane.cpp":
     pass
     
 cdef extern from "Plane.h":
     cdef cppclass Plane(Component):
         arr start, end
-    
+        double test_hit(Ray*)
+
+
 cdef extern from "Mirror_Plane.cpp":
     pass
     
 cdef extern from "Mirror_Plane.h":
     cdef cppclass Mirror_Plane(Plane):
         Mirror_Plane(arr, arr) except+
-        double test_hit(Ray&)
         void hit(Ray&, int)
-        
+
+
 cdef extern from "Refract_Plane.cpp":
     pass
 
@@ -54,12 +68,40 @@ cdef extern from "Refract_Plane.h":
     cdef cppclass Refract_Plane(Plane):
         Refract_Plane(arr, arr, double, double) except+
         double n1, n2
-        double test_hit(Ray&)
         void hit(Ray&, int)
         
-cdef extern from "trace_func.cpp":
+
+# Spherical components
+
+cdef extern from "Spherical.cpp":
     pass
 
-cdef extern from "trace_func.h":
-    void trace(vector[Component*]&, vector[Ray*] &, int, bool)
+cdef extern from "Spherical.h":
+    cdef cppclass Spherical(Component):
+        arr centre
+        double R, start, end
+        double test_hit(Ray*)
+        
+
+cdef extern from "Mirror_Sph.cpp":
+    pass
+
+cdef extern from "Mirror_Sph.h":
+    cdef cppclass Mirror_Sph(Spherical):
+        Mirror_Sph(arr, double, double, double)
+        void hit(Ray*, int)
+
     
+cdef extern from "Refract_Sph.cpp":
+    pass
+
+cdef extern from "Refract_Sph.h":
+    cdef cppclass Refract_Sph(Spherical):
+        Refract_Sph(arr, double, double, double, double, double)
+        double n1, n2
+        void hit(Ray*, int)
+
+
+
+
+
