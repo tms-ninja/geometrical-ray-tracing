@@ -78,10 +78,6 @@ cdef class PyRay:
     
 cdef class _PyPlane:
     cdef Plane* c_plane_ptr
-    
-    # No __dealloc__ as memory managed by subclass
-    cdef load_ptr(self, Plane* ptr):  
-        c_plane_ptr = ptr
         
     @property
     def start(self):
