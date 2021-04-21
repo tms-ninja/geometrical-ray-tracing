@@ -16,7 +16,7 @@ void trace_ray(const T &c, Ray* ry, int n, bool fill_up)
 		for (std::size_t cInd = 0; cInd < c.size(); ++cInd)
 			t[cInd] = c[cInd]->test_hit(ry);
 
-		int next_ind{ next_component(t) };
+		size_t next_ind{ next_component(t) };
 
 		if (next_ind == -1 && fill_up)  // no more interactions, fill up to desired n
 		{

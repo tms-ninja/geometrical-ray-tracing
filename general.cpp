@@ -2,11 +2,11 @@
 #include "general.h"
 
 // Determines which component, if any, is the next one to interact. returns -1 if none do
-int next_component(const std::vector<double> &t)
+size_t next_component(const std::vector<double> &t)
 {
 	bool found{ false };
 	double best_t{};
-	int best_ind{};
+	size_t best_ind{};
 
 	for (std::size_t tInd = 0; tInd < t.size(); ++tInd)
 	{

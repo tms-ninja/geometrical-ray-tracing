@@ -14,7 +14,7 @@ class Ray;
 using arr = std::array<double, 2>;
 using comp_list = std::vector<std::unique_ptr<Component>>;
 
-int next_component(const std::vector<double> &t);
+size_t next_component(const std::vector<double> &t);
 
 // Forward declarations for tracing functions
 
