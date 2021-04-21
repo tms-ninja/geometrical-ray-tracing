@@ -9,13 +9,14 @@ import numpy as np
 
 
 cdef make_numpy_from_arr(arr& a):
-    return np.array([a[0], a[1]])
+    cdef double[::1] a_mem_view = <double [:a.size()]>a.data()
+    
+    return np.asarray(a_mem_view)
 
 cdef arr make_arr_from_numpy(double[:] n):
     cdef arr a
     
-    a[0] = n[0]
-    a[1] = n[1]
+    a[0], a[1] = n[0], n[1]
     
     return a
     

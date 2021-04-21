@@ -6,6 +6,8 @@ cdef extern from "<array>" namespace "std" nogil:
     cdef cppclass arr "std::array<double, 2>":
         arr() except+
         double& operator[](size_t)
+        double* data()
+        size_t size()
 
 cdef extern from "Ray.cpp":
     pass

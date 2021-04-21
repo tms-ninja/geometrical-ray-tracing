@@ -1,6 +1,8 @@
 from tracing import PyMirror_Plane, PyRefract_Plane, PyRay, PyTrace
 import numpy as np
 
+print()
+
 a = np.array([1.2, 3.4])
 b = np.array([5.6, 7.8])
 c = np.array([14.6, 6.8])
@@ -11,6 +13,11 @@ print(f"Mirror has start {m.start} and end {m.end}")
 print(f"Changing mirror's start to {c}")
 
 m.start = c
+
+print(f"Mirror's new start is {m.start} and end is still {m.end}")
+print("Changing x component of mirror's start to 5.5")
+
+m.start[0] = 5.5
 
 print(f"Mirror's new start is {m.start} and end is still {m.end}")
 print()
@@ -36,7 +43,9 @@ print(r.pos)
 print()
 
 
-comps = [PyMirror_Plane(np.array([0.0, -1.0]), np.array([0.25, 0.5]))]
+comps = [PyRefract_Plane(np.array([0.0, -1.0]), np.array([0.25, 0.5]))]
+
+comps.append(PyMirror_Plane(np.array([3.0, -1.0]), np.array([2.25, 5.5])))
 
 
 rays = [PyRay(np.array([0.0, 0.0]), np.array([0.83580736, 0.54902282]))]
