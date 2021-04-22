@@ -19,11 +19,17 @@ cdef make_numpy_from_arr(arr& a):
 
 cdef arr make_arr_from_numpy(double[:] n):
     cdef arr a
+    
+    assert tuple(n.shape) == _arr_shape, "Expected a 1d blah numpy array with 2 elements"
         
     a[0], a[1] = n[0], n[1]
     
     return a
     
+cdef new_arr(double[:] n, arr& a):
+    assert tuple(n.shape) == _arr_shape, "blhahhh"
+    
+    a[0], a[1] = n[0], n[1]
 
 def PyTrace(list components, list rays, int n, bool fill_up=True):
     cdef vector[Component*] vec_comp
@@ -42,8 +48,6 @@ def PyTrace(list components, list rays, int n, bool fill_up=True):
         
     trace(vec_comp, vec_rays, n, fill_up)
 
-
-# Planar components
 
 cdef class PyRay:
     cdef Ray* c_data
@@ -78,8 +82,13 @@ cdef class PyRay:
         assert tuple(v.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
         
         dereference(self.c_data).v = make_arr_from_numpy(v)
+        
+    def plot(self):
+        return self.pos
+
     
-    
+# Planar components
+
 cdef class _PyPlane:
     cdef Plane* c_plane_ptr
         
@@ -100,14 +109,27 @@ cdef class _PyPlane:
         assert tuple(end.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
         
         dereference(self.c_plane_ptr).end = make_arr_from_numpy(end)
+        
+    def plot(self):
+        points = np.empty((2, 2), dtype=np.double)
+        
+        points[0] = self.start
+        points[1] = self.end
+        
+        return points
 
 
 cdef class PyMirror_Plane(_PyPlane):
     cdef Mirror_Plane* c_data
     
     def __cinit__(self, double[:] start, double[:] end):
-        assert tuple(start.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
+        #assert tuple(start.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
         assert tuple(end.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
+        
+        cdef arr s
+        
+        new_arr(start, s)
+        
         
         self.c_data = new Mirror_Plane(make_arr_from_numpy(start), 
                                        make_arr_from_numpy(end))
@@ -184,6 +206,16 @@ cdef class _PySpherical:
     @end.setter
     def end(self, double end):
         dereference(self.c_sph_ptr).end = end
+        
+    def plot(self, n_points=100):
+        points = np.empty((n_points, 2), dtype=np.double)
+        
+        t = np.linspace(self.start, self.end, n_points)
+        
+        points[:, 0] = self.centre[0] + self.R*np.cos(t)
+        points[:, 1] = self.centre[1] + self.R*np.cos(t)
+        
+        return points
 
 
 cdef class PyMirror_Sph(_PySpherical):

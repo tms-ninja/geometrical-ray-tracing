@@ -1,5 +1,6 @@
 from tracing import PyMirror_Plane, PyRefract_Plane, PyRay, PyTrace
 import numpy as np
+import matplotlib.pyplot as plt
 
 print()
 
@@ -43,9 +44,9 @@ print(r.pos)
 print()
 
 
-comps = [PyRefract_Plane(np.array([0.0, -1.0]), np.array([0.25, 0.5]))]
+comps = [] #[PyRefract_Plane(np.array([0.0, -1.0]), np.array([0.25, 0.5]), 1.0, 2)]
 
-comps.append(PyMirror_Plane(np.array([3.0, -1.0]), np.array([2.25, 5.5])))
+comps.append(PyMirror_Plane(np.array([1.0, -1.0]), np.array([5.0, 5.5])))
 
 
 rays = [PyRay(np.array([0.0, 0.0]), np.array([0.83580736, 0.54902282]))]
@@ -53,4 +54,32 @@ rays = [PyRay(np.array([0.0, 0.0]), np.array([0.83580736, 0.54902282]))]
 PyTrace(comps, rays, 3)
 
 print(rays[0].pos)
+
+
+# Test plotting
+plt.figure(figsize=(6, 6))
+
+for cp in comps:
+    points = cp.plot()
+    
+    plt.plot(points[:, 0], points[:, 1])
+
+for ry in rays:
+    points = ry.plot()
+    
+    plt.plot(points[:, 0], points[:, 1])
+
+plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
 
