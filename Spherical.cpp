@@ -101,7 +101,11 @@ std::tuple<double, double> Spherical::solve(const arr & r, const arr & v) const
 	case 1:
 		return sol[0];
 	default:
-		return sol[next_component(tArr)];
+		size_t ind;
+
+		std::tie(ind, std::ignore) = next_component(tArr);
+
+		return sol[ind];
 	}
 }
 

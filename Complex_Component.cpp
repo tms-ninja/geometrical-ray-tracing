@@ -7,12 +7,12 @@ double Complex_Component::test_hit(Ray* ry) const
 	for (auto &c : comps)
 		t.push_back(c->test_hit(ry));
 
-	size_t ind{ next_component(t) };  // Returns index of next component, -1 if none
+	size_t ind;
+	bool found;
 
-	if (ind == -1)
-		return -1.0;
-	else
-		return t[ind];
+	std::tie(ind, found) = next_component(t);
+
+	return found ? t[ind] : -1.0;
 }
 
 void Complex_Component::hit(Ray* ry, int n) const

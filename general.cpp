@@ -2,7 +2,7 @@
 #include "general.h"
 
 // Determines which component, if any, is the next one to interact. returns -1 if none do
-size_t next_component(const std::vector<double> &t)
+std::pair<size_t, bool> next_component(const std::vector<double> &t)
 {
 	bool found{ false };
 	double best_t{};
@@ -24,7 +24,7 @@ size_t next_component(const std::vector<double> &t)
 	}
 
 	if (found)
-		return best_ind;
+		return { best_ind, true };
 
-	return -1;
+	return { 0, false };
 }

@@ -5,6 +5,7 @@
 #include <cmath>
 #include <array>
 #include <memory>
+#include <utility>
 #include <vector>
 
 class Component;  // Forward declare the Component class
@@ -14,7 +15,7 @@ class Ray;
 using arr = std::array<double, 2>;
 using comp_list = std::vector<std::unique_ptr<Component>>;
 
-size_t next_component(const std::vector<double> &t);
+std::pair<size_t, bool> next_component(const std::vector<double> &t);
 
 // Forward declarations for tracing functions
 

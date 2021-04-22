@@ -16,9 +16,17 @@ void trace_ray(const T &c, Ray* ry, int n, bool fill_up)
 		for (std::size_t cInd = 0; cInd < c.size(); ++cInd)
 			t[cInd] = c[cInd]->test_hit(ry);
 
-		size_t next_ind{ next_component(t) };
+		size_t next_ind;
+		bool found;
 
-		if (next_ind == -1 && fill_up)  // no more interactions, fill up to desired n
+		std::tie(next_ind, found) = next_component(t);
+
+		if (found) // work out next interaction
+		{
+			
+			c[next_ind]->hit(ry);
+		}
+		else if (fill_up)  // no more interactions, fill up to desired n
 		{
 			const arr end = { r[0] + ry->v[0], r[1] + ry->v[1] };
 
@@ -29,10 +37,22 @@ void trace_ray(const T &c, Ray* ry, int n, bool fill_up)
 
 			return;  // Exit the function as we have nothing else to do
 		}
-		else if (next_ind >= 0)  // work out next interaction
-		{
-			c[next_ind]->hit(ry);
-		}
+
+		//if (next_ind == -1 && fill_up)  // no more interactions, fill up to desired n
+		//{
+		//	const arr end = { r[0] + ry->v[0], r[1] + ry->v[1] };
+
+		//	for (int j = 0; j < n - i; ++j)
+		//	{
+		//		ry->pos.push_back(end);
+		//	}
+
+		//	return;  // Exit the function as we have nothing else to do
+		//}
+		//else if (next_ind >= 0)  // work out next interaction
+		//{
+		//	c[next_ind]->hit(ry);
+		//}
 	}
 }
 
