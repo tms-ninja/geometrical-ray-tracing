@@ -87,9 +87,16 @@ cdef class PyRay:
         return self.pos
 
     
+cdef class _PyComponent:
+    cdef public bool OWNDATA
+    
+    def __cinit__(self):
+        self.OWNDATA = True
+
+
 # Planar components
 
-cdef class _PyPlane:
+cdef class _PyPlane(_PyComponent):
     cdef Plane* c_plane_ptr
         
     @property
@@ -137,7 +144,8 @@ cdef class PyMirror_Plane(_PyPlane):
         self.c_plane_ptr = <Plane*>self.c_data
         
     def __dealloc__(self):
-        del self.c_data
+        if self.OWNDATA:
+            del self.c_data
 
 
 cdef class PyRefract_Plane(_PyPlane):
@@ -155,7 +163,8 @@ cdef class PyRefract_Plane(_PyPlane):
         self.c_plane_ptr = <Plane*>self.c_data
         
     def __dealloc__(self):
-        del self.c_data
+        if self.OWNDATA:
+            del self.c_data
     
     @property
     def n1(self):
@@ -174,7 +183,7 @@ cdef class PyRefract_Plane(_PyPlane):
 
 # Spherical components
 
-cdef class _PySpherical:
+cdef class _PySpherical(_PyComponent):
     cdef Spherical* c_sph_ptr
     
     @property
@@ -230,7 +239,8 @@ cdef class PyMirror_Sph(_PySpherical):
         self.c_sph_ptr = <Spherical*>self.c_data
         
     def __dealloc__(self):
-        del self.c_data
+        if self.OWNDATA:
+            del self.c_data
         
     
 cdef class PyRefract_Sph(_PySpherical):
@@ -246,7 +256,8 @@ cdef class PyRefract_Sph(_PySpherical):
         self.c_sph_ptr = <Spherical*>self.c_data
         
     def __dealloc__(self):
-        del self.c_data
+        if self.OWNDATA:
+            del self.c_data
         
     @property
     def n1(self):

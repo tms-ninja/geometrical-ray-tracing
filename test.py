@@ -22,6 +22,8 @@ m.start[0] = 5.5
 
 print(f"Mirror's new start is {m.start} and end is still {m.end}")
 print()
+print(f"Does the mirror own its data? {m.OWNDATA}")
+print()
 
 
 p = PyRefract_Plane(a, b, 1.5, 2.4)
