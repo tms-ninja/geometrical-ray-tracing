@@ -88,10 +88,15 @@ cdef class PyRay:
 
     
 cdef class _PyComponent:
+    cdef Component* c_component_ptr
     cdef public bool OWNDATA
     
     def __cinit__(self):
         self.OWNDATA = True
+        
+    def __dealloc__(self):
+        if self.OWNDATA:
+            del self.c_component_ptr
 
 
 # Planar components
@@ -142,10 +147,12 @@ cdef class PyMirror_Plane(_PyPlane):
                                        make_arr_from_numpy(end))
         
         self.c_plane_ptr = <Plane*>self.c_data
+        self.c_component_ptr = <Component*>self.c_data
         
-    def __dealloc__(self):
-        if self.OWNDATA:
-            del self.c_data
+        
+    # def __dealloc__(self):
+    #     if self.OWNDATA:
+    #         del self.c_data
 
 
 cdef class PyRefract_Plane(_PyPlane):
@@ -161,10 +168,11 @@ cdef class PyRefract_Plane(_PyPlane):
                                         make_arr_from_numpy(end), n1, n2)
         
         self.c_plane_ptr = <Plane*>self.c_data
+        self.c_component_ptr = <Component*>self.c_data
         
-    def __dealloc__(self):
-        if self.OWNDATA:
-            del self.c_data
+    # def __dealloc__(self):
+    #     if self.OWNDATA:
+    #         del self.c_data
     
     @property
     def n1(self):
@@ -237,10 +245,11 @@ cdef class PyMirror_Sph(_PySpherical):
                                      end)
         
         self.c_sph_ptr = <Spherical*>self.c_data
+        self.c_component_ptr = <Component*>self.c_data
         
-    def __dealloc__(self):
-        if self.OWNDATA:
-            del self.c_data
+    # def __dealloc__(self):
+    #     if self.OWNDATA:
+    #         del self.c_data
         
     
 cdef class PyRefract_Sph(_PySpherical):
@@ -254,10 +263,11 @@ cdef class PyRefract_Sph(_PySpherical):
                                      end, n1, n2)
         
         self.c_sph_ptr = <Spherical*>self.c_data
+        self.c_component_ptr = <Component*>self.c_data
         
-    def __dealloc__(self):
-        if self.OWNDATA:
-            del self.c_data
+    # def __dealloc__(self):
+    #     if self.OWNDATA:
+    #         del self.c_data
         
     @property
     def n1(self):

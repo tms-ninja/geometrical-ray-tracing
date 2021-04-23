@@ -1039,16 +1039,17 @@ struct __pyx_obj_7tracing_PyRay {
  * 
  * 
  * cdef class _PyComponent:             # <<<<<<<<<<<<<<
+ *     cdef Component* c_component_ptr
  *     cdef public bool OWNDATA
- * 
  */
 struct __pyx_obj_7tracing__PyComponent {
   PyObject_HEAD
+  Component *c_component_ptr;
   bool OWNDATA;
 };
 
 
-/* "tracing.pyx":99
+/* "tracing.pyx":104
  * # Planar components
  * 
  * cdef class _PyPlane(_PyComponent):             # <<<<<<<<<<<<<<
@@ -1061,7 +1062,7 @@ struct __pyx_obj_7tracing__PyPlane {
 };
 
 
-/* "tracing.pyx":129
+/* "tracing.pyx":134
  * 
  * 
  * cdef class PyMirror_Plane(_PyPlane):             # <<<<<<<<<<<<<<
@@ -1074,7 +1075,7 @@ struct __pyx_obj_7tracing_PyMirror_Plane {
 };
 
 
-/* "tracing.pyx":151
+/* "tracing.pyx":158
  * 
  * 
  * cdef class PyRefract_Plane(_PyPlane):             # <<<<<<<<<<<<<<
@@ -1087,7 +1088,7 @@ struct __pyx_obj_7tracing_PyRefract_Plane {
 };
 
 
-/* "tracing.pyx":186
+/* "tracing.pyx":194
  * # Spherical components
  * 
  * cdef class _PySpherical(_PyComponent):             # <<<<<<<<<<<<<<
@@ -1100,7 +1101,7 @@ struct __pyx_obj_7tracing__PySpherical {
 };
 
 
-/* "tracing.pyx":230
+/* "tracing.pyx":238
  * 
  * 
  * cdef class PyMirror_Sph(_PySpherical):             # <<<<<<<<<<<<<<
@@ -1113,7 +1114,7 @@ struct __pyx_obj_7tracing_PyMirror_Sph {
 };
 
 
-/* "tracing.pyx":246
+/* "tracing.pyx":255
  * 
  * 
  * cdef class PyRefract_Sph(_PySpherical):             # <<<<<<<<<<<<<<
@@ -2326,10 +2327,11 @@ static PyObject *__pyx_pf_7tracing_5PyRay_4plot(struct __pyx_obj_7tracing_PyRay 
 static PyObject *__pyx_pf_7tracing_5PyRay_6__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing_PyRay *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_7tracing_5PyRay_8__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing_PyRay *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
 static int __pyx_pf_7tracing_12_PyComponent___cinit__(struct __pyx_obj_7tracing__PyComponent *__pyx_v_self); /* proto */
+static void __pyx_pf_7tracing_12_PyComponent_2__dealloc__(struct __pyx_obj_7tracing__PyComponent *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_7tracing_12_PyComponent_7OWNDATA___get__(struct __pyx_obj_7tracing__PyComponent *__pyx_v_self); /* proto */
 static int __pyx_pf_7tracing_12_PyComponent_7OWNDATA_2__set__(struct __pyx_obj_7tracing__PyComponent *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
-static PyObject *__pyx_pf_7tracing_12_PyComponent_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing__PyComponent *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_7tracing_12_PyComponent_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing__PyComponent *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
+static PyObject *__pyx_pf_7tracing_12_PyComponent_4__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing__PyComponent *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_7tracing_12_PyComponent_6__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing__PyComponent *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
 static PyObject *__pyx_pf_7tracing_8_PyPlane_5start___get__(struct __pyx_obj_7tracing__PyPlane *__pyx_v_self); /* proto */
 static int __pyx_pf_7tracing_8_PyPlane_5start_2__set__(struct __pyx_obj_7tracing__PyPlane *__pyx_v_self, __Pyx_memviewslice __pyx_v_start); /* proto */
 static PyObject *__pyx_pf_7tracing_8_PyPlane_3end___get__(struct __pyx_obj_7tracing__PyPlane *__pyx_v_self); /* proto */
@@ -2338,17 +2340,15 @@ static PyObject *__pyx_pf_7tracing_8_PyPlane_plot(struct __pyx_obj_7tracing__PyP
 static PyObject *__pyx_pf_7tracing_8_PyPlane_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing__PyPlane *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_7tracing_8_PyPlane_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing__PyPlane *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
 static int __pyx_pf_7tracing_14PyMirror_Plane___cinit__(struct __pyx_obj_7tracing_PyMirror_Plane *__pyx_v_self, __Pyx_memviewslice __pyx_v_start, __Pyx_memviewslice __pyx_v_end); /* proto */
-static void __pyx_pf_7tracing_14PyMirror_Plane_2__dealloc__(struct __pyx_obj_7tracing_PyMirror_Plane *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_7tracing_14PyMirror_Plane_4__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing_PyMirror_Plane *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_7tracing_14PyMirror_Plane_6__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing_PyMirror_Plane *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
+static PyObject *__pyx_pf_7tracing_14PyMirror_Plane_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing_PyMirror_Plane *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_7tracing_14PyMirror_Plane_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing_PyMirror_Plane *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
 static int __pyx_pf_7tracing_15PyRefract_Plane___cinit__(struct __pyx_obj_7tracing_PyRefract_Plane *__pyx_v_self, __Pyx_memviewslice __pyx_v_start, __Pyx_memviewslice __pyx_v_end, double __pyx_v_n1, double __pyx_v_n2); /* proto */
-static void __pyx_pf_7tracing_15PyRefract_Plane_2__dealloc__(struct __pyx_obj_7tracing_PyRefract_Plane *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_7tracing_15PyRefract_Plane_2n1___get__(struct __pyx_obj_7tracing_PyRefract_Plane *__pyx_v_self); /* proto */
 static int __pyx_pf_7tracing_15PyRefract_Plane_2n1_2__set__(struct __pyx_obj_7tracing_PyRefract_Plane *__pyx_v_self, PyObject *__pyx_v_n1); /* proto */
 static PyObject *__pyx_pf_7tracing_15PyRefract_Plane_2n2___get__(struct __pyx_obj_7tracing_PyRefract_Plane *__pyx_v_self); /* proto */
 static int __pyx_pf_7tracing_15PyRefract_Plane_2n2_2__set__(struct __pyx_obj_7tracing_PyRefract_Plane *__pyx_v_self, PyObject *__pyx_v_n2); /* proto */
-static PyObject *__pyx_pf_7tracing_15PyRefract_Plane_4__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing_PyRefract_Plane *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_7tracing_15PyRefract_Plane_6__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing_PyRefract_Plane *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
+static PyObject *__pyx_pf_7tracing_15PyRefract_Plane_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing_PyRefract_Plane *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_7tracing_15PyRefract_Plane_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing_PyRefract_Plane *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
 static PyObject *__pyx_pf_7tracing_12_PySpherical_6centre___get__(struct __pyx_obj_7tracing__PySpherical *__pyx_v_self); /* proto */
 static int __pyx_pf_7tracing_12_PySpherical_6centre_2__set__(struct __pyx_obj_7tracing__PySpherical *__pyx_v_self, __Pyx_memviewslice __pyx_v_centre); /* proto */
 static PyObject *__pyx_pf_7tracing_12_PySpherical_1R___get__(struct __pyx_obj_7tracing__PySpherical *__pyx_v_self); /* proto */
@@ -2361,17 +2361,15 @@ static PyObject *__pyx_pf_7tracing_12_PySpherical_plot(struct __pyx_obj_7tracing
 static PyObject *__pyx_pf_7tracing_12_PySpherical_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing__PySpherical *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_7tracing_12_PySpherical_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing__PySpherical *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
 static int __pyx_pf_7tracing_12PyMirror_Sph___cinit__(struct __pyx_obj_7tracing_PyMirror_Sph *__pyx_v_self, __Pyx_memviewslice __pyx_v_centre, double __pyx_v_R, double __pyx_v_start, double __pyx_v_end); /* proto */
-static void __pyx_pf_7tracing_12PyMirror_Sph_2__dealloc__(struct __pyx_obj_7tracing_PyMirror_Sph *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_7tracing_12PyMirror_Sph_4__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing_PyMirror_Sph *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_7tracing_12PyMirror_Sph_6__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing_PyMirror_Sph *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
+static PyObject *__pyx_pf_7tracing_12PyMirror_Sph_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing_PyMirror_Sph *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_7tracing_12PyMirror_Sph_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing_PyMirror_Sph *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
 static int __pyx_pf_7tracing_13PyRefract_Sph___cinit__(struct __pyx_obj_7tracing_PyRefract_Sph *__pyx_v_self, __Pyx_memviewslice __pyx_v_centre, double __pyx_v_R, double __pyx_v_start, double __pyx_v_end, double __pyx_v_n1, double __pyx_v_n2); /* proto */
-static void __pyx_pf_7tracing_13PyRefract_Sph_2__dealloc__(struct __pyx_obj_7tracing_PyRefract_Sph *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_7tracing_13PyRefract_Sph_2n1___get__(struct __pyx_obj_7tracing_PyRefract_Sph *__pyx_v_self); /* proto */
 static int __pyx_pf_7tracing_13PyRefract_Sph_2n1_2__set__(struct __pyx_obj_7tracing_PyRefract_Sph *__pyx_v_self, PyObject *__pyx_v_n1); /* proto */
 static PyObject *__pyx_pf_7tracing_13PyRefract_Sph_2n2___get__(struct __pyx_obj_7tracing_PyRefract_Sph *__pyx_v_self); /* proto */
 static int __pyx_pf_7tracing_13PyRefract_Sph_2n2_2__set__(struct __pyx_obj_7tracing_PyRefract_Sph *__pyx_v_self, PyObject *__pyx_v_n2); /* proto */
-static PyObject *__pyx_pf_7tracing_13PyRefract_Sph_4__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing_PyRefract_Sph *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_7tracing_13PyRefract_Sph_6__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing_PyRefract_Sph *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
+static PyObject *__pyx_pf_7tracing_13PyRefract_Sph_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing_PyRefract_Sph *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_7tracing_13PyRefract_Sph_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing_PyRefract_Sph *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
 static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __pyx_array_obj *__pyx_v_self, PyObject *__pyx_v_shape, Py_ssize_t __pyx_v_itemsize, PyObject *__pyx_v_format, PyObject *__pyx_v_mode, int __pyx_v_allocate_buffer); /* proto */
 static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array_2__getbuffer__(struct __pyx_array_obj *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /* proto */
 static void __pyx_array___pyx_pf_15View_dot_MemoryView_5array_4__dealloc__(struct __pyx_array_obj *__pyx_v_self); /* proto */
@@ -3893,7 +3891,7 @@ static PyObject *__pyx_pf_7tracing_5PyRay_8__setstate_cython__(CYTHON_UNUSED str
   return __pyx_r;
 }
 
-/* "tracing.pyx":93
+/* "tracing.pyx":94
  *     cdef public bool OWNDATA
  * 
  *     def __cinit__(self):             # <<<<<<<<<<<<<<
@@ -3922,16 +3920,16 @@ static int __pyx_pf_7tracing_12_PyComponent___cinit__(struct __pyx_obj_7tracing_
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "tracing.pyx":94
+  /* "tracing.pyx":95
  * 
  *     def __cinit__(self):
  *         self.OWNDATA = True             # <<<<<<<<<<<<<<
  * 
- * 
+ *     def __dealloc__(self):
  */
   __pyx_v_self->OWNDATA = 1;
 
-  /* "tracing.pyx":93
+  /* "tracing.pyx":94
  *     cdef public bool OWNDATA
  * 
  *     def __cinit__(self):             # <<<<<<<<<<<<<<
@@ -3945,9 +3943,73 @@ static int __pyx_pf_7tracing_12_PyComponent___cinit__(struct __pyx_obj_7tracing_
   return __pyx_r;
 }
 
-/* "tracing.pyx":91
+/* "tracing.pyx":97
+ *         self.OWNDATA = True
  * 
+ *     def __dealloc__(self):             # <<<<<<<<<<<<<<
+ *         if self.OWNDATA:
+ *             del self.c_component_ptr
+ */
+
+/* Python wrapper */
+static void __pyx_pw_7tracing_12_PyComponent_3__dealloc__(PyObject *__pyx_v_self); /*proto*/
+static void __pyx_pw_7tracing_12_PyComponent_3__dealloc__(PyObject *__pyx_v_self) {
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__dealloc__ (wrapper)", 0);
+  __pyx_pf_7tracing_12_PyComponent_2__dealloc__(((struct __pyx_obj_7tracing__PyComponent *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+}
+
+static void __pyx_pf_7tracing_12_PyComponent_2__dealloc__(struct __pyx_obj_7tracing__PyComponent *__pyx_v_self) {
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  __Pyx_RefNannySetupContext("__dealloc__", 0);
+
+  /* "tracing.pyx":98
+ * 
+ *     def __dealloc__(self):
+ *         if self.OWNDATA:             # <<<<<<<<<<<<<<
+ *             del self.c_component_ptr
+ * 
+ */
+  __pyx_t_1 = (__pyx_v_self->OWNDATA != 0);
+  if (__pyx_t_1) {
+
+    /* "tracing.pyx":99
+ *     def __dealloc__(self):
+ *         if self.OWNDATA:
+ *             del self.c_component_ptr             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+    delete __pyx_v_self->c_component_ptr;
+
+    /* "tracing.pyx":98
+ * 
+ *     def __dealloc__(self):
+ *         if self.OWNDATA:             # <<<<<<<<<<<<<<
+ *             del self.c_component_ptr
+ * 
+ */
+  }
+
+  /* "tracing.pyx":97
+ *         self.OWNDATA = True
+ * 
+ *     def __dealloc__(self):             # <<<<<<<<<<<<<<
+ *         if self.OWNDATA:
+ *             del self.c_component_ptr
+ */
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+}
+
+/* "tracing.pyx":92
  * cdef class _PyComponent:
+ *     cdef Component* c_component_ptr
  *     cdef public bool OWNDATA             # <<<<<<<<<<<<<<
  * 
  *     def __cinit__(self):
@@ -3975,7 +4037,7 @@ static PyObject *__pyx_pf_7tracing_12_PyComponent_7OWNDATA___get__(struct __pyx_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->OWNDATA); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->OWNDATA); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 92, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -4013,7 +4075,7 @@ static int __pyx_pf_7tracing_12_PyComponent_7OWNDATA_2__set__(struct __pyx_obj_7
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__set__", 0);
-  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_value); if (unlikely((__pyx_t_1 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 91, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_value); if (unlikely((__pyx_t_1 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 92, __pyx_L1_error)
   __pyx_v_self->OWNDATA = __pyx_t_1;
 
   /* function exit code */
@@ -4034,19 +4096,19 @@ static int __pyx_pf_7tracing_12_PyComponent_7OWNDATA_2__set__(struct __pyx_obj_7
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7tracing_12_PyComponent_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_7tracing_12_PyComponent_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_7tracing_12_PyComponent_5__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_7tracing_12_PyComponent_5__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__reduce_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_7tracing_12_PyComponent_2__reduce_cython__(((struct __pyx_obj_7tracing__PyComponent *)__pyx_v_self));
+  __pyx_r = __pyx_pf_7tracing_12_PyComponent_4__reduce_cython__(((struct __pyx_obj_7tracing__PyComponent *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7tracing_12_PyComponent_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing__PyComponent *__pyx_v_self) {
+static PyObject *__pyx_pf_7tracing_12_PyComponent_4__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing__PyComponent *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -4091,19 +4153,19 @@ static PyObject *__pyx_pf_7tracing_12_PyComponent_2__reduce_cython__(CYTHON_UNUS
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7tracing_12_PyComponent_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
-static PyObject *__pyx_pw_7tracing_12_PyComponent_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pw_7tracing_12_PyComponent_7__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
+static PyObject *__pyx_pw_7tracing_12_PyComponent_7__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__setstate_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_7tracing_12_PyComponent_4__setstate_cython__(((struct __pyx_obj_7tracing__PyComponent *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
+  __pyx_r = __pyx_pf_7tracing_12_PyComponent_6__setstate_cython__(((struct __pyx_obj_7tracing__PyComponent *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7tracing_12_PyComponent_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing__PyComponent *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_7tracing_12_PyComponent_6__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing__PyComponent *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -4140,7 +4202,7 @@ static PyObject *__pyx_pf_7tracing_12_PyComponent_4__setstate_cython__(CYTHON_UN
   return __pyx_r;
 }
 
-/* "tracing.pyx":103
+/* "tracing.pyx":108
  * 
  *     @property
  *     def start(self):             # <<<<<<<<<<<<<<
@@ -4170,7 +4232,7 @@ static PyObject *__pyx_pf_7tracing_8_PyPlane_5start___get__(struct __pyx_obj_7tr
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "tracing.pyx":104
+  /* "tracing.pyx":109
  *     @property
  *     def start(self):
  *         return make_numpy_from_arr(dereference(self.c_plane_ptr).start)             # <<<<<<<<<<<<<<
@@ -4178,13 +4240,13 @@ static PyObject *__pyx_pf_7tracing_8_PyPlane_5start___get__(struct __pyx_obj_7tr
  *     def start(self, double[:] start):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_7tracing_make_numpy_from_arr((*__pyx_v_self->c_plane_ptr).start); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 104, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_7tracing_make_numpy_from_arr((*__pyx_v_self->c_plane_ptr).start); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 109, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "tracing.pyx":103
+  /* "tracing.pyx":108
  * 
  *     @property
  *     def start(self):             # <<<<<<<<<<<<<<
@@ -4203,7 +4265,7 @@ static PyObject *__pyx_pf_7tracing_8_PyPlane_5start___get__(struct __pyx_obj_7tr
   return __pyx_r;
 }
 
-/* "tracing.pyx":106
+/* "tracing.pyx":111
  *         return make_numpy_from_arr(dereference(self.c_plane_ptr).start)
  *     @start.setter
  *     def start(self, double[:] start):             # <<<<<<<<<<<<<<
@@ -4222,7 +4284,7 @@ static int __pyx_pw_7tracing_8_PyPlane_5start_3__set__(PyObject *__pyx_v_self, P
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__set__ (wrapper)", 0);
   assert(__pyx_arg_start); {
-    __pyx_v_start = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_arg_start, PyBUF_WRITABLE); if (unlikely(!__pyx_v_start.memview)) __PYX_ERR(0, 106, __pyx_L3_error)
+    __pyx_v_start = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_arg_start, PyBUF_WRITABLE); if (unlikely(!__pyx_v_start.memview)) __PYX_ERR(0, 111, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -4249,7 +4311,7 @@ static int __pyx_pf_7tracing_8_PyPlane_5start_2__set__(struct __pyx_obj_7tracing
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__set__", 0);
 
-  /* "tracing.pyx":107
+  /* "tracing.pyx":112
  *     @start.setter
  *     def start(self, double[:] start):
  *         assert tuple(start.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"             # <<<<<<<<<<<<<<
@@ -4258,26 +4320,26 @@ static int __pyx_pf_7tracing_8_PyPlane_5start_2__set__(struct __pyx_obj_7tracing
  */
   #ifndef CYTHON_WITHOUT_ASSERTIONS
   if (unlikely(!Py_OptimizeFlag)) {
-    __pyx_t_1 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_start.shape, 8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 107, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_start.shape, 8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 112, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = __Pyx_PySequence_Tuple(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 107, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PySequence_Tuple(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 112, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_arr_shape); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 107, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_arr_shape); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 112, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = PyObject_RichCompare(__pyx_t_2, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 107, __pyx_L1_error)
+    __pyx_t_3 = PyObject_RichCompare(__pyx_t_2, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 112, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 107, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 112, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     if (unlikely(!__pyx_t_4)) {
       PyErr_SetObject(PyExc_AssertionError, __pyx_kp_u_Expected_a_1d_numpy_array_with_2);
-      __PYX_ERR(0, 107, __pyx_L1_error)
+      __PYX_ERR(0, 112, __pyx_L1_error)
     }
   }
   #endif
 
-  /* "tracing.pyx":109
+  /* "tracing.pyx":114
  *         assert tuple(start.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
  * 
  *         dereference(self.c_plane_ptr).start = make_arr_from_numpy(start)             # <<<<<<<<<<<<<<
@@ -4286,7 +4348,7 @@ static int __pyx_pf_7tracing_8_PyPlane_5start_2__set__(struct __pyx_obj_7tracing
  */
   (*__pyx_v_self->c_plane_ptr).start = __pyx_f_7tracing_make_arr_from_numpy(__pyx_v_start);
 
-  /* "tracing.pyx":106
+  /* "tracing.pyx":111
  *         return make_numpy_from_arr(dereference(self.c_plane_ptr).start)
  *     @start.setter
  *     def start(self, double[:] start):             # <<<<<<<<<<<<<<
@@ -4309,7 +4371,7 @@ static int __pyx_pf_7tracing_8_PyPlane_5start_2__set__(struct __pyx_obj_7tracing
   return __pyx_r;
 }
 
-/* "tracing.pyx":112
+/* "tracing.pyx":117
  * 
  *     @property
  *     def end(self):             # <<<<<<<<<<<<<<
@@ -4339,7 +4401,7 @@ static PyObject *__pyx_pf_7tracing_8_PyPlane_3end___get__(struct __pyx_obj_7trac
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "tracing.pyx":113
+  /* "tracing.pyx":118
  *     @property
  *     def end(self):
  *         return make_numpy_from_arr(dereference(self.c_plane_ptr).end)             # <<<<<<<<<<<<<<
@@ -4347,13 +4409,13 @@ static PyObject *__pyx_pf_7tracing_8_PyPlane_3end___get__(struct __pyx_obj_7trac
  *     def end(self, double[:] end):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_7tracing_make_numpy_from_arr((*__pyx_v_self->c_plane_ptr).end); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 113, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_7tracing_make_numpy_from_arr((*__pyx_v_self->c_plane_ptr).end); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 118, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "tracing.pyx":112
+  /* "tracing.pyx":117
  * 
  *     @property
  *     def end(self):             # <<<<<<<<<<<<<<
@@ -4372,7 +4434,7 @@ static PyObject *__pyx_pf_7tracing_8_PyPlane_3end___get__(struct __pyx_obj_7trac
   return __pyx_r;
 }
 
-/* "tracing.pyx":115
+/* "tracing.pyx":120
  *         return make_numpy_from_arr(dereference(self.c_plane_ptr).end)
  *     @end.setter
  *     def end(self, double[:] end):             # <<<<<<<<<<<<<<
@@ -4391,7 +4453,7 @@ static int __pyx_pw_7tracing_8_PyPlane_3end_3__set__(PyObject *__pyx_v_self, PyO
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__set__ (wrapper)", 0);
   assert(__pyx_arg_end); {
-    __pyx_v_end = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_arg_end, PyBUF_WRITABLE); if (unlikely(!__pyx_v_end.memview)) __PYX_ERR(0, 115, __pyx_L3_error)
+    __pyx_v_end = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_arg_end, PyBUF_WRITABLE); if (unlikely(!__pyx_v_end.memview)) __PYX_ERR(0, 120, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -4418,7 +4480,7 @@ static int __pyx_pf_7tracing_8_PyPlane_3end_2__set__(struct __pyx_obj_7tracing__
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__set__", 0);
 
-  /* "tracing.pyx":116
+  /* "tracing.pyx":121
  *     @end.setter
  *     def end(self, double[:] end):
  *         assert tuple(end.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"             # <<<<<<<<<<<<<<
@@ -4427,26 +4489,26 @@ static int __pyx_pf_7tracing_8_PyPlane_3end_2__set__(struct __pyx_obj_7tracing__
  */
   #ifndef CYTHON_WITHOUT_ASSERTIONS
   if (unlikely(!Py_OptimizeFlag)) {
-    __pyx_t_1 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_end.shape, 8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 116, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_end.shape, 8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 121, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = __Pyx_PySequence_Tuple(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 116, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PySequence_Tuple(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 121, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_arr_shape); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 116, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_arr_shape); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 121, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = PyObject_RichCompare(__pyx_t_2, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 116, __pyx_L1_error)
+    __pyx_t_3 = PyObject_RichCompare(__pyx_t_2, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 121, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 116, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 121, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     if (unlikely(!__pyx_t_4)) {
       PyErr_SetObject(PyExc_AssertionError, __pyx_kp_u_Expected_a_1d_numpy_array_with_2);
-      __PYX_ERR(0, 116, __pyx_L1_error)
+      __PYX_ERR(0, 121, __pyx_L1_error)
     }
   }
   #endif
 
-  /* "tracing.pyx":118
+  /* "tracing.pyx":123
  *         assert tuple(end.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
  * 
  *         dereference(self.c_plane_ptr).end = make_arr_from_numpy(end)             # <<<<<<<<<<<<<<
@@ -4455,7 +4517,7 @@ static int __pyx_pf_7tracing_8_PyPlane_3end_2__set__(struct __pyx_obj_7tracing__
  */
   (*__pyx_v_self->c_plane_ptr).end = __pyx_f_7tracing_make_arr_from_numpy(__pyx_v_end);
 
-  /* "tracing.pyx":115
+  /* "tracing.pyx":120
  *         return make_numpy_from_arr(dereference(self.c_plane_ptr).end)
  *     @end.setter
  *     def end(self, double[:] end):             # <<<<<<<<<<<<<<
@@ -4478,7 +4540,7 @@ static int __pyx_pf_7tracing_8_PyPlane_3end_2__set__(struct __pyx_obj_7tracing__
   return __pyx_r;
 }
 
-/* "tracing.pyx":120
+/* "tracing.pyx":125
  *         dereference(self.c_plane_ptr).end = make_arr_from_numpy(end)
  * 
  *     def plot(self):             # <<<<<<<<<<<<<<
@@ -4512,59 +4574,59 @@ static PyObject *__pyx_pf_7tracing_8_PyPlane_plot(struct __pyx_obj_7tracing__PyP
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("plot", 0);
 
-  /* "tracing.pyx":121
+  /* "tracing.pyx":126
  * 
  *     def plot(self):
  *         points = np.empty((2, 2), dtype=np.double)             # <<<<<<<<<<<<<<
  * 
  *         points[0] = self.start
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 121, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 126, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_empty); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 121, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_empty); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 126, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 121, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 126, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 121, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 126, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_double); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 121, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_double); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 126, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_dtype, __pyx_t_4) < 0) __PYX_ERR(0, 121, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_dtype, __pyx_t_4) < 0) __PYX_ERR(0, 126, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_tuple__6, __pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 121, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_tuple__6, __pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 126, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_points = __pyx_t_4;
   __pyx_t_4 = 0;
 
-  /* "tracing.pyx":123
+  /* "tracing.pyx":128
  *         points = np.empty((2, 2), dtype=np.double)
  * 
  *         points[0] = self.start             # <<<<<<<<<<<<<<
  *         points[1] = self.end
  * 
  */
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_start); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 123, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_start); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 128, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (unlikely(__Pyx_SetItemInt(__pyx_v_points, 0, __pyx_t_4, long, 1, __Pyx_PyInt_From_long, 0, 0, 1) < 0)) __PYX_ERR(0, 123, __pyx_L1_error)
+  if (unlikely(__Pyx_SetItemInt(__pyx_v_points, 0, __pyx_t_4, long, 1, __Pyx_PyInt_From_long, 0, 0, 1) < 0)) __PYX_ERR(0, 128, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "tracing.pyx":124
+  /* "tracing.pyx":129
  * 
  *         points[0] = self.start
  *         points[1] = self.end             # <<<<<<<<<<<<<<
  * 
  *         return points
  */
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_end); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 124, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_end); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 129, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (unlikely(__Pyx_SetItemInt(__pyx_v_points, 1, __pyx_t_4, long, 1, __Pyx_PyInt_From_long, 0, 0, 1) < 0)) __PYX_ERR(0, 124, __pyx_L1_error)
+  if (unlikely(__Pyx_SetItemInt(__pyx_v_points, 1, __pyx_t_4, long, 1, __Pyx_PyInt_From_long, 0, 0, 1) < 0)) __PYX_ERR(0, 129, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "tracing.pyx":126
+  /* "tracing.pyx":131
  *         points[1] = self.end
  * 
  *         return points             # <<<<<<<<<<<<<<
@@ -4576,7 +4638,7 @@ static PyObject *__pyx_pf_7tracing_8_PyPlane_plot(struct __pyx_obj_7tracing__PyP
   __pyx_r = __pyx_v_points;
   goto __pyx_L0;
 
-  /* "tracing.pyx":120
+  /* "tracing.pyx":125
  *         dereference(self.c_plane_ptr).end = make_arr_from_numpy(end)
  * 
  *     def plot(self):             # <<<<<<<<<<<<<<
@@ -4712,7 +4774,7 @@ static PyObject *__pyx_pf_7tracing_8_PyPlane_4__setstate_cython__(CYTHON_UNUSED 
   return __pyx_r;
 }
 
-/* "tracing.pyx":132
+/* "tracing.pyx":137
  *     cdef Mirror_Plane* c_data
  * 
  *     def __cinit__(self, double[:] start, double[:] end):             # <<<<<<<<<<<<<<
@@ -4754,11 +4816,11 @@ static int __pyx_pw_7tracing_14PyMirror_Plane_1__cinit__(PyObject *__pyx_v_self,
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_end)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 2, 2, 1); __PYX_ERR(0, 132, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 2, 2, 1); __PYX_ERR(0, 137, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 132, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 137, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -4766,12 +4828,12 @@ static int __pyx_pw_7tracing_14PyMirror_Plane_1__cinit__(PyObject *__pyx_v_self,
       values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
       values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
     }
-    __pyx_v_start = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_start.memview)) __PYX_ERR(0, 132, __pyx_L3_error)
-    __pyx_v_end = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[1], PyBUF_WRITABLE); if (unlikely(!__pyx_v_end.memview)) __PYX_ERR(0, 132, __pyx_L3_error)
+    __pyx_v_start = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_start.memview)) __PYX_ERR(0, 137, __pyx_L3_error)
+    __pyx_v_end = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[1], PyBUF_WRITABLE); if (unlikely(!__pyx_v_end.memview)) __PYX_ERR(0, 137, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 132, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 137, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("tracing.PyMirror_Plane.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -4798,7 +4860,7 @@ static int __pyx_pf_7tracing_14PyMirror_Plane___cinit__(struct __pyx_obj_7tracin
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "tracing.pyx":134
+  /* "tracing.pyx":139
  *     def __cinit__(self, double[:] start, double[:] end):
  *         #assert tuple(start.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
  *         assert tuple(end.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"             # <<<<<<<<<<<<<<
@@ -4807,37 +4869,37 @@ static int __pyx_pf_7tracing_14PyMirror_Plane___cinit__(struct __pyx_obj_7tracin
  */
   #ifndef CYTHON_WITHOUT_ASSERTIONS
   if (unlikely(!Py_OptimizeFlag)) {
-    __pyx_t_1 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_end.shape, 8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 134, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_end.shape, 8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 139, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = __Pyx_PySequence_Tuple(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 134, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PySequence_Tuple(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 139, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_arr_shape); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 134, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_arr_shape); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 139, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = PyObject_RichCompare(__pyx_t_2, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 134, __pyx_L1_error)
+    __pyx_t_3 = PyObject_RichCompare(__pyx_t_2, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 139, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 134, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 139, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     if (unlikely(!__pyx_t_4)) {
       PyErr_SetObject(PyExc_AssertionError, __pyx_kp_u_Expected_a_1d_numpy_array_with_2);
-      __PYX_ERR(0, 134, __pyx_L1_error)
+      __PYX_ERR(0, 139, __pyx_L1_error)
     }
   }
   #endif
 
-  /* "tracing.pyx":138
+  /* "tracing.pyx":143
  *         cdef arr s
  * 
  *         new_arr(start, s)             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __pyx_t_3 = __pyx_f_7tracing_new_arr(__pyx_v_start, __pyx_v_s); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 138, __pyx_L1_error)
+  __pyx_t_3 = __pyx_f_7tracing_new_arr(__pyx_v_start, __pyx_v_s); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 143, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "tracing.pyx":141
+  /* "tracing.pyx":146
  * 
  * 
  *         self.c_data = new Mirror_Plane(make_arr_from_numpy(start),             # <<<<<<<<<<<<<<
@@ -4848,20 +4910,29 @@ static int __pyx_pf_7tracing_14PyMirror_Plane___cinit__(struct __pyx_obj_7tracin
     __pyx_t_5 = new Mirror_Plane(__pyx_f_7tracing_make_arr_from_numpy(__pyx_v_start), __pyx_f_7tracing_make_arr_from_numpy(__pyx_v_end));
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    __PYX_ERR(0, 141, __pyx_L1_error)
+    __PYX_ERR(0, 146, __pyx_L1_error)
   }
   __pyx_v_self->c_data = __pyx_t_5;
 
-  /* "tracing.pyx":144
+  /* "tracing.pyx":149
  *                                        make_arr_from_numpy(end))
  * 
  *         self.c_plane_ptr = <Plane*>self.c_data             # <<<<<<<<<<<<<<
+ *         self.c_component_ptr = <Component*>self.c_data
  * 
- *     def __dealloc__(self):
  */
   __pyx_v_self->__pyx_base.c_plane_ptr = ((Plane *)__pyx_v_self->c_data);
 
-  /* "tracing.pyx":132
+  /* "tracing.pyx":150
+ * 
+ *         self.c_plane_ptr = <Plane*>self.c_data
+ *         self.c_component_ptr = <Component*>self.c_data             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_v_self->__pyx_base.__pyx_base.c_component_ptr = ((Component *)__pyx_v_self->c_data);
+
+  /* "tracing.pyx":137
  *     cdef Mirror_Plane* c_data
  * 
  *     def __cinit__(self, double[:] start, double[:] end):             # <<<<<<<<<<<<<<
@@ -4885,70 +4956,6 @@ static int __pyx_pf_7tracing_14PyMirror_Plane___cinit__(struct __pyx_obj_7tracin
   return __pyx_r;
 }
 
-/* "tracing.pyx":146
- *         self.c_plane_ptr = <Plane*>self.c_data
- * 
- *     def __dealloc__(self):             # <<<<<<<<<<<<<<
- *         if self.OWNDATA:
- *             del self.c_data
- */
-
-/* Python wrapper */
-static void __pyx_pw_7tracing_14PyMirror_Plane_3__dealloc__(PyObject *__pyx_v_self); /*proto*/
-static void __pyx_pw_7tracing_14PyMirror_Plane_3__dealloc__(PyObject *__pyx_v_self) {
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("__dealloc__ (wrapper)", 0);
-  __pyx_pf_7tracing_14PyMirror_Plane_2__dealloc__(((struct __pyx_obj_7tracing_PyMirror_Plane *)__pyx_v_self));
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-}
-
-static void __pyx_pf_7tracing_14PyMirror_Plane_2__dealloc__(struct __pyx_obj_7tracing_PyMirror_Plane *__pyx_v_self) {
-  __Pyx_RefNannyDeclarations
-  int __pyx_t_1;
-  __Pyx_RefNannySetupContext("__dealloc__", 0);
-
-  /* "tracing.pyx":147
- * 
- *     def __dealloc__(self):
- *         if self.OWNDATA:             # <<<<<<<<<<<<<<
- *             del self.c_data
- * 
- */
-  __pyx_t_1 = (__pyx_v_self->__pyx_base.__pyx_base.OWNDATA != 0);
-  if (__pyx_t_1) {
-
-    /* "tracing.pyx":148
- *     def __dealloc__(self):
- *         if self.OWNDATA:
- *             del self.c_data             # <<<<<<<<<<<<<<
- * 
- * 
- */
-    delete __pyx_v_self->c_data;
-
-    /* "tracing.pyx":147
- * 
- *     def __dealloc__(self):
- *         if self.OWNDATA:             # <<<<<<<<<<<<<<
- *             del self.c_data
- * 
- */
-  }
-
-  /* "tracing.pyx":146
- *         self.c_plane_ptr = <Plane*>self.c_data
- * 
- *     def __dealloc__(self):             # <<<<<<<<<<<<<<
- *         if self.OWNDATA:
- *             del self.c_data
- */
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-}
-
 /* "(tree fragment)":1
  * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
@@ -4956,19 +4963,19 @@ static void __pyx_pf_7tracing_14PyMirror_Plane_2__dealloc__(struct __pyx_obj_7tr
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7tracing_14PyMirror_Plane_5__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_7tracing_14PyMirror_Plane_5__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_7tracing_14PyMirror_Plane_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_7tracing_14PyMirror_Plane_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__reduce_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_7tracing_14PyMirror_Plane_4__reduce_cython__(((struct __pyx_obj_7tracing_PyMirror_Plane *)__pyx_v_self));
+  __pyx_r = __pyx_pf_7tracing_14PyMirror_Plane_2__reduce_cython__(((struct __pyx_obj_7tracing_PyMirror_Plane *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7tracing_14PyMirror_Plane_4__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing_PyMirror_Plane *__pyx_v_self) {
+static PyObject *__pyx_pf_7tracing_14PyMirror_Plane_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing_PyMirror_Plane *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -5013,19 +5020,19 @@ static PyObject *__pyx_pf_7tracing_14PyMirror_Plane_4__reduce_cython__(CYTHON_UN
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7tracing_14PyMirror_Plane_7__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
-static PyObject *__pyx_pw_7tracing_14PyMirror_Plane_7__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pw_7tracing_14PyMirror_Plane_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
+static PyObject *__pyx_pw_7tracing_14PyMirror_Plane_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__setstate_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_7tracing_14PyMirror_Plane_6__setstate_cython__(((struct __pyx_obj_7tracing_PyMirror_Plane *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
+  __pyx_r = __pyx_pf_7tracing_14PyMirror_Plane_4__setstate_cython__(((struct __pyx_obj_7tracing_PyMirror_Plane *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7tracing_14PyMirror_Plane_6__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing_PyMirror_Plane *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_7tracing_14PyMirror_Plane_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing_PyMirror_Plane *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -5062,7 +5069,7 @@ static PyObject *__pyx_pf_7tracing_14PyMirror_Plane_6__setstate_cython__(CYTHON_
   return __pyx_r;
 }
 
-/* "tracing.pyx":154
+/* "tracing.pyx":161
  *     cdef Refract_Plane* c_data
  * 
  *     def __cinit__(self, double[:] start, double[:] end, double n1=1.0,             # <<<<<<<<<<<<<<
@@ -5110,7 +5117,7 @@ static int __pyx_pw_7tracing_15PyRefract_Plane_1__cinit__(PyObject *__pyx_v_self
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_end)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 2, 4, 1); __PYX_ERR(0, 154, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 2, 4, 1); __PYX_ERR(0, 161, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
@@ -5126,7 +5133,7 @@ static int __pyx_pw_7tracing_15PyRefract_Plane_1__cinit__(PyObject *__pyx_v_self
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 154, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 161, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -5140,22 +5147,22 @@ static int __pyx_pw_7tracing_15PyRefract_Plane_1__cinit__(PyObject *__pyx_v_self
         default: goto __pyx_L5_argtuple_error;
       }
     }
-    __pyx_v_start = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_start.memview)) __PYX_ERR(0, 154, __pyx_L3_error)
-    __pyx_v_end = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[1], PyBUF_WRITABLE); if (unlikely(!__pyx_v_end.memview)) __PYX_ERR(0, 154, __pyx_L3_error)
+    __pyx_v_start = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_start.memview)) __PYX_ERR(0, 161, __pyx_L3_error)
+    __pyx_v_end = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[1], PyBUF_WRITABLE); if (unlikely(!__pyx_v_end.memview)) __PYX_ERR(0, 161, __pyx_L3_error)
     if (values[2]) {
-      __pyx_v_n1 = __pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_n1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 154, __pyx_L3_error)
+      __pyx_v_n1 = __pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_n1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 161, __pyx_L3_error)
     } else {
       __pyx_v_n1 = ((double)1.0);
     }
     if (values[3]) {
-      __pyx_v_n2 = __pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_n2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 155, __pyx_L3_error)
+      __pyx_v_n2 = __pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_n2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 162, __pyx_L3_error)
     } else {
       __pyx_v_n2 = ((double)1.0);
     }
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 2, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 154, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 2, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 161, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("tracing.PyRefract_Plane.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -5181,7 +5188,7 @@ static int __pyx_pf_7tracing_15PyRefract_Plane___cinit__(struct __pyx_obj_7traci
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "tracing.pyx":157
+  /* "tracing.pyx":164
  *                   double n2=1.0):
  * 
  *         assert tuple(start.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"             # <<<<<<<<<<<<<<
@@ -5190,26 +5197,26 @@ static int __pyx_pf_7tracing_15PyRefract_Plane___cinit__(struct __pyx_obj_7traci
  */
   #ifndef CYTHON_WITHOUT_ASSERTIONS
   if (unlikely(!Py_OptimizeFlag)) {
-    __pyx_t_1 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_start.shape, 8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 157, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_start.shape, 8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 164, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = __Pyx_PySequence_Tuple(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 157, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PySequence_Tuple(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 164, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_arr_shape); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 157, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_arr_shape); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 164, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = PyObject_RichCompare(__pyx_t_2, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 157, __pyx_L1_error)
+    __pyx_t_3 = PyObject_RichCompare(__pyx_t_2, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 164, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 157, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 164, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     if (unlikely(!__pyx_t_4)) {
       PyErr_SetObject(PyExc_AssertionError, __pyx_kp_u_Expected_a_1d_numpy_array_with_2);
-      __PYX_ERR(0, 157, __pyx_L1_error)
+      __PYX_ERR(0, 164, __pyx_L1_error)
     }
   }
   #endif
 
-  /* "tracing.pyx":158
+  /* "tracing.pyx":165
  * 
  *         assert tuple(start.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
  *         assert tuple(end.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"             # <<<<<<<<<<<<<<
@@ -5218,26 +5225,26 @@ static int __pyx_pf_7tracing_15PyRefract_Plane___cinit__(struct __pyx_obj_7traci
  */
   #ifndef CYTHON_WITHOUT_ASSERTIONS
   if (unlikely(!Py_OptimizeFlag)) {
-    __pyx_t_3 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_end.shape, 8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 158, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_end.shape, 8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 165, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_1 = __Pyx_PySequence_Tuple(__pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 158, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PySequence_Tuple(__pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 165, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_arr_shape); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 158, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_arr_shape); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 165, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_2 = PyObject_RichCompare(__pyx_t_1, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 158, __pyx_L1_error)
+    __pyx_t_2 = PyObject_RichCompare(__pyx_t_1, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 165, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 158, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 165, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (unlikely(!__pyx_t_4)) {
       PyErr_SetObject(PyExc_AssertionError, __pyx_kp_u_Expected_a_1d_numpy_array_with_2);
-      __PYX_ERR(0, 158, __pyx_L1_error)
+      __PYX_ERR(0, 165, __pyx_L1_error)
     }
   }
   #endif
 
-  /* "tracing.pyx":160
+  /* "tracing.pyx":167
  *         assert tuple(end.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
  * 
  *         self.c_data = new Refract_Plane(make_arr_from_numpy(start),             # <<<<<<<<<<<<<<
@@ -5248,20 +5255,29 @@ static int __pyx_pf_7tracing_15PyRefract_Plane___cinit__(struct __pyx_obj_7traci
     __pyx_t_5 = new Refract_Plane(__pyx_f_7tracing_make_arr_from_numpy(__pyx_v_start), __pyx_f_7tracing_make_arr_from_numpy(__pyx_v_end), __pyx_v_n1, __pyx_v_n2);
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    __PYX_ERR(0, 160, __pyx_L1_error)
+    __PYX_ERR(0, 167, __pyx_L1_error)
   }
   __pyx_v_self->c_data = __pyx_t_5;
 
-  /* "tracing.pyx":163
+  /* "tracing.pyx":170
  *                                         make_arr_from_numpy(end), n1, n2)
  * 
  *         self.c_plane_ptr = <Plane*>self.c_data             # <<<<<<<<<<<<<<
+ *         self.c_component_ptr = <Component*>self.c_data
  * 
- *     def __dealloc__(self):
  */
   __pyx_v_self->__pyx_base.c_plane_ptr = ((Plane *)__pyx_v_self->c_data);
 
-  /* "tracing.pyx":154
+  /* "tracing.pyx":171
+ * 
+ *         self.c_plane_ptr = <Plane*>self.c_data
+ *         self.c_component_ptr = <Component*>self.c_data             # <<<<<<<<<<<<<<
+ * 
+ *     # def __dealloc__(self):
+ */
+  __pyx_v_self->__pyx_base.__pyx_base.c_component_ptr = ((Component *)__pyx_v_self->c_data);
+
+  /* "tracing.pyx":161
  *     cdef Refract_Plane* c_data
  * 
  *     def __cinit__(self, double[:] start, double[:] end, double n1=1.0,             # <<<<<<<<<<<<<<
@@ -5285,71 +5301,7 @@ static int __pyx_pf_7tracing_15PyRefract_Plane___cinit__(struct __pyx_obj_7traci
   return __pyx_r;
 }
 
-/* "tracing.pyx":165
- *         self.c_plane_ptr = <Plane*>self.c_data
- * 
- *     def __dealloc__(self):             # <<<<<<<<<<<<<<
- *         if self.OWNDATA:
- *             del self.c_data
- */
-
-/* Python wrapper */
-static void __pyx_pw_7tracing_15PyRefract_Plane_3__dealloc__(PyObject *__pyx_v_self); /*proto*/
-static void __pyx_pw_7tracing_15PyRefract_Plane_3__dealloc__(PyObject *__pyx_v_self) {
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("__dealloc__ (wrapper)", 0);
-  __pyx_pf_7tracing_15PyRefract_Plane_2__dealloc__(((struct __pyx_obj_7tracing_PyRefract_Plane *)__pyx_v_self));
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-}
-
-static void __pyx_pf_7tracing_15PyRefract_Plane_2__dealloc__(struct __pyx_obj_7tracing_PyRefract_Plane *__pyx_v_self) {
-  __Pyx_RefNannyDeclarations
-  int __pyx_t_1;
-  __Pyx_RefNannySetupContext("__dealloc__", 0);
-
-  /* "tracing.pyx":166
- * 
- *     def __dealloc__(self):
- *         if self.OWNDATA:             # <<<<<<<<<<<<<<
- *             del self.c_data
- * 
- */
-  __pyx_t_1 = (__pyx_v_self->__pyx_base.__pyx_base.OWNDATA != 0);
-  if (__pyx_t_1) {
-
-    /* "tracing.pyx":167
- *     def __dealloc__(self):
- *         if self.OWNDATA:
- *             del self.c_data             # <<<<<<<<<<<<<<
- * 
- *     @property
- */
-    delete __pyx_v_self->c_data;
-
-    /* "tracing.pyx":166
- * 
- *     def __dealloc__(self):
- *         if self.OWNDATA:             # <<<<<<<<<<<<<<
- *             del self.c_data
- * 
- */
-  }
-
-  /* "tracing.pyx":165
- *         self.c_plane_ptr = <Plane*>self.c_data
- * 
- *     def __dealloc__(self):             # <<<<<<<<<<<<<<
- *         if self.OWNDATA:
- *             del self.c_data
- */
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-}
-
-/* "tracing.pyx":170
+/* "tracing.pyx":178
  * 
  *     @property
  *     def n1(self):             # <<<<<<<<<<<<<<
@@ -5379,7 +5331,7 @@ static PyObject *__pyx_pf_7tracing_15PyRefract_Plane_2n1___get__(struct __pyx_ob
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "tracing.pyx":171
+  /* "tracing.pyx":179
  *     @property
  *     def n1(self):
  *         return dereference(self.c_data).n1             # <<<<<<<<<<<<<<
@@ -5387,13 +5339,13 @@ static PyObject *__pyx_pf_7tracing_15PyRefract_Plane_2n1___get__(struct __pyx_ob
  *     def n1(self, n1):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble((*__pyx_v_self->c_data).n1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 171, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble((*__pyx_v_self->c_data).n1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 179, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "tracing.pyx":170
+  /* "tracing.pyx":178
  * 
  *     @property
  *     def n1(self):             # <<<<<<<<<<<<<<
@@ -5412,7 +5364,7 @@ static PyObject *__pyx_pf_7tracing_15PyRefract_Plane_2n1___get__(struct __pyx_ob
   return __pyx_r;
 }
 
-/* "tracing.pyx":173
+/* "tracing.pyx":181
  *         return dereference(self.c_data).n1
  *     @n1.setter
  *     def n1(self, n1):             # <<<<<<<<<<<<<<
@@ -5442,17 +5394,17 @@ static int __pyx_pf_7tracing_15PyRefract_Plane_2n1_2__set__(struct __pyx_obj_7tr
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__set__", 0);
 
-  /* "tracing.pyx":174
+  /* "tracing.pyx":182
  *     @n1.setter
  *     def n1(self, n1):
  *         dereference(self.c_data).n1 = n1             # <<<<<<<<<<<<<<
  * 
  *     @property
  */
-  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_n1); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 174, __pyx_L1_error)
+  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_n1); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 182, __pyx_L1_error)
   (*__pyx_v_self->c_data).n1 = __pyx_t_1;
 
-  /* "tracing.pyx":173
+  /* "tracing.pyx":181
  *         return dereference(self.c_data).n1
  *     @n1.setter
  *     def n1(self, n1):             # <<<<<<<<<<<<<<
@@ -5471,7 +5423,7 @@ static int __pyx_pf_7tracing_15PyRefract_Plane_2n1_2__set__(struct __pyx_obj_7tr
   return __pyx_r;
 }
 
-/* "tracing.pyx":177
+/* "tracing.pyx":185
  * 
  *     @property
  *     def n2(self):             # <<<<<<<<<<<<<<
@@ -5501,7 +5453,7 @@ static PyObject *__pyx_pf_7tracing_15PyRefract_Plane_2n2___get__(struct __pyx_ob
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "tracing.pyx":178
+  /* "tracing.pyx":186
  *     @property
  *     def n2(self):
  *         return dereference(self.c_data).n2             # <<<<<<<<<<<<<<
@@ -5509,13 +5461,13 @@ static PyObject *__pyx_pf_7tracing_15PyRefract_Plane_2n2___get__(struct __pyx_ob
  *     def n2(self, n2):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble((*__pyx_v_self->c_data).n2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 178, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble((*__pyx_v_self->c_data).n2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 186, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "tracing.pyx":177
+  /* "tracing.pyx":185
  * 
  *     @property
  *     def n2(self):             # <<<<<<<<<<<<<<
@@ -5534,7 +5486,7 @@ static PyObject *__pyx_pf_7tracing_15PyRefract_Plane_2n2___get__(struct __pyx_ob
   return __pyx_r;
 }
 
-/* "tracing.pyx":180
+/* "tracing.pyx":188
  *         return dereference(self.c_data).n2
  *     @n2.setter
  *     def n2(self, n2):             # <<<<<<<<<<<<<<
@@ -5564,17 +5516,17 @@ static int __pyx_pf_7tracing_15PyRefract_Plane_2n2_2__set__(struct __pyx_obj_7tr
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__set__", 0);
 
-  /* "tracing.pyx":181
+  /* "tracing.pyx":189
  *     @n2.setter
  *     def n2(self, n2):
  *         dereference(self.c_data).n2 = n2             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_n2); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 181, __pyx_L1_error)
+  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_n2); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 189, __pyx_L1_error)
   (*__pyx_v_self->c_data).n2 = __pyx_t_1;
 
-  /* "tracing.pyx":180
+  /* "tracing.pyx":188
  *         return dereference(self.c_data).n2
  *     @n2.setter
  *     def n2(self, n2):             # <<<<<<<<<<<<<<
@@ -5600,19 +5552,19 @@ static int __pyx_pf_7tracing_15PyRefract_Plane_2n2_2__set__(struct __pyx_obj_7tr
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7tracing_15PyRefract_Plane_5__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_7tracing_15PyRefract_Plane_5__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_7tracing_15PyRefract_Plane_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_7tracing_15PyRefract_Plane_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__reduce_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_7tracing_15PyRefract_Plane_4__reduce_cython__(((struct __pyx_obj_7tracing_PyRefract_Plane *)__pyx_v_self));
+  __pyx_r = __pyx_pf_7tracing_15PyRefract_Plane_2__reduce_cython__(((struct __pyx_obj_7tracing_PyRefract_Plane *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7tracing_15PyRefract_Plane_4__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing_PyRefract_Plane *__pyx_v_self) {
+static PyObject *__pyx_pf_7tracing_15PyRefract_Plane_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing_PyRefract_Plane *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -5657,19 +5609,19 @@ static PyObject *__pyx_pf_7tracing_15PyRefract_Plane_4__reduce_cython__(CYTHON_U
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7tracing_15PyRefract_Plane_7__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
-static PyObject *__pyx_pw_7tracing_15PyRefract_Plane_7__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pw_7tracing_15PyRefract_Plane_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
+static PyObject *__pyx_pw_7tracing_15PyRefract_Plane_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__setstate_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_7tracing_15PyRefract_Plane_6__setstate_cython__(((struct __pyx_obj_7tracing_PyRefract_Plane *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
+  __pyx_r = __pyx_pf_7tracing_15PyRefract_Plane_4__setstate_cython__(((struct __pyx_obj_7tracing_PyRefract_Plane *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7tracing_15PyRefract_Plane_6__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing_PyRefract_Plane *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_7tracing_15PyRefract_Plane_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing_PyRefract_Plane *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -5706,7 +5658,7 @@ static PyObject *__pyx_pf_7tracing_15PyRefract_Plane_6__setstate_cython__(CYTHON
   return __pyx_r;
 }
 
-/* "tracing.pyx":190
+/* "tracing.pyx":198
  * 
  *     @property
  *     def centre(self):             # <<<<<<<<<<<<<<
@@ -5736,7 +5688,7 @@ static PyObject *__pyx_pf_7tracing_12_PySpherical_6centre___get__(struct __pyx_o
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "tracing.pyx":191
+  /* "tracing.pyx":199
  *     @property
  *     def centre(self):
  *         return make_numpy_from_arr(dereference(self.c_sph_ptr).centre)             # <<<<<<<<<<<<<<
@@ -5744,13 +5696,13 @@ static PyObject *__pyx_pf_7tracing_12_PySpherical_6centre___get__(struct __pyx_o
  *     def centre(self, double[:] centre):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_7tracing_make_numpy_from_arr((*__pyx_v_self->c_sph_ptr).centre); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 191, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_7tracing_make_numpy_from_arr((*__pyx_v_self->c_sph_ptr).centre); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 199, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "tracing.pyx":190
+  /* "tracing.pyx":198
  * 
  *     @property
  *     def centre(self):             # <<<<<<<<<<<<<<
@@ -5769,7 +5721,7 @@ static PyObject *__pyx_pf_7tracing_12_PySpherical_6centre___get__(struct __pyx_o
   return __pyx_r;
 }
 
-/* "tracing.pyx":193
+/* "tracing.pyx":201
  *         return make_numpy_from_arr(dereference(self.c_sph_ptr).centre)
  *     @centre.setter
  *     def centre(self, double[:] centre):             # <<<<<<<<<<<<<<
@@ -5788,7 +5740,7 @@ static int __pyx_pw_7tracing_12_PySpherical_6centre_3__set__(PyObject *__pyx_v_s
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__set__ (wrapper)", 0);
   assert(__pyx_arg_centre); {
-    __pyx_v_centre = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_arg_centre, PyBUF_WRITABLE); if (unlikely(!__pyx_v_centre.memview)) __PYX_ERR(0, 193, __pyx_L3_error)
+    __pyx_v_centre = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_arg_centre, PyBUF_WRITABLE); if (unlikely(!__pyx_v_centre.memview)) __PYX_ERR(0, 201, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -5815,7 +5767,7 @@ static int __pyx_pf_7tracing_12_PySpherical_6centre_2__set__(struct __pyx_obj_7t
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__set__", 0);
 
-  /* "tracing.pyx":194
+  /* "tracing.pyx":202
  *     @centre.setter
  *     def centre(self, double[:] centre):
  *         assert tuple(centre.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"             # <<<<<<<<<<<<<<
@@ -5824,26 +5776,26 @@ static int __pyx_pf_7tracing_12_PySpherical_6centre_2__set__(struct __pyx_obj_7t
  */
   #ifndef CYTHON_WITHOUT_ASSERTIONS
   if (unlikely(!Py_OptimizeFlag)) {
-    __pyx_t_1 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_centre.shape, 8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 194, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_centre.shape, 8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 202, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = __Pyx_PySequence_Tuple(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 194, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PySequence_Tuple(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 202, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_arr_shape); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 194, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_arr_shape); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 202, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = PyObject_RichCompare(__pyx_t_2, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 194, __pyx_L1_error)
+    __pyx_t_3 = PyObject_RichCompare(__pyx_t_2, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 202, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 194, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 202, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     if (unlikely(!__pyx_t_4)) {
       PyErr_SetObject(PyExc_AssertionError, __pyx_kp_u_Expected_a_1d_numpy_array_with_2);
-      __PYX_ERR(0, 194, __pyx_L1_error)
+      __PYX_ERR(0, 202, __pyx_L1_error)
     }
   }
   #endif
 
-  /* "tracing.pyx":196
+  /* "tracing.pyx":204
  *         assert tuple(centre.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
  * 
  *         dereference(self.c_sph_ptr).centre = make_arr_from_numpy(centre)             # <<<<<<<<<<<<<<
@@ -5852,7 +5804,7 @@ static int __pyx_pf_7tracing_12_PySpherical_6centre_2__set__(struct __pyx_obj_7t
  */
   (*__pyx_v_self->c_sph_ptr).centre = __pyx_f_7tracing_make_arr_from_numpy(__pyx_v_centre);
 
-  /* "tracing.pyx":193
+  /* "tracing.pyx":201
  *         return make_numpy_from_arr(dereference(self.c_sph_ptr).centre)
  *     @centre.setter
  *     def centre(self, double[:] centre):             # <<<<<<<<<<<<<<
@@ -5875,7 +5827,7 @@ static int __pyx_pf_7tracing_12_PySpherical_6centre_2__set__(struct __pyx_obj_7t
   return __pyx_r;
 }
 
-/* "tracing.pyx":199
+/* "tracing.pyx":207
  * 
  *     @property
  *     def R(self):             # <<<<<<<<<<<<<<
@@ -5905,7 +5857,7 @@ static PyObject *__pyx_pf_7tracing_12_PySpherical_1R___get__(struct __pyx_obj_7t
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "tracing.pyx":200
+  /* "tracing.pyx":208
  *     @property
  *     def R(self):
  *         return dereference(self.c_sph_ptr).R             # <<<<<<<<<<<<<<
@@ -5913,13 +5865,13 @@ static PyObject *__pyx_pf_7tracing_12_PySpherical_1R___get__(struct __pyx_obj_7t
  *     def R(self, double R):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble((*__pyx_v_self->c_sph_ptr).R); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 200, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble((*__pyx_v_self->c_sph_ptr).R); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 208, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "tracing.pyx":199
+  /* "tracing.pyx":207
  * 
  *     @property
  *     def R(self):             # <<<<<<<<<<<<<<
@@ -5938,7 +5890,7 @@ static PyObject *__pyx_pf_7tracing_12_PySpherical_1R___get__(struct __pyx_obj_7t
   return __pyx_r;
 }
 
-/* "tracing.pyx":202
+/* "tracing.pyx":210
  *         return dereference(self.c_sph_ptr).R
  *     @R.setter
  *     def R(self, double R):             # <<<<<<<<<<<<<<
@@ -5957,7 +5909,7 @@ static int __pyx_pw_7tracing_12_PySpherical_1R_3__set__(PyObject *__pyx_v_self, 
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__set__ (wrapper)", 0);
   assert(__pyx_arg_R); {
-    __pyx_v_R = __pyx_PyFloat_AsDouble(__pyx_arg_R); if (unlikely((__pyx_v_R == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 202, __pyx_L3_error)
+    __pyx_v_R = __pyx_PyFloat_AsDouble(__pyx_arg_R); if (unlikely((__pyx_v_R == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 210, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -5977,7 +5929,7 @@ static int __pyx_pf_7tracing_12_PySpherical_1R_2__set__(struct __pyx_obj_7tracin
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__set__", 0);
 
-  /* "tracing.pyx":203
+  /* "tracing.pyx":211
  *     @R.setter
  *     def R(self, double R):
  *         dereference(self.c_sph_ptr).R = R             # <<<<<<<<<<<<<<
@@ -5986,7 +5938,7 @@ static int __pyx_pf_7tracing_12_PySpherical_1R_2__set__(struct __pyx_obj_7tracin
  */
   (*__pyx_v_self->c_sph_ptr).R = __pyx_v_R;
 
-  /* "tracing.pyx":202
+  /* "tracing.pyx":210
  *         return dereference(self.c_sph_ptr).R
  *     @R.setter
  *     def R(self, double R):             # <<<<<<<<<<<<<<
@@ -6000,7 +5952,7 @@ static int __pyx_pf_7tracing_12_PySpherical_1R_2__set__(struct __pyx_obj_7tracin
   return __pyx_r;
 }
 
-/* "tracing.pyx":206
+/* "tracing.pyx":214
  * 
  *     @property
  *     def start(self):             # <<<<<<<<<<<<<<
@@ -6030,7 +5982,7 @@ static PyObject *__pyx_pf_7tracing_12_PySpherical_5start___get__(struct __pyx_ob
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "tracing.pyx":207
+  /* "tracing.pyx":215
  *     @property
  *     def start(self):
  *         return dereference(self.c_sph_ptr).start             # <<<<<<<<<<<<<<
@@ -6038,13 +5990,13 @@ static PyObject *__pyx_pf_7tracing_12_PySpherical_5start___get__(struct __pyx_ob
  *     def start(self, double start):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble((*__pyx_v_self->c_sph_ptr).start); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 207, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble((*__pyx_v_self->c_sph_ptr).start); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 215, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "tracing.pyx":206
+  /* "tracing.pyx":214
  * 
  *     @property
  *     def start(self):             # <<<<<<<<<<<<<<
@@ -6063,7 +6015,7 @@ static PyObject *__pyx_pf_7tracing_12_PySpherical_5start___get__(struct __pyx_ob
   return __pyx_r;
 }
 
-/* "tracing.pyx":209
+/* "tracing.pyx":217
  *         return dereference(self.c_sph_ptr).start
  *     @start.setter
  *     def start(self, double start):             # <<<<<<<<<<<<<<
@@ -6082,7 +6034,7 @@ static int __pyx_pw_7tracing_12_PySpherical_5start_3__set__(PyObject *__pyx_v_se
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__set__ (wrapper)", 0);
   assert(__pyx_arg_start); {
-    __pyx_v_start = __pyx_PyFloat_AsDouble(__pyx_arg_start); if (unlikely((__pyx_v_start == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 209, __pyx_L3_error)
+    __pyx_v_start = __pyx_PyFloat_AsDouble(__pyx_arg_start); if (unlikely((__pyx_v_start == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 217, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -6102,7 +6054,7 @@ static int __pyx_pf_7tracing_12_PySpherical_5start_2__set__(struct __pyx_obj_7tr
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__set__", 0);
 
-  /* "tracing.pyx":210
+  /* "tracing.pyx":218
  *     @start.setter
  *     def start(self, double start):
  *         dereference(self.c_sph_ptr).start = start             # <<<<<<<<<<<<<<
@@ -6111,7 +6063,7 @@ static int __pyx_pf_7tracing_12_PySpherical_5start_2__set__(struct __pyx_obj_7tr
  */
   (*__pyx_v_self->c_sph_ptr).start = __pyx_v_start;
 
-  /* "tracing.pyx":209
+  /* "tracing.pyx":217
  *         return dereference(self.c_sph_ptr).start
  *     @start.setter
  *     def start(self, double start):             # <<<<<<<<<<<<<<
@@ -6125,7 +6077,7 @@ static int __pyx_pf_7tracing_12_PySpherical_5start_2__set__(struct __pyx_obj_7tr
   return __pyx_r;
 }
 
-/* "tracing.pyx":213
+/* "tracing.pyx":221
  * 
  *     @property
  *     def end(self):             # <<<<<<<<<<<<<<
@@ -6155,7 +6107,7 @@ static PyObject *__pyx_pf_7tracing_12_PySpherical_3end___get__(struct __pyx_obj_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "tracing.pyx":214
+  /* "tracing.pyx":222
  *     @property
  *     def end(self):
  *         return dereference(self.c_sph_ptr).end             # <<<<<<<<<<<<<<
@@ -6163,13 +6115,13 @@ static PyObject *__pyx_pf_7tracing_12_PySpherical_3end___get__(struct __pyx_obj_
  *     def end(self, double end):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble((*__pyx_v_self->c_sph_ptr).end); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 214, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble((*__pyx_v_self->c_sph_ptr).end); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 222, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "tracing.pyx":213
+  /* "tracing.pyx":221
  * 
  *     @property
  *     def end(self):             # <<<<<<<<<<<<<<
@@ -6188,7 +6140,7 @@ static PyObject *__pyx_pf_7tracing_12_PySpherical_3end___get__(struct __pyx_obj_
   return __pyx_r;
 }
 
-/* "tracing.pyx":216
+/* "tracing.pyx":224
  *         return dereference(self.c_sph_ptr).end
  *     @end.setter
  *     def end(self, double end):             # <<<<<<<<<<<<<<
@@ -6207,7 +6159,7 @@ static int __pyx_pw_7tracing_12_PySpherical_3end_3__set__(PyObject *__pyx_v_self
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__set__ (wrapper)", 0);
   assert(__pyx_arg_end); {
-    __pyx_v_end = __pyx_PyFloat_AsDouble(__pyx_arg_end); if (unlikely((__pyx_v_end == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 216, __pyx_L3_error)
+    __pyx_v_end = __pyx_PyFloat_AsDouble(__pyx_arg_end); if (unlikely((__pyx_v_end == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 224, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -6227,7 +6179,7 @@ static int __pyx_pf_7tracing_12_PySpherical_3end_2__set__(struct __pyx_obj_7trac
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__set__", 0);
 
-  /* "tracing.pyx":217
+  /* "tracing.pyx":225
  *     @end.setter
  *     def end(self, double end):
  *         dereference(self.c_sph_ptr).end = end             # <<<<<<<<<<<<<<
@@ -6236,7 +6188,7 @@ static int __pyx_pf_7tracing_12_PySpherical_3end_2__set__(struct __pyx_obj_7trac
  */
   (*__pyx_v_self->c_sph_ptr).end = __pyx_v_end;
 
-  /* "tracing.pyx":216
+  /* "tracing.pyx":224
  *         return dereference(self.c_sph_ptr).end
  *     @end.setter
  *     def end(self, double end):             # <<<<<<<<<<<<<<
@@ -6250,7 +6202,7 @@ static int __pyx_pf_7tracing_12_PySpherical_3end_2__set__(struct __pyx_obj_7trac
   return __pyx_r;
 }
 
-/* "tracing.pyx":219
+/* "tracing.pyx":227
  *         dereference(self.c_sph_ptr).end = end
  * 
  *     def plot(self, n_points=100):             # <<<<<<<<<<<<<<
@@ -6290,7 +6242,7 @@ static PyObject *__pyx_pw_7tracing_12_PySpherical_1plot(PyObject *__pyx_v_self, 
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "plot") < 0)) __PYX_ERR(0, 219, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "plot") < 0)) __PYX_ERR(0, 227, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -6304,7 +6256,7 @@ static PyObject *__pyx_pw_7tracing_12_PySpherical_1plot(PyObject *__pyx_v_self, 
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("plot", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 219, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("plot", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 227, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("tracing._PySpherical.plot", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -6334,19 +6286,19 @@ static PyObject *__pyx_pf_7tracing_12_PySpherical_plot(struct __pyx_obj_7tracing
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("plot", 0);
 
-  /* "tracing.pyx":220
+  /* "tracing.pyx":228
  * 
  *     def plot(self, n_points=100):
  *         points = np.empty((n_points, 2), dtype=np.double)             # <<<<<<<<<<<<<<
  * 
  *         t = np.linspace(self.start, self.end, n_points)
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 220, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 228, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_empty); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 220, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_empty); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 228, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 220, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 228, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_v_n_points);
   __Pyx_GIVEREF(__pyx_v_n_points);
@@ -6354,21 +6306,21 @@ static PyObject *__pyx_pf_7tracing_12_PySpherical_plot(struct __pyx_obj_7tracing
   __Pyx_INCREF(__pyx_int_2);
   __Pyx_GIVEREF(__pyx_int_2);
   PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_int_2);
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 220, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 228, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 220, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 228, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 220, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 228, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_double); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 220, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_double); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 228, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_dtype, __pyx_t_5) < 0) __PYX_ERR(0, 220, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_dtype, __pyx_t_5) < 0) __PYX_ERR(0, 228, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_3, __pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 220, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_3, __pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 228, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -6376,21 +6328,21 @@ static PyObject *__pyx_pf_7tracing_12_PySpherical_plot(struct __pyx_obj_7tracing
   __pyx_v_points = __pyx_t_5;
   __pyx_t_5 = 0;
 
-  /* "tracing.pyx":222
+  /* "tracing.pyx":230
  *         points = np.empty((n_points, 2), dtype=np.double)
  * 
  *         t = np.linspace(self.start, self.end, n_points)             # <<<<<<<<<<<<<<
  * 
  *         points[:, 0] = self.centre[0] + self.R*np.cos(t)
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 222, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 230, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_linspace); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 222, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_linspace); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 230, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_start); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 222, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_start); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 230, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_end); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 222, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_end); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 230, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_4 = NULL;
   __pyx_t_6 = 0;
@@ -6407,7 +6359,7 @@ static PyObject *__pyx_pf_7tracing_12_PySpherical_plot(struct __pyx_obj_7tracing
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_3)) {
     PyObject *__pyx_temp[4] = {__pyx_t_4, __pyx_t_1, __pyx_t_2, __pyx_v_n_points};
-    __pyx_t_5 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_6, 3+__pyx_t_6); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 222, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_6, 3+__pyx_t_6); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 230, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -6417,7 +6369,7 @@ static PyObject *__pyx_pf_7tracing_12_PySpherical_plot(struct __pyx_obj_7tracing
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_3)) {
     PyObject *__pyx_temp[4] = {__pyx_t_4, __pyx_t_1, __pyx_t_2, __pyx_v_n_points};
-    __pyx_t_5 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_6, 3+__pyx_t_6); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 222, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_6, 3+__pyx_t_6); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 230, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -6425,7 +6377,7 @@ static PyObject *__pyx_pf_7tracing_12_PySpherical_plot(struct __pyx_obj_7tracing
   } else
   #endif
   {
-    __pyx_t_7 = PyTuple_New(3+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 222, __pyx_L1_error)
+    __pyx_t_7 = PyTuple_New(3+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 230, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     if (__pyx_t_4) {
       __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_4); __pyx_t_4 = NULL;
@@ -6439,7 +6391,7 @@ static PyObject *__pyx_pf_7tracing_12_PySpherical_plot(struct __pyx_obj_7tracing
     PyTuple_SET_ITEM(__pyx_t_7, 2+__pyx_t_6, __pyx_v_n_points);
     __pyx_t_1 = 0;
     __pyx_t_2 = 0;
-    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_7, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 222, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_7, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 230, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   }
@@ -6447,23 +6399,23 @@ static PyObject *__pyx_pf_7tracing_12_PySpherical_plot(struct __pyx_obj_7tracing
   __pyx_v_t = __pyx_t_5;
   __pyx_t_5 = 0;
 
-  /* "tracing.pyx":224
+  /* "tracing.pyx":232
  *         t = np.linspace(self.start, self.end, n_points)
  * 
  *         points[:, 0] = self.centre[0] + self.R*np.cos(t)             # <<<<<<<<<<<<<<
  *         points[:, 1] = self.centre[1] + self.R*np.cos(t)
  * 
  */
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_centre); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 224, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_centre); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 232, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_3 = __Pyx_GetItemInt(__pyx_t_5, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 224, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_GetItemInt(__pyx_t_5, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 232, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_R); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 224, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_R); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 232, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 224, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 232, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_cos); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 224, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_cos); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 232, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_2 = NULL;
@@ -6478,37 +6430,37 @@ static PyObject *__pyx_pf_7tracing_12_PySpherical_plot(struct __pyx_obj_7tracing
   }
   __pyx_t_7 = (__pyx_t_2) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_2, __pyx_v_t) : __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_v_t);
   __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 224, __pyx_L1_error)
+  if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 232, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyNumber_Multiply(__pyx_t_5, __pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 224, __pyx_L1_error)
+  __pyx_t_1 = PyNumber_Multiply(__pyx_t_5, __pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 232, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_t_7 = PyNumber_Add(__pyx_t_3, __pyx_t_1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 224, __pyx_L1_error)
+  __pyx_t_7 = PyNumber_Add(__pyx_t_3, __pyx_t_1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 232, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (unlikely(PyObject_SetItem(__pyx_v_points, __pyx_tuple__14, __pyx_t_7) < 0)) __PYX_ERR(0, 224, __pyx_L1_error)
+  if (unlikely(PyObject_SetItem(__pyx_v_points, __pyx_tuple__14, __pyx_t_7) < 0)) __PYX_ERR(0, 232, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-  /* "tracing.pyx":225
+  /* "tracing.pyx":233
  * 
  *         points[:, 0] = self.centre[0] + self.R*np.cos(t)
  *         points[:, 1] = self.centre[1] + self.R*np.cos(t)             # <<<<<<<<<<<<<<
  * 
  *         return points
  */
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_centre); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 225, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_centre); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 233, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_1 = __Pyx_GetItemInt(__pyx_t_7, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 225, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt(__pyx_t_7, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 233, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_R); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 225, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_R); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 233, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 225, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 233, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_cos); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 225, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_cos); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 233, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __pyx_t_5 = NULL;
@@ -6523,21 +6475,21 @@ static PyObject *__pyx_pf_7tracing_12_PySpherical_plot(struct __pyx_obj_7tracing
   }
   __pyx_t_3 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_5, __pyx_v_t) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_t);
   __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 225, __pyx_L1_error)
+  if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 233, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = PyNumber_Multiply(__pyx_t_7, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 225, __pyx_L1_error)
+  __pyx_t_2 = PyNumber_Multiply(__pyx_t_7, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 233, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyNumber_Add(__pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 225, __pyx_L1_error)
+  __pyx_t_3 = PyNumber_Add(__pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 233, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (unlikely(PyObject_SetItem(__pyx_v_points, __pyx_tuple__15, __pyx_t_3) < 0)) __PYX_ERR(0, 225, __pyx_L1_error)
+  if (unlikely(PyObject_SetItem(__pyx_v_points, __pyx_tuple__15, __pyx_t_3) < 0)) __PYX_ERR(0, 233, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "tracing.pyx":227
+  /* "tracing.pyx":235
  *         points[:, 1] = self.centre[1] + self.R*np.cos(t)
  * 
  *         return points             # <<<<<<<<<<<<<<
@@ -6549,7 +6501,7 @@ static PyObject *__pyx_pf_7tracing_12_PySpherical_plot(struct __pyx_obj_7tracing
   __pyx_r = __pyx_v_points;
   goto __pyx_L0;
 
-  /* "tracing.pyx":219
+  /* "tracing.pyx":227
  *         dereference(self.c_sph_ptr).end = end
  * 
  *     def plot(self, n_points=100):             # <<<<<<<<<<<<<<
@@ -6688,7 +6640,7 @@ static PyObject *__pyx_pf_7tracing_12_PySpherical_4__setstate_cython__(CYTHON_UN
   return __pyx_r;
 }
 
-/* "tracing.pyx":233
+/* "tracing.pyx":241
  *     cdef Mirror_Sph* c_data
  * 
  *     def __cinit__(self, double[:] centre, double R, double start, double end):             # <<<<<<<<<<<<<<
@@ -6736,23 +6688,23 @@ static int __pyx_pw_7tracing_12PyMirror_Sph_1__cinit__(PyObject *__pyx_v_self, P
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_R)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 4, 4, 1); __PYX_ERR(0, 233, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 4, 4, 1); __PYX_ERR(0, 241, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_start)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 4, 4, 2); __PYX_ERR(0, 233, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 4, 4, 2); __PYX_ERR(0, 241, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_end)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 4, 4, 3); __PYX_ERR(0, 233, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 4, 4, 3); __PYX_ERR(0, 241, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 233, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 241, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 4) {
       goto __pyx_L5_argtuple_error;
@@ -6762,14 +6714,14 @@ static int __pyx_pw_7tracing_12PyMirror_Sph_1__cinit__(PyObject *__pyx_v_self, P
       values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
       values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
     }
-    __pyx_v_centre = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_centre.memview)) __PYX_ERR(0, 233, __pyx_L3_error)
-    __pyx_v_R = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_R == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 233, __pyx_L3_error)
-    __pyx_v_start = __pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_start == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 233, __pyx_L3_error)
-    __pyx_v_end = __pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_end == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 233, __pyx_L3_error)
+    __pyx_v_centre = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_centre.memview)) __PYX_ERR(0, 241, __pyx_L3_error)
+    __pyx_v_R = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_R == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 241, __pyx_L3_error)
+    __pyx_v_start = __pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_start == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 241, __pyx_L3_error)
+    __pyx_v_end = __pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_end == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 241, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 233, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 241, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("tracing.PyMirror_Sph.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -6794,7 +6746,7 @@ static int __pyx_pf_7tracing_12PyMirror_Sph___cinit__(struct __pyx_obj_7tracing_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "tracing.pyx":234
+  /* "tracing.pyx":242
  * 
  *     def __cinit__(self, double[:] centre, double R, double start, double end):
  *         assert tuple(centre.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"             # <<<<<<<<<<<<<<
@@ -6803,26 +6755,26 @@ static int __pyx_pf_7tracing_12PyMirror_Sph___cinit__(struct __pyx_obj_7tracing_
  */
   #ifndef CYTHON_WITHOUT_ASSERTIONS
   if (unlikely(!Py_OptimizeFlag)) {
-    __pyx_t_1 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_centre.shape, 8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 234, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_centre.shape, 8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 242, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = __Pyx_PySequence_Tuple(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 234, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PySequence_Tuple(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 242, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_arr_shape); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 234, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_arr_shape); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 242, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = PyObject_RichCompare(__pyx_t_2, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 234, __pyx_L1_error)
+    __pyx_t_3 = PyObject_RichCompare(__pyx_t_2, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 242, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 234, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 242, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     if (unlikely(!__pyx_t_4)) {
       PyErr_SetObject(PyExc_AssertionError, __pyx_kp_u_Expected_a_1d_numpy_array_with_2);
-      __PYX_ERR(0, 234, __pyx_L1_error)
+      __PYX_ERR(0, 242, __pyx_L1_error)
     }
   }
   #endif
 
-  /* "tracing.pyx":236
+  /* "tracing.pyx":244
  *         assert tuple(centre.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
  * 
  *         self.c_data = new Mirror_Sph(make_arr_from_numpy(centre), R, start,             # <<<<<<<<<<<<<<
@@ -6831,16 +6783,25 @@ static int __pyx_pf_7tracing_12PyMirror_Sph___cinit__(struct __pyx_obj_7tracing_
  */
   __pyx_v_self->c_data = new Mirror_Sph(__pyx_f_7tracing_make_arr_from_numpy(__pyx_v_centre), __pyx_v_R, __pyx_v_start, __pyx_v_end);
 
-  /* "tracing.pyx":239
+  /* "tracing.pyx":247
  *                                      end)
  * 
  *         self.c_sph_ptr = <Spherical*>self.c_data             # <<<<<<<<<<<<<<
+ *         self.c_component_ptr = <Component*>self.c_data
  * 
- *     def __dealloc__(self):
  */
   __pyx_v_self->__pyx_base.c_sph_ptr = ((Spherical *)__pyx_v_self->c_data);
 
-  /* "tracing.pyx":233
+  /* "tracing.pyx":248
+ * 
+ *         self.c_sph_ptr = <Spherical*>self.c_data
+ *         self.c_component_ptr = <Component*>self.c_data             # <<<<<<<<<<<<<<
+ * 
+ *     # def __dealloc__(self):
+ */
+  __pyx_v_self->__pyx_base.__pyx_base.c_component_ptr = ((Component *)__pyx_v_self->c_data);
+
+  /* "tracing.pyx":241
  *     cdef Mirror_Sph* c_data
  * 
  *     def __cinit__(self, double[:] centre, double R, double start, double end):             # <<<<<<<<<<<<<<
@@ -6863,70 +6824,6 @@ static int __pyx_pf_7tracing_12PyMirror_Sph___cinit__(struct __pyx_obj_7tracing_
   return __pyx_r;
 }
 
-/* "tracing.pyx":241
- *         self.c_sph_ptr = <Spherical*>self.c_data
- * 
- *     def __dealloc__(self):             # <<<<<<<<<<<<<<
- *         if self.OWNDATA:
- *             del self.c_data
- */
-
-/* Python wrapper */
-static void __pyx_pw_7tracing_12PyMirror_Sph_3__dealloc__(PyObject *__pyx_v_self); /*proto*/
-static void __pyx_pw_7tracing_12PyMirror_Sph_3__dealloc__(PyObject *__pyx_v_self) {
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("__dealloc__ (wrapper)", 0);
-  __pyx_pf_7tracing_12PyMirror_Sph_2__dealloc__(((struct __pyx_obj_7tracing_PyMirror_Sph *)__pyx_v_self));
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-}
-
-static void __pyx_pf_7tracing_12PyMirror_Sph_2__dealloc__(struct __pyx_obj_7tracing_PyMirror_Sph *__pyx_v_self) {
-  __Pyx_RefNannyDeclarations
-  int __pyx_t_1;
-  __Pyx_RefNannySetupContext("__dealloc__", 0);
-
-  /* "tracing.pyx":242
- * 
- *     def __dealloc__(self):
- *         if self.OWNDATA:             # <<<<<<<<<<<<<<
- *             del self.c_data
- * 
- */
-  __pyx_t_1 = (__pyx_v_self->__pyx_base.__pyx_base.OWNDATA != 0);
-  if (__pyx_t_1) {
-
-    /* "tracing.pyx":243
- *     def __dealloc__(self):
- *         if self.OWNDATA:
- *             del self.c_data             # <<<<<<<<<<<<<<
- * 
- * 
- */
-    delete __pyx_v_self->c_data;
-
-    /* "tracing.pyx":242
- * 
- *     def __dealloc__(self):
- *         if self.OWNDATA:             # <<<<<<<<<<<<<<
- *             del self.c_data
- * 
- */
-  }
-
-  /* "tracing.pyx":241
- *         self.c_sph_ptr = <Spherical*>self.c_data
- * 
- *     def __dealloc__(self):             # <<<<<<<<<<<<<<
- *         if self.OWNDATA:
- *             del self.c_data
- */
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-}
-
 /* "(tree fragment)":1
  * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
@@ -6934,19 +6831,19 @@ static void __pyx_pf_7tracing_12PyMirror_Sph_2__dealloc__(struct __pyx_obj_7trac
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7tracing_12PyMirror_Sph_5__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_7tracing_12PyMirror_Sph_5__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_7tracing_12PyMirror_Sph_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_7tracing_12PyMirror_Sph_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__reduce_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_7tracing_12PyMirror_Sph_4__reduce_cython__(((struct __pyx_obj_7tracing_PyMirror_Sph *)__pyx_v_self));
+  __pyx_r = __pyx_pf_7tracing_12PyMirror_Sph_2__reduce_cython__(((struct __pyx_obj_7tracing_PyMirror_Sph *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7tracing_12PyMirror_Sph_4__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing_PyMirror_Sph *__pyx_v_self) {
+static PyObject *__pyx_pf_7tracing_12PyMirror_Sph_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing_PyMirror_Sph *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -6991,19 +6888,19 @@ static PyObject *__pyx_pf_7tracing_12PyMirror_Sph_4__reduce_cython__(CYTHON_UNUS
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7tracing_12PyMirror_Sph_7__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
-static PyObject *__pyx_pw_7tracing_12PyMirror_Sph_7__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pw_7tracing_12PyMirror_Sph_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
+static PyObject *__pyx_pw_7tracing_12PyMirror_Sph_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__setstate_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_7tracing_12PyMirror_Sph_6__setstate_cython__(((struct __pyx_obj_7tracing_PyMirror_Sph *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
+  __pyx_r = __pyx_pf_7tracing_12PyMirror_Sph_4__setstate_cython__(((struct __pyx_obj_7tracing_PyMirror_Sph *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7tracing_12PyMirror_Sph_6__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing_PyMirror_Sph *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_7tracing_12PyMirror_Sph_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing_PyMirror_Sph *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -7040,7 +6937,7 @@ static PyObject *__pyx_pf_7tracing_12PyMirror_Sph_6__setstate_cython__(CYTHON_UN
   return __pyx_r;
 }
 
-/* "tracing.pyx":249
+/* "tracing.pyx":258
  *     cdef Refract_Sph* c_data
  * 
  *     def __cinit__(self, double[:] centre, double R, double start, double end,             # <<<<<<<<<<<<<<
@@ -7094,19 +6991,19 @@ static int __pyx_pw_7tracing_13PyRefract_Sph_1__cinit__(PyObject *__pyx_v_self, 
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_R)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 4, 6, 1); __PYX_ERR(0, 249, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 4, 6, 1); __PYX_ERR(0, 258, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_start)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 4, 6, 2); __PYX_ERR(0, 249, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 4, 6, 2); __PYX_ERR(0, 258, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_end)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 4, 6, 3); __PYX_ERR(0, 249, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 4, 6, 3); __PYX_ERR(0, 258, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
@@ -7122,7 +7019,7 @@ static int __pyx_pw_7tracing_13PyRefract_Sph_1__cinit__(PyObject *__pyx_v_self, 
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 249, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 258, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -7138,24 +7035,24 @@ static int __pyx_pw_7tracing_13PyRefract_Sph_1__cinit__(PyObject *__pyx_v_self, 
         default: goto __pyx_L5_argtuple_error;
       }
     }
-    __pyx_v_centre = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_centre.memview)) __PYX_ERR(0, 249, __pyx_L3_error)
-    __pyx_v_R = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_R == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 249, __pyx_L3_error)
-    __pyx_v_start = __pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_start == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 249, __pyx_L3_error)
-    __pyx_v_end = __pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_end == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 249, __pyx_L3_error)
+    __pyx_v_centre = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_centre.memview)) __PYX_ERR(0, 258, __pyx_L3_error)
+    __pyx_v_R = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_R == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 258, __pyx_L3_error)
+    __pyx_v_start = __pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_start == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 258, __pyx_L3_error)
+    __pyx_v_end = __pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_end == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 258, __pyx_L3_error)
     if (values[4]) {
-      __pyx_v_n1 = __pyx_PyFloat_AsDouble(values[4]); if (unlikely((__pyx_v_n1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 250, __pyx_L3_error)
+      __pyx_v_n1 = __pyx_PyFloat_AsDouble(values[4]); if (unlikely((__pyx_v_n1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 259, __pyx_L3_error)
     } else {
       __pyx_v_n1 = ((double)1.0);
     }
     if (values[5]) {
-      __pyx_v_n2 = __pyx_PyFloat_AsDouble(values[5]); if (unlikely((__pyx_v_n2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 250, __pyx_L3_error)
+      __pyx_v_n2 = __pyx_PyFloat_AsDouble(values[5]); if (unlikely((__pyx_v_n2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 259, __pyx_L3_error)
     } else {
       __pyx_v_n2 = ((double)1.0);
     }
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 4, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 249, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 4, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 258, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("tracing.PyRefract_Sph.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -7180,7 +7077,7 @@ static int __pyx_pf_7tracing_13PyRefract_Sph___cinit__(struct __pyx_obj_7tracing
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "tracing.pyx":251
+  /* "tracing.pyx":260
  *     def __cinit__(self, double[:] centre, double R, double start, double end,
  *                   double n1=1.0, double n2=1.0):
  *         assert tuple(centre.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"             # <<<<<<<<<<<<<<
@@ -7189,26 +7086,26 @@ static int __pyx_pf_7tracing_13PyRefract_Sph___cinit__(struct __pyx_obj_7tracing
  */
   #ifndef CYTHON_WITHOUT_ASSERTIONS
   if (unlikely(!Py_OptimizeFlag)) {
-    __pyx_t_1 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_centre.shape, 8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 251, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_centre.shape, 8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 260, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = __Pyx_PySequence_Tuple(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 251, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PySequence_Tuple(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 260, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_arr_shape); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 251, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_arr_shape); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 260, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = PyObject_RichCompare(__pyx_t_2, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 251, __pyx_L1_error)
+    __pyx_t_3 = PyObject_RichCompare(__pyx_t_2, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 260, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 251, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 260, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     if (unlikely(!__pyx_t_4)) {
       PyErr_SetObject(PyExc_AssertionError, __pyx_kp_u_Expected_a_1d_numpy_array_with_2);
-      __PYX_ERR(0, 251, __pyx_L1_error)
+      __PYX_ERR(0, 260, __pyx_L1_error)
     }
   }
   #endif
 
-  /* "tracing.pyx":253
+  /* "tracing.pyx":262
  *         assert tuple(centre.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
  * 
  *         self.c_data = new Refract_Sph(make_arr_from_numpy(centre), R, start,             # <<<<<<<<<<<<<<
@@ -7217,16 +7114,25 @@ static int __pyx_pf_7tracing_13PyRefract_Sph___cinit__(struct __pyx_obj_7tracing
  */
   __pyx_v_self->c_data = new Refract_Sph(__pyx_f_7tracing_make_arr_from_numpy(__pyx_v_centre), __pyx_v_R, __pyx_v_start, __pyx_v_end, __pyx_v_n1, __pyx_v_n2);
 
-  /* "tracing.pyx":256
+  /* "tracing.pyx":265
  *                                      end, n1, n2)
  * 
  *         self.c_sph_ptr = <Spherical*>self.c_data             # <<<<<<<<<<<<<<
+ *         self.c_component_ptr = <Component*>self.c_data
  * 
- *     def __dealloc__(self):
  */
   __pyx_v_self->__pyx_base.c_sph_ptr = ((Spherical *)__pyx_v_self->c_data);
 
-  /* "tracing.pyx":249
+  /* "tracing.pyx":266
+ * 
+ *         self.c_sph_ptr = <Spherical*>self.c_data
+ *         self.c_component_ptr = <Component*>self.c_data             # <<<<<<<<<<<<<<
+ * 
+ *     # def __dealloc__(self):
+ */
+  __pyx_v_self->__pyx_base.__pyx_base.c_component_ptr = ((Component *)__pyx_v_self->c_data);
+
+  /* "tracing.pyx":258
  *     cdef Refract_Sph* c_data
  * 
  *     def __cinit__(self, double[:] centre, double R, double start, double end,             # <<<<<<<<<<<<<<
@@ -7249,71 +7155,7 @@ static int __pyx_pf_7tracing_13PyRefract_Sph___cinit__(struct __pyx_obj_7tracing
   return __pyx_r;
 }
 
-/* "tracing.pyx":258
- *         self.c_sph_ptr = <Spherical*>self.c_data
- * 
- *     def __dealloc__(self):             # <<<<<<<<<<<<<<
- *         if self.OWNDATA:
- *             del self.c_data
- */
-
-/* Python wrapper */
-static void __pyx_pw_7tracing_13PyRefract_Sph_3__dealloc__(PyObject *__pyx_v_self); /*proto*/
-static void __pyx_pw_7tracing_13PyRefract_Sph_3__dealloc__(PyObject *__pyx_v_self) {
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("__dealloc__ (wrapper)", 0);
-  __pyx_pf_7tracing_13PyRefract_Sph_2__dealloc__(((struct __pyx_obj_7tracing_PyRefract_Sph *)__pyx_v_self));
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-}
-
-static void __pyx_pf_7tracing_13PyRefract_Sph_2__dealloc__(struct __pyx_obj_7tracing_PyRefract_Sph *__pyx_v_self) {
-  __Pyx_RefNannyDeclarations
-  int __pyx_t_1;
-  __Pyx_RefNannySetupContext("__dealloc__", 0);
-
-  /* "tracing.pyx":259
- * 
- *     def __dealloc__(self):
- *         if self.OWNDATA:             # <<<<<<<<<<<<<<
- *             del self.c_data
- * 
- */
-  __pyx_t_1 = (__pyx_v_self->__pyx_base.__pyx_base.OWNDATA != 0);
-  if (__pyx_t_1) {
-
-    /* "tracing.pyx":260
- *     def __dealloc__(self):
- *         if self.OWNDATA:
- *             del self.c_data             # <<<<<<<<<<<<<<
- * 
- *     @property
- */
-    delete __pyx_v_self->c_data;
-
-    /* "tracing.pyx":259
- * 
- *     def __dealloc__(self):
- *         if self.OWNDATA:             # <<<<<<<<<<<<<<
- *             del self.c_data
- * 
- */
-  }
-
-  /* "tracing.pyx":258
- *         self.c_sph_ptr = <Spherical*>self.c_data
- * 
- *     def __dealloc__(self):             # <<<<<<<<<<<<<<
- *         if self.OWNDATA:
- *             del self.c_data
- */
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-}
-
-/* "tracing.pyx":263
+/* "tracing.pyx":273
  * 
  *     @property
  *     def n1(self):             # <<<<<<<<<<<<<<
@@ -7343,7 +7185,7 @@ static PyObject *__pyx_pf_7tracing_13PyRefract_Sph_2n1___get__(struct __pyx_obj_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "tracing.pyx":264
+  /* "tracing.pyx":274
  *     @property
  *     def n1(self):
  *         return dereference(self.c_data).n1             # <<<<<<<<<<<<<<
@@ -7351,13 +7193,13 @@ static PyObject *__pyx_pf_7tracing_13PyRefract_Sph_2n1___get__(struct __pyx_obj_
  *     def n1(self, n1):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble((*__pyx_v_self->c_data).n1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 264, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble((*__pyx_v_self->c_data).n1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 274, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "tracing.pyx":263
+  /* "tracing.pyx":273
  * 
  *     @property
  *     def n1(self):             # <<<<<<<<<<<<<<
@@ -7376,7 +7218,7 @@ static PyObject *__pyx_pf_7tracing_13PyRefract_Sph_2n1___get__(struct __pyx_obj_
   return __pyx_r;
 }
 
-/* "tracing.pyx":266
+/* "tracing.pyx":276
  *         return dereference(self.c_data).n1
  *     @n1.setter
  *     def n1(self, n1):             # <<<<<<<<<<<<<<
@@ -7406,17 +7248,17 @@ static int __pyx_pf_7tracing_13PyRefract_Sph_2n1_2__set__(struct __pyx_obj_7trac
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__set__", 0);
 
-  /* "tracing.pyx":267
+  /* "tracing.pyx":277
  *     @n1.setter
  *     def n1(self, n1):
  *         dereference(self.c_data).n1 = n1             # <<<<<<<<<<<<<<
  * 
  *     @property
  */
-  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_n1); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 267, __pyx_L1_error)
+  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_n1); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 277, __pyx_L1_error)
   (*__pyx_v_self->c_data).n1 = __pyx_t_1;
 
-  /* "tracing.pyx":266
+  /* "tracing.pyx":276
  *         return dereference(self.c_data).n1
  *     @n1.setter
  *     def n1(self, n1):             # <<<<<<<<<<<<<<
@@ -7435,7 +7277,7 @@ static int __pyx_pf_7tracing_13PyRefract_Sph_2n1_2__set__(struct __pyx_obj_7trac
   return __pyx_r;
 }
 
-/* "tracing.pyx":270
+/* "tracing.pyx":280
  * 
  *     @property
  *     def n2(self):             # <<<<<<<<<<<<<<
@@ -7465,7 +7307,7 @@ static PyObject *__pyx_pf_7tracing_13PyRefract_Sph_2n2___get__(struct __pyx_obj_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "tracing.pyx":271
+  /* "tracing.pyx":281
  *     @property
  *     def n2(self):
  *         return dereference(self.c_data).n2             # <<<<<<<<<<<<<<
@@ -7473,13 +7315,13 @@ static PyObject *__pyx_pf_7tracing_13PyRefract_Sph_2n2___get__(struct __pyx_obj_
  *     def n2(self, n2):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble((*__pyx_v_self->c_data).n2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 271, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble((*__pyx_v_self->c_data).n2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 281, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "tracing.pyx":270
+  /* "tracing.pyx":280
  * 
  *     @property
  *     def n2(self):             # <<<<<<<<<<<<<<
@@ -7498,7 +7340,7 @@ static PyObject *__pyx_pf_7tracing_13PyRefract_Sph_2n2___get__(struct __pyx_obj_
   return __pyx_r;
 }
 
-/* "tracing.pyx":273
+/* "tracing.pyx":283
  *         return dereference(self.c_data).n2
  *     @n2.setter
  *     def n2(self, n2):             # <<<<<<<<<<<<<<
@@ -7528,17 +7370,17 @@ static int __pyx_pf_7tracing_13PyRefract_Sph_2n2_2__set__(struct __pyx_obj_7trac
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__set__", 0);
 
-  /* "tracing.pyx":274
+  /* "tracing.pyx":284
  *     @n2.setter
  *     def n2(self, n2):
  *         dereference(self.c_data).n2 = n2             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_n2); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 274, __pyx_L1_error)
+  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_n2); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 284, __pyx_L1_error)
   (*__pyx_v_self->c_data).n2 = __pyx_t_1;
 
-  /* "tracing.pyx":273
+  /* "tracing.pyx":283
  *         return dereference(self.c_data).n2
  *     @n2.setter
  *     def n2(self, n2):             # <<<<<<<<<<<<<<
@@ -7564,19 +7406,19 @@ static int __pyx_pf_7tracing_13PyRefract_Sph_2n2_2__set__(struct __pyx_obj_7trac
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7tracing_13PyRefract_Sph_5__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_7tracing_13PyRefract_Sph_5__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_7tracing_13PyRefract_Sph_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_7tracing_13PyRefract_Sph_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__reduce_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_7tracing_13PyRefract_Sph_4__reduce_cython__(((struct __pyx_obj_7tracing_PyRefract_Sph *)__pyx_v_self));
+  __pyx_r = __pyx_pf_7tracing_13PyRefract_Sph_2__reduce_cython__(((struct __pyx_obj_7tracing_PyRefract_Sph *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7tracing_13PyRefract_Sph_4__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing_PyRefract_Sph *__pyx_v_self) {
+static PyObject *__pyx_pf_7tracing_13PyRefract_Sph_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing_PyRefract_Sph *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -7621,19 +7463,19 @@ static PyObject *__pyx_pf_7tracing_13PyRefract_Sph_4__reduce_cython__(CYTHON_UNU
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7tracing_13PyRefract_Sph_7__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
-static PyObject *__pyx_pw_7tracing_13PyRefract_Sph_7__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pw_7tracing_13PyRefract_Sph_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
+static PyObject *__pyx_pw_7tracing_13PyRefract_Sph_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__setstate_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_7tracing_13PyRefract_Sph_6__setstate_cython__(((struct __pyx_obj_7tracing_PyRefract_Sph *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
+  __pyx_r = __pyx_pf_7tracing_13PyRefract_Sph_4__setstate_cython__(((struct __pyx_obj_7tracing_PyRefract_Sph *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7tracing_13PyRefract_Sph_6__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing_PyRefract_Sph *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_7tracing_13PyRefract_Sph_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_7tracing_PyRefract_Sph *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -21409,6 +21251,14 @@ static void __pyx_tp_dealloc_7tracing__PyComponent(PyObject *o) {
     if (PyObject_CallFinalizerFromDealloc(o)) return;
   }
   #endif
+  {
+    PyObject *etype, *eval, *etb;
+    PyErr_Fetch(&etype, &eval, &etb);
+    __Pyx_SET_REFCNT(o, Py_REFCNT(o) + 1);
+    __pyx_pw_7tracing_12_PyComponent_3__dealloc__(o);
+    __Pyx_SET_REFCNT(o, Py_REFCNT(o) - 1);
+    PyErr_Restore(etype, eval, etb);
+  }
   (*Py_TYPE(o)->tp_free)(o);
 }
 
@@ -21427,8 +21277,8 @@ static int __pyx_setprop_7tracing_12_PyComponent_OWNDATA(PyObject *o, PyObject *
 }
 
 static PyMethodDef __pyx_methods_7tracing__PyComponent[] = {
-  {"__reduce_cython__", (PyCFunction)__pyx_pw_7tracing_12_PyComponent_3__reduce_cython__, METH_NOARGS, 0},
-  {"__setstate_cython__", (PyCFunction)__pyx_pw_7tracing_12_PyComponent_5__setstate_cython__, METH_O, 0},
+  {"__reduce_cython__", (PyCFunction)__pyx_pw_7tracing_12_PyComponent_5__reduce_cython__, METH_NOARGS, 0},
+  {"__setstate_cython__", (PyCFunction)__pyx_pw_7tracing_12_PyComponent_7__setstate_cython__, METH_O, 0},
   {0, 0, 0, 0}
 };
 
@@ -21632,26 +21482,9 @@ static PyObject *__pyx_tp_new_7tracing_PyMirror_Plane(PyTypeObject *t, PyObject 
   return NULL;
 }
 
-static void __pyx_tp_dealloc_7tracing_PyMirror_Plane(PyObject *o) {
-  #if CYTHON_USE_TP_FINALIZE
-  if (unlikely(PyType_HasFeature(Py_TYPE(o), Py_TPFLAGS_HAVE_FINALIZE) && Py_TYPE(o)->tp_finalize) && (!PyType_IS_GC(Py_TYPE(o)) || !_PyGC_FINALIZED(o))) {
-    if (PyObject_CallFinalizerFromDealloc(o)) return;
-  }
-  #endif
-  {
-    PyObject *etype, *eval, *etb;
-    PyErr_Fetch(&etype, &eval, &etb);
-    __Pyx_SET_REFCNT(o, Py_REFCNT(o) + 1);
-    __pyx_pw_7tracing_14PyMirror_Plane_3__dealloc__(o);
-    __Pyx_SET_REFCNT(o, Py_REFCNT(o) - 1);
-    PyErr_Restore(etype, eval, etb);
-  }
-  __pyx_tp_dealloc_7tracing__PyComponent(o);
-}
-
 static PyMethodDef __pyx_methods_7tracing_PyMirror_Plane[] = {
-  {"__reduce_cython__", (PyCFunction)__pyx_pw_7tracing_14PyMirror_Plane_5__reduce_cython__, METH_NOARGS, 0},
-  {"__setstate_cython__", (PyCFunction)__pyx_pw_7tracing_14PyMirror_Plane_7__setstate_cython__, METH_O, 0},
+  {"__reduce_cython__", (PyCFunction)__pyx_pw_7tracing_14PyMirror_Plane_3__reduce_cython__, METH_NOARGS, 0},
+  {"__setstate_cython__", (PyCFunction)__pyx_pw_7tracing_14PyMirror_Plane_5__setstate_cython__, METH_O, 0},
   {0, 0, 0, 0}
 };
 
@@ -21660,7 +21493,7 @@ static PyTypeObject __pyx_type_7tracing_PyMirror_Plane = {
   "tracing.PyMirror_Plane", /*tp_name*/
   sizeof(struct __pyx_obj_7tracing_PyMirror_Plane), /*tp_basicsize*/
   0, /*tp_itemsize*/
-  __pyx_tp_dealloc_7tracing_PyMirror_Plane, /*tp_dealloc*/
+  __pyx_tp_dealloc_7tracing__PyComponent, /*tp_dealloc*/
   #if PY_VERSION_HEX < 0x030800b4
   0, /*tp_print*/
   #endif
@@ -21734,23 +21567,6 @@ static PyObject *__pyx_tp_new_7tracing_PyRefract_Plane(PyTypeObject *t, PyObject
   return NULL;
 }
 
-static void __pyx_tp_dealloc_7tracing_PyRefract_Plane(PyObject *o) {
-  #if CYTHON_USE_TP_FINALIZE
-  if (unlikely(PyType_HasFeature(Py_TYPE(o), Py_TPFLAGS_HAVE_FINALIZE) && Py_TYPE(o)->tp_finalize) && (!PyType_IS_GC(Py_TYPE(o)) || !_PyGC_FINALIZED(o))) {
-    if (PyObject_CallFinalizerFromDealloc(o)) return;
-  }
-  #endif
-  {
-    PyObject *etype, *eval, *etb;
-    PyErr_Fetch(&etype, &eval, &etb);
-    __Pyx_SET_REFCNT(o, Py_REFCNT(o) + 1);
-    __pyx_pw_7tracing_15PyRefract_Plane_3__dealloc__(o);
-    __Pyx_SET_REFCNT(o, Py_REFCNT(o) - 1);
-    PyErr_Restore(etype, eval, etb);
-  }
-  __pyx_tp_dealloc_7tracing__PyComponent(o);
-}
-
 static PyObject *__pyx_getprop_7tracing_15PyRefract_Plane_n1(PyObject *o, CYTHON_UNUSED void *x) {
   return __pyx_pw_7tracing_15PyRefract_Plane_2n1_1__get__(o);
 }
@@ -21780,8 +21596,8 @@ static int __pyx_setprop_7tracing_15PyRefract_Plane_n2(PyObject *o, PyObject *v,
 }
 
 static PyMethodDef __pyx_methods_7tracing_PyRefract_Plane[] = {
-  {"__reduce_cython__", (PyCFunction)__pyx_pw_7tracing_15PyRefract_Plane_5__reduce_cython__, METH_NOARGS, 0},
-  {"__setstate_cython__", (PyCFunction)__pyx_pw_7tracing_15PyRefract_Plane_7__setstate_cython__, METH_O, 0},
+  {"__reduce_cython__", (PyCFunction)__pyx_pw_7tracing_15PyRefract_Plane_3__reduce_cython__, METH_NOARGS, 0},
+  {"__setstate_cython__", (PyCFunction)__pyx_pw_7tracing_15PyRefract_Plane_5__setstate_cython__, METH_O, 0},
   {0, 0, 0, 0}
 };
 
@@ -21796,7 +21612,7 @@ static PyTypeObject __pyx_type_7tracing_PyRefract_Plane = {
   "tracing.PyRefract_Plane", /*tp_name*/
   sizeof(struct __pyx_obj_7tracing_PyRefract_Plane), /*tp_basicsize*/
   0, /*tp_itemsize*/
-  __pyx_tp_dealloc_7tracing_PyRefract_Plane, /*tp_dealloc*/
+  __pyx_tp_dealloc_7tracing__PyComponent, /*tp_dealloc*/
   #if PY_VERSION_HEX < 0x030800b4
   0, /*tp_print*/
   #endif
@@ -22016,26 +21832,9 @@ static PyObject *__pyx_tp_new_7tracing_PyMirror_Sph(PyTypeObject *t, PyObject *a
   return NULL;
 }
 
-static void __pyx_tp_dealloc_7tracing_PyMirror_Sph(PyObject *o) {
-  #if CYTHON_USE_TP_FINALIZE
-  if (unlikely(PyType_HasFeature(Py_TYPE(o), Py_TPFLAGS_HAVE_FINALIZE) && Py_TYPE(o)->tp_finalize) && (!PyType_IS_GC(Py_TYPE(o)) || !_PyGC_FINALIZED(o))) {
-    if (PyObject_CallFinalizerFromDealloc(o)) return;
-  }
-  #endif
-  {
-    PyObject *etype, *eval, *etb;
-    PyErr_Fetch(&etype, &eval, &etb);
-    __Pyx_SET_REFCNT(o, Py_REFCNT(o) + 1);
-    __pyx_pw_7tracing_12PyMirror_Sph_3__dealloc__(o);
-    __Pyx_SET_REFCNT(o, Py_REFCNT(o) - 1);
-    PyErr_Restore(etype, eval, etb);
-  }
-  __pyx_tp_dealloc_7tracing__PyComponent(o);
-}
-
 static PyMethodDef __pyx_methods_7tracing_PyMirror_Sph[] = {
-  {"__reduce_cython__", (PyCFunction)__pyx_pw_7tracing_12PyMirror_Sph_5__reduce_cython__, METH_NOARGS, 0},
-  {"__setstate_cython__", (PyCFunction)__pyx_pw_7tracing_12PyMirror_Sph_7__setstate_cython__, METH_O, 0},
+  {"__reduce_cython__", (PyCFunction)__pyx_pw_7tracing_12PyMirror_Sph_3__reduce_cython__, METH_NOARGS, 0},
+  {"__setstate_cython__", (PyCFunction)__pyx_pw_7tracing_12PyMirror_Sph_5__setstate_cython__, METH_O, 0},
   {0, 0, 0, 0}
 };
 
@@ -22044,7 +21843,7 @@ static PyTypeObject __pyx_type_7tracing_PyMirror_Sph = {
   "tracing.PyMirror_Sph", /*tp_name*/
   sizeof(struct __pyx_obj_7tracing_PyMirror_Sph), /*tp_basicsize*/
   0, /*tp_itemsize*/
-  __pyx_tp_dealloc_7tracing_PyMirror_Sph, /*tp_dealloc*/
+  __pyx_tp_dealloc_7tracing__PyComponent, /*tp_dealloc*/
   #if PY_VERSION_HEX < 0x030800b4
   0, /*tp_print*/
   #endif
@@ -22118,23 +21917,6 @@ static PyObject *__pyx_tp_new_7tracing_PyRefract_Sph(PyTypeObject *t, PyObject *
   return NULL;
 }
 
-static void __pyx_tp_dealloc_7tracing_PyRefract_Sph(PyObject *o) {
-  #if CYTHON_USE_TP_FINALIZE
-  if (unlikely(PyType_HasFeature(Py_TYPE(o), Py_TPFLAGS_HAVE_FINALIZE) && Py_TYPE(o)->tp_finalize) && (!PyType_IS_GC(Py_TYPE(o)) || !_PyGC_FINALIZED(o))) {
-    if (PyObject_CallFinalizerFromDealloc(o)) return;
-  }
-  #endif
-  {
-    PyObject *etype, *eval, *etb;
-    PyErr_Fetch(&etype, &eval, &etb);
-    __Pyx_SET_REFCNT(o, Py_REFCNT(o) + 1);
-    __pyx_pw_7tracing_13PyRefract_Sph_3__dealloc__(o);
-    __Pyx_SET_REFCNT(o, Py_REFCNT(o) - 1);
-    PyErr_Restore(etype, eval, etb);
-  }
-  __pyx_tp_dealloc_7tracing__PyComponent(o);
-}
-
 static PyObject *__pyx_getprop_7tracing_13PyRefract_Sph_n1(PyObject *o, CYTHON_UNUSED void *x) {
   return __pyx_pw_7tracing_13PyRefract_Sph_2n1_1__get__(o);
 }
@@ -22164,8 +21946,8 @@ static int __pyx_setprop_7tracing_13PyRefract_Sph_n2(PyObject *o, PyObject *v, C
 }
 
 static PyMethodDef __pyx_methods_7tracing_PyRefract_Sph[] = {
-  {"__reduce_cython__", (PyCFunction)__pyx_pw_7tracing_13PyRefract_Sph_5__reduce_cython__, METH_NOARGS, 0},
-  {"__setstate_cython__", (PyCFunction)__pyx_pw_7tracing_13PyRefract_Sph_7__setstate_cython__, METH_O, 0},
+  {"__reduce_cython__", (PyCFunction)__pyx_pw_7tracing_13PyRefract_Sph_3__reduce_cython__, METH_NOARGS, 0},
+  {"__setstate_cython__", (PyCFunction)__pyx_pw_7tracing_13PyRefract_Sph_5__setstate_cython__, METH_O, 0},
   {0, 0, 0, 0}
 };
 
@@ -22180,7 +21962,7 @@ static PyTypeObject __pyx_type_7tracing_PyRefract_Sph = {
   "tracing.PyRefract_Sph", /*tp_name*/
   sizeof(struct __pyx_obj_7tracing_PyRefract_Sph), /*tp_basicsize*/
   0, /*tp_itemsize*/
-  __pyx_tp_dealloc_7tracing_PyRefract_Sph, /*tp_dealloc*/
+  __pyx_tp_dealloc_7tracing__PyComponent, /*tp_dealloc*/
   #if PY_VERSION_HEX < 0x030800b4
   0, /*tp_print*/
   #endif
@@ -23196,17 +22978,17 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__4);
   __Pyx_GIVEREF(__pyx_tuple__4);
 
-  /* "tracing.pyx":121
+  /* "tracing.pyx":126
  * 
  *     def plot(self):
  *         points = np.empty((2, 2), dtype=np.double)             # <<<<<<<<<<<<<<
  * 
  *         points[0] = self.start
  */
-  __pyx_tuple__5 = PyTuple_Pack(2, __pyx_int_2, __pyx_int_2); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(0, 121, __pyx_L1_error)
+  __pyx_tuple__5 = PyTuple_Pack(2, __pyx_int_2, __pyx_int_2); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(0, 126, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__5);
   __Pyx_GIVEREF(__pyx_tuple__5);
-  __pyx_tuple__6 = PyTuple_Pack(1, __pyx_tuple__5); if (unlikely(!__pyx_tuple__6)) __PYX_ERR(0, 121, __pyx_L1_error)
+  __pyx_tuple__6 = PyTuple_Pack(1, __pyx_tuple__5); if (unlikely(!__pyx_tuple__6)) __PYX_ERR(0, 126, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__6);
   __Pyx_GIVEREF(__pyx_tuple__6);
 
@@ -23267,28 +23049,28 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__12);
   __Pyx_GIVEREF(__pyx_tuple__12);
 
-  /* "tracing.pyx":224
+  /* "tracing.pyx":232
  *         t = np.linspace(self.start, self.end, n_points)
  * 
  *         points[:, 0] = self.centre[0] + self.R*np.cos(t)             # <<<<<<<<<<<<<<
  *         points[:, 1] = self.centre[1] + self.R*np.cos(t)
  * 
  */
-  __pyx_slice__13 = PySlice_New(Py_None, Py_None, Py_None); if (unlikely(!__pyx_slice__13)) __PYX_ERR(0, 224, __pyx_L1_error)
+  __pyx_slice__13 = PySlice_New(Py_None, Py_None, Py_None); if (unlikely(!__pyx_slice__13)) __PYX_ERR(0, 232, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_slice__13);
   __Pyx_GIVEREF(__pyx_slice__13);
-  __pyx_tuple__14 = PyTuple_Pack(2, __pyx_slice__13, __pyx_int_0); if (unlikely(!__pyx_tuple__14)) __PYX_ERR(0, 224, __pyx_L1_error)
+  __pyx_tuple__14 = PyTuple_Pack(2, __pyx_slice__13, __pyx_int_0); if (unlikely(!__pyx_tuple__14)) __PYX_ERR(0, 232, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__14);
   __Pyx_GIVEREF(__pyx_tuple__14);
 
-  /* "tracing.pyx":225
+  /* "tracing.pyx":233
  * 
  *         points[:, 0] = self.centre[0] + self.R*np.cos(t)
  *         points[:, 1] = self.centre[1] + self.R*np.cos(t)             # <<<<<<<<<<<<<<
  * 
  *         return points
  */
-  __pyx_tuple__15 = PyTuple_Pack(2, __pyx_slice__13, __pyx_int_1); if (unlikely(!__pyx_tuple__15)) __PYX_ERR(0, 225, __pyx_L1_error)
+  __pyx_tuple__15 = PyTuple_Pack(2, __pyx_slice__13, __pyx_int_1); if (unlikely(!__pyx_tuple__15)) __PYX_ERR(0, 233, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__15);
   __Pyx_GIVEREF(__pyx_tuple__15);
 
@@ -23702,70 +23484,70 @@ static int __Pyx_modinit_type_init_code(void) {
   if (__Pyx_setup_reduce((PyObject*)&__pyx_type_7tracing__PyComponent) < 0) __PYX_ERR(0, 90, __pyx_L1_error)
   __pyx_ptype_7tracing__PyComponent = &__pyx_type_7tracing__PyComponent;
   __pyx_type_7tracing__PyPlane.tp_base = __pyx_ptype_7tracing__PyComponent;
-  if (PyType_Ready(&__pyx_type_7tracing__PyPlane) < 0) __PYX_ERR(0, 99, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_7tracing__PyPlane) < 0) __PYX_ERR(0, 104, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_7tracing__PyPlane.tp_print = 0;
   #endif
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_7tracing__PyPlane.tp_dictoffset && __pyx_type_7tracing__PyPlane.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_7tracing__PyPlane.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_PyPlane, (PyObject *)&__pyx_type_7tracing__PyPlane) < 0) __PYX_ERR(0, 99, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_7tracing__PyPlane) < 0) __PYX_ERR(0, 99, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_PyPlane, (PyObject *)&__pyx_type_7tracing__PyPlane) < 0) __PYX_ERR(0, 104, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_7tracing__PyPlane) < 0) __PYX_ERR(0, 104, __pyx_L1_error)
   __pyx_ptype_7tracing__PyPlane = &__pyx_type_7tracing__PyPlane;
   __pyx_type_7tracing_PyMirror_Plane.tp_base = __pyx_ptype_7tracing__PyPlane;
-  if (PyType_Ready(&__pyx_type_7tracing_PyMirror_Plane) < 0) __PYX_ERR(0, 129, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_7tracing_PyMirror_Plane) < 0) __PYX_ERR(0, 134, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_7tracing_PyMirror_Plane.tp_print = 0;
   #endif
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_7tracing_PyMirror_Plane.tp_dictoffset && __pyx_type_7tracing_PyMirror_Plane.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_7tracing_PyMirror_Plane.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_PyMirror_Plane, (PyObject *)&__pyx_type_7tracing_PyMirror_Plane) < 0) __PYX_ERR(0, 129, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_7tracing_PyMirror_Plane) < 0) __PYX_ERR(0, 129, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_PyMirror_Plane, (PyObject *)&__pyx_type_7tracing_PyMirror_Plane) < 0) __PYX_ERR(0, 134, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_7tracing_PyMirror_Plane) < 0) __PYX_ERR(0, 134, __pyx_L1_error)
   __pyx_ptype_7tracing_PyMirror_Plane = &__pyx_type_7tracing_PyMirror_Plane;
   __pyx_type_7tracing_PyRefract_Plane.tp_base = __pyx_ptype_7tracing__PyPlane;
-  if (PyType_Ready(&__pyx_type_7tracing_PyRefract_Plane) < 0) __PYX_ERR(0, 151, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_7tracing_PyRefract_Plane) < 0) __PYX_ERR(0, 158, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_7tracing_PyRefract_Plane.tp_print = 0;
   #endif
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_7tracing_PyRefract_Plane.tp_dictoffset && __pyx_type_7tracing_PyRefract_Plane.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_7tracing_PyRefract_Plane.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_PyRefract_Plane, (PyObject *)&__pyx_type_7tracing_PyRefract_Plane) < 0) __PYX_ERR(0, 151, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_7tracing_PyRefract_Plane) < 0) __PYX_ERR(0, 151, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_PyRefract_Plane, (PyObject *)&__pyx_type_7tracing_PyRefract_Plane) < 0) __PYX_ERR(0, 158, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_7tracing_PyRefract_Plane) < 0) __PYX_ERR(0, 158, __pyx_L1_error)
   __pyx_ptype_7tracing_PyRefract_Plane = &__pyx_type_7tracing_PyRefract_Plane;
   __pyx_type_7tracing__PySpherical.tp_base = __pyx_ptype_7tracing__PyComponent;
-  if (PyType_Ready(&__pyx_type_7tracing__PySpherical) < 0) __PYX_ERR(0, 186, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_7tracing__PySpherical) < 0) __PYX_ERR(0, 194, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_7tracing__PySpherical.tp_print = 0;
   #endif
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_7tracing__PySpherical.tp_dictoffset && __pyx_type_7tracing__PySpherical.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_7tracing__PySpherical.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_PySpherical, (PyObject *)&__pyx_type_7tracing__PySpherical) < 0) __PYX_ERR(0, 186, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_7tracing__PySpherical) < 0) __PYX_ERR(0, 186, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_PySpherical, (PyObject *)&__pyx_type_7tracing__PySpherical) < 0) __PYX_ERR(0, 194, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_7tracing__PySpherical) < 0) __PYX_ERR(0, 194, __pyx_L1_error)
   __pyx_ptype_7tracing__PySpherical = &__pyx_type_7tracing__PySpherical;
   __pyx_type_7tracing_PyMirror_Sph.tp_base = __pyx_ptype_7tracing__PySpherical;
-  if (PyType_Ready(&__pyx_type_7tracing_PyMirror_Sph) < 0) __PYX_ERR(0, 230, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_7tracing_PyMirror_Sph) < 0) __PYX_ERR(0, 238, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_7tracing_PyMirror_Sph.tp_print = 0;
   #endif
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_7tracing_PyMirror_Sph.tp_dictoffset && __pyx_type_7tracing_PyMirror_Sph.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_7tracing_PyMirror_Sph.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_PyMirror_Sph, (PyObject *)&__pyx_type_7tracing_PyMirror_Sph) < 0) __PYX_ERR(0, 230, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_7tracing_PyMirror_Sph) < 0) __PYX_ERR(0, 230, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_PyMirror_Sph, (PyObject *)&__pyx_type_7tracing_PyMirror_Sph) < 0) __PYX_ERR(0, 238, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_7tracing_PyMirror_Sph) < 0) __PYX_ERR(0, 238, __pyx_L1_error)
   __pyx_ptype_7tracing_PyMirror_Sph = &__pyx_type_7tracing_PyMirror_Sph;
   __pyx_type_7tracing_PyRefract_Sph.tp_base = __pyx_ptype_7tracing__PySpherical;
-  if (PyType_Ready(&__pyx_type_7tracing_PyRefract_Sph) < 0) __PYX_ERR(0, 246, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_7tracing_PyRefract_Sph) < 0) __PYX_ERR(0, 255, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_7tracing_PyRefract_Sph.tp_print = 0;
   #endif
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_7tracing_PyRefract_Sph.tp_dictoffset && __pyx_type_7tracing_PyRefract_Sph.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_7tracing_PyRefract_Sph.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_PyRefract_Sph, (PyObject *)&__pyx_type_7tracing_PyRefract_Sph) < 0) __PYX_ERR(0, 246, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_7tracing_PyRefract_Sph) < 0) __PYX_ERR(0, 246, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_PyRefract_Sph, (PyObject *)&__pyx_type_7tracing_PyRefract_Sph) < 0) __PYX_ERR(0, 255, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_7tracing_PyRefract_Sph) < 0) __PYX_ERR(0, 255, __pyx_L1_error)
   __pyx_ptype_7tracing_PyRefract_Sph = &__pyx_type_7tracing_PyRefract_Sph;
   __pyx_vtabptr_array = &__pyx_vtable_array;
   __pyx_vtable_array.get_memview = (PyObject *(*)(struct __pyx_array_obj *))__pyx_array_get_memview;
