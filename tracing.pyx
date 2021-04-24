@@ -41,10 +41,23 @@ def PyTrace(list components, list rays, int n, bool fill_up=True):
         
     for c in components:
         if isinstance(c, PyMirror_Plane):
-            vec_comp.push_back( <Component*>( (<PyMirror_Plane>c).c_data  ) )
+            vec_comp.push_back( (<PyMirror_Plane>c).c_component_ptr )
             
         elif isinstance(c, PyRefract_Plane):
-            vec_comp.push_back( <Component*>( (<PyRefract_Plane>c).c_data  ) )
+            vec_comp.push_back( (<PyRefract_Plane>c).c_component_ptr )
+            
+        elif isinstance(c, PyMirror_Sph):
+            vec_comp.push_back( (<PyMirror_Sph>c).c_component_ptr )
+            
+        elif isinstance(c, PyRefract_Sph):
+            vec_comp.push_back( (<PyRefract_Sph>c).c_component_ptr )
+            
+        elif isinstance(c, PyCC_Wrap):  # Complex derived from PyCC_Wrap
+            vec_comp.push_back( ( <PyComplex_Component>( c.PyCC )).c_component_ptr )
+            
+        else:
+            pass  # Need to throw error that it's an unknown component
+            
         
     cdef vector[Ray*] vec_rays
     
