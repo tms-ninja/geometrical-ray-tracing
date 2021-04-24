@@ -16,6 +16,9 @@ public:
 	virtual double test_hit(Ray* ry) const override;
 	virtual void hit(Ray* ry, int n = 1) const override;
 
+	// Printing
+	virtual void print(std::ostream& os) const override;
+
 	// Add method for adding components
 	template <typename T>
 	void add(T c)

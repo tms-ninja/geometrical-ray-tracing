@@ -1,6 +1,8 @@
 # distutils: language = c++
 from libcpp.vector cimport vector
+from libcpp.memory cimport unique_ptr
 
+# Typedefs used
 
 cdef extern from "<array>" namespace "std" nogil:
     cdef cppclass arr "std::array<double, 2>":
@@ -8,6 +10,11 @@ cdef extern from "<array>" namespace "std" nogil:
         double& operator[](size_t)
         double* data()
         size_t size()
+
+
+ctypedef vector[unique_ptr[Component]] comp_list
+
+# Ray definitions
 
 cdef extern from "Ray.cpp":
     pass
@@ -31,13 +38,14 @@ cdef extern from "trace_func.cpp":
 cdef extern from "trace_func.h":
     void trace(vector[Component*]&, vector[Ray*] &, int, bool)
 
+
 # Components
 
 cdef extern from "Component.cpp":
-    cdef cppclass Component:
-        pass
+    pass
     
 cdef extern from "Component.h":
+    cdef cppclass Component:
         pass
 
 
@@ -102,6 +110,14 @@ cdef extern from "Refract_Sph.h":
         void hit(Ray*, int)
 
 
+# Complex component
 
+cdef extern from "Complex_Component.cpp":
+    pass
 
+cdef extern from "Complex_Component.h":  # Don't to explicity give constructor
+    cdef cppclass Complex_Component:
+        comp_list comps
+        double test_hit(Ray*)
+        void hit(Ray*, int)
 

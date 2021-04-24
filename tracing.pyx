@@ -1,12 +1,17 @@
 # distutils: language = c++
 from cython.operator import dereference
-#from libcpp.memory import unique_ptr, make_unique
+from libcpp.memory cimport unique_ptr
 from libcpp.vector cimport vector
 from libcpp cimport bool
 from cython_header cimport *
 
 import numpy as np
 
+
+# Problem with cython's code generation of std::move, use explicit definition
+cdef extern from "<utility>" namespace "std" nogil:
+    unique_ptr[Component] move(unique_ptr[Component])
+  
 
 # Shape of 1d numpy array with 2 elements
 _arr_shape = (2, 0, 0, 0, 0, 0, 0, 0)
@@ -284,10 +289,71 @@ cdef class PyRefract_Sph(_PySpherical):
         dereference(self.c_data).n2 = n2
     
 
+# Complex component
 
-
-
-
+cdef class PyComplex_Component(_PyComponent):
+    cdef Complex_Component* c_data
+    
+    def __cinit__(self, list comps):
+        self.c_data = new Complex_Component()
+        self.c_component_ptr = <Component*>self.c_data
+        
+        
+        cdef Component* comp_ptr
+        cdef unique_ptr[Component] comp_unique_ptr
+        
+        
+        for c in comps:
+            if isinstance(c, PyMirror_Plane):
+                comp_ptr = ( <PyMirror_Plane>c ).c_component_ptr
+                
+            elif isinstance(c, PyRefract_Plane):
+                comp_ptr = ( <PyRefract_Plane>c ).c_component_ptr
+            
+            elif isinstance(c, PyMirror_Sph):
+                comp_ptr = ( <PyMirror_Sph>c ).c_component_ptr
+                
+            elif isinstance(c, PyRefract_Sph):
+                comp_ptr = ( <PyRefract_Sph>c ).c_component_ptr
+                
+            elif isinstance(c, PyCC_Wrap):
+                comp_ptr = ( <PyComplex_Component>( c.PyCC )).c_component_ptr
+                
+            
+            comp_unique_ptr = unique_ptr[Component](comp_ptr)
+            
+            dereference(self.c_data).comps.push_back(move(comp_unique_ptr))
+                        
+            # Tell these instances they no longer own the data
+            c.OWNDATA = False
+        
+        
+class PyCC_Wrap:
+    
+    def __init__(self, ls):
+        self._components = ls
+        
+        self.PyCC = PyComplex_Component(self._components)
+        
+    def __getitem__(self, key):
+        return self._components[key]
+    
+    def plot(self, flatten=True, *args, **kwargs):
+        points = (c.plot(*args, **kwargs) for c in self._components)
+        
+        if flatten:
+            sol = []
+            
+            for p in points:
+                
+                if type(p) is list:
+                    sol.append(*p)
+                else:
+                    print("Blah")
+                    
+            return sol
+        
+        return list(points)
 
 
 

@@ -1,4 +1,4 @@
-from tracing import PyMirror_Plane, PyRefract_Plane, PyRay, PyTrace
+from tracing import PyMirror_Plane, PyRefract_Plane, PyComplex_Component, PyCC_Wrap, PyRay, PyTrace
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -37,6 +37,40 @@ print(f"p is a refract plane with {p.start=}, {p.end=}, {p.n1=}, {p.n2=}")
 print()
 
 
+# Complex_Component
+
+l = [m, p]
+
+complex_comp = PyComplex_Component(l)
+
+print("Do the above objects still own their data?")
+print([blah.OWNDATA for blah in l])
+print()
+
+
+# Let's create a prism class
+class Prism(PyCC_Wrap):
+    
+    def __init__(self, a, b, c, n_in, n_out=1.0):
+        comps = [
+                PyRefract_Plane(a, b, n_out, n_in),
+                PyRefract_Plane(b, c, n_out, n_in),
+                PyRefract_Plane(c, a, n_out, n_in)
+            ]
+        
+        super().__init__(comps)  # Must remember to call super __init__
+        
+        
+my_prism = Prism(a, b, c, 2.0, 1.0)
+
+
+print(my_prism[0].OWNDATA)
+print(my_prism.plot())
+print()
+
+
+# Pyray
+
 r = PyRay(a, b)
 
 print(f"Ray's v is {r.v}")
@@ -45,6 +79,9 @@ print("Ray's position is:")
 print(r.pos)
 print()
 
+
+
+# Tracing
 
 comps = [] #[PyRefract_Plane(np.array([0.0, -1.0]), np.array([0.25, 0.5]), 1.0, 2)]
 

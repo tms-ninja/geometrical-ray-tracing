@@ -19,3 +19,8 @@ void Complex_Component::hit(Ray* ry, int n) const
 {
 	trace_ray(comps, ry, n);
 }
+
+void Complex_Component::print(std::ostream & os) const
+{
+	os << "Prinitng not implemented for Complex_Component yet!";
+}
