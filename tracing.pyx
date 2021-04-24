@@ -362,7 +362,7 @@ class PyCC_Wrap:
                 if type(p) is list:
                     sol.append(*p)
                 else:
-                    print("Blah")
+                    sol.append(p)
                     
             return sol
         
