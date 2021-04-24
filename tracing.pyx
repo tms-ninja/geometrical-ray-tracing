@@ -183,14 +183,14 @@ cdef class PyRefract_Plane(_PyPlane):
     def n1(self):
         return dereference(self.c_data).n1
     @n1.setter
-    def n1(self, n1):
+    def n1(self, double n1):
         dereference(self.c_data).n1 = n1
     
     @property
     def n2(self):
         return dereference(self.c_data).n2
     @n2.setter
-    def n2(self, n2):
+    def n2(self, double n2):
         dereference(self.c_data).n2 = n2
         
 
@@ -278,14 +278,14 @@ cdef class PyRefract_Sph(_PySpherical):
     def n1(self):
         return dereference(self.c_data).n1
     @n1.setter
-    def n1(self, n1):
+    def n1(self, double n1):
         dereference(self.c_data).n1 = n1
     
     @property
     def n2(self):
         return dereference(self.c_data).n2
     @n2.setter
-    def n2(self, n2):
+    def n2(self, double n2):
         dereference(self.c_data).n2 = n2
     
 
