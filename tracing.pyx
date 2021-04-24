@@ -22,19 +22,14 @@ cdef make_numpy_from_arr(arr& a):
     
     return np.asarray(a_mem_view)
 
+
 cdef arr make_arr_from_numpy(double[:] n):
     cdef arr a
-    
-    assert tuple(n.shape) == _arr_shape, "Expected a 1d blah numpy array with 2 elements"
         
     a[0], a[1] = n[0], n[1]
     
     return a
     
-cdef new_arr(double[:] n, arr& a):
-    assert tuple(n.shape) == _arr_shape, "blhahhh"
-    
-    a[0], a[1] = n[0], n[1]
 
 def PyTrace(list components, list rays, int n, bool fill_up=True):
     cdef vector[Component*] vec_comp
@@ -105,6 +100,7 @@ cdef class PyRay:
         return self.pos
 
     
+
 cdef class _PyComponent:
     cdef Component* c_component_ptr
     cdef public bool OWNDATA
@@ -115,6 +111,7 @@ cdef class _PyComponent:
     def __dealloc__(self):
         if self.OWNDATA:
             del self.c_component_ptr
+
 
 
 # Planar components
@@ -149,17 +146,13 @@ cdef class _PyPlane(_PyComponent):
         return points
 
 
+
 cdef class PyMirror_Plane(_PyPlane):
     cdef Mirror_Plane* c_data
     
     def __cinit__(self, double[:] start, double[:] end):
-        #assert tuple(start.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
-        assert tuple(end.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
-        
-        cdef arr s
-        
-        new_arr(start, s)
-        
+        assert tuple(start.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
+        assert tuple(end.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"       
         
         self.c_data = new Mirror_Plane(make_arr_from_numpy(start), 
                                        make_arr_from_numpy(end))
@@ -167,10 +160,6 @@ cdef class PyMirror_Plane(_PyPlane):
         self.c_plane_ptr = <Plane*>self.c_data
         self.c_component_ptr = <Component*>self.c_data
         
-        
-    # def __dealloc__(self):
-    #     if self.OWNDATA:
-    #         del self.c_data
 
 
 cdef class PyRefract_Plane(_PyPlane):
@@ -187,10 +176,6 @@ cdef class PyRefract_Plane(_PyPlane):
         
         self.c_plane_ptr = <Plane*>self.c_data
         self.c_component_ptr = <Component*>self.c_data
-        
-    # def __dealloc__(self):
-    #     if self.OWNDATA:
-    #         del self.c_data
     
     @property
     def n1(self):
@@ -206,6 +191,7 @@ cdef class PyRefract_Plane(_PyPlane):
     def n2(self, double n2):
         dereference(self.c_data).n2 = n2
         
+
 
 # Spherical components
 
@@ -253,6 +239,7 @@ cdef class _PySpherical(_PyComponent):
         return points
 
 
+
 cdef class PyMirror_Sph(_PySpherical):
     cdef Mirror_Sph* c_data
     
@@ -265,9 +252,6 @@ cdef class PyMirror_Sph(_PySpherical):
         self.c_sph_ptr = <Spherical*>self.c_data
         self.c_component_ptr = <Component*>self.c_data
         
-    # def __dealloc__(self):
-    #     if self.OWNDATA:
-    #         del self.c_data
         
     
 cdef class PyRefract_Sph(_PySpherical):
@@ -282,11 +266,7 @@ cdef class PyRefract_Sph(_PySpherical):
         
         self.c_sph_ptr = <Spherical*>self.c_data
         self.c_component_ptr = <Component*>self.c_data
-        
-    # def __dealloc__(self):
-    #     if self.OWNDATA:
-    #         del self.c_data
-        
+                
     @property
     def n1(self):
         return dereference(self.c_data).n1
@@ -301,6 +281,7 @@ cdef class PyRefract_Sph(_PySpherical):
     def n2(self, double n2):
         dereference(self.c_data).n2 = n2
     
+
 
 # Complex component
 
@@ -341,6 +322,7 @@ cdef class PyComplex_Component(_PyComponent):
             c.OWNDATA = False
         
         
+        
 class PyCC_Wrap:
     
     def __init__(self, ls):
@@ -367,17 +349,6 @@ class PyCC_Wrap:
             return sol
         
         return list(points)
-
-
-
-
-
-
-
-
-
-
-
 
 
 
