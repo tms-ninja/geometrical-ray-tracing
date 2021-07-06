@@ -66,7 +66,7 @@ def PyTrace(list components, list rays, int n, bool fill_up=True):
 cdef class PyRay:
     cdef Ray* c_data
     
-    # Memory views & numpy arrays onto them
+    # Memory views & numpy views onto them used for properties that return numpy views
     cdef double[::1] v_mem_view
     cdef np.ndarray  v_np
     
@@ -127,10 +127,20 @@ cdef class _PyComponent:
 
 cdef class _PyPlane(_PyComponent):
     cdef Plane* c_plane_ptr
+    
+    # Memory views & numpy views onto them used for properties that return numpy views
+    cdef double[::1] start_mem_view
+    cdef np.ndarray  start_np
+    cdef double[::1] end_mem_view
+    cdef np.ndarray  end_np
         
     @property
     def start(self):
-        return make_numpy_from_arr(dereference(self.c_plane_ptr).start)
+        self.start_mem_view = <double[:2]>( dereference(self.c_plane_ptr).start.data() )
+        
+        start_np = np.asarray(self.start_mem_view)
+        
+        return start_np
     @start.setter
     def start(self, double[:] start):
         assert tuple(start.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
@@ -139,7 +149,12 @@ cdef class _PyPlane(_PyComponent):
         
     @property
     def end(self):
-        return make_numpy_from_arr(dereference(self.c_plane_ptr).end)
+        self.end_mem_view = <double[:2]>( dereference(self.c_plane_ptr).end.data() )
+        
+        end_np = np.asarray(self.end_mem_view)
+        
+        return end_np
+        
     @end.setter
     def end(self, double[:] end):
         assert tuple(end.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
