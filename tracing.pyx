@@ -6,6 +6,7 @@ from libcpp cimport bool
 from cython_header cimport *
 
 import numpy as np
+cimport numpy as np
 
 
 # Problem with cython's code generation of std::move, use explicit definition
@@ -65,6 +66,10 @@ def PyTrace(list components, list rays, int n, bool fill_up=True):
 cdef class PyRay:
     cdef Ray* c_data
     
+    # Memory views & numpy arrays onto them
+    cdef double[::1] v_mem_view
+    cdef np.ndarray  v_np
+    
     def __cinit__(self, double[:] init not None, double[:] v not None):
         assert tuple(init.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
         assert tuple(v.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
@@ -89,7 +94,11 @@ cdef class PyRay:
     
     @property
     def v(self):
-        return make_numpy_from_arr(dereference(self.c_data).v)
+        self.v_mem_view = <double[:2]>( dereference(self.c_data).v.data() )
+        
+        v_np = np.asarray(self.v_mem_view)
+        
+        return v_np
     @v.setter
     def v(self, double[:] v not None):
         assert tuple(v.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
