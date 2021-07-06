@@ -18,12 +18,6 @@ cdef extern from "<utility>" namespace "std" nogil:
 _arr_shape = (2, 0, 0, 0, 0, 0, 0, 0)
 
 
-cdef make_numpy_from_arr(arr& a):
-    cdef double[::1] a_mem_view = <double [:a.size()]>a.data()
-    
-    return np.asarray(a_mem_view)
-
-
 cdef arr make_arr_from_numpy(double[:] n):
     cdef arr a
         
