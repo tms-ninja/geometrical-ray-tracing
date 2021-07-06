@@ -46,7 +46,7 @@ def PyTrace(list components, list rays, int n, bool fill_up=True):
             vec_comp.push_back( ( <PyComplex_Component>( c.PyCC )).c_component_ptr )
             
         else:
-            pass  # Need to throw error that it's an unknown component
+            raise TypeError(f"Type '{type(c)}' is not a recognised type for a component")
             
         
     cdef vector[Ray*] vec_rays
