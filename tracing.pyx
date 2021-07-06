@@ -154,7 +154,6 @@ cdef class _PyPlane(_PyComponent):
         end_np = np.asarray(self.end_mem_view)
         
         return end_np
-        
     @end.setter
     def end(self, double[:] end):
         assert tuple(end.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
@@ -222,9 +221,17 @@ cdef class PyRefract_Plane(_PyPlane):
 cdef class _PySpherical(_PyComponent):
     cdef Spherical* c_sph_ptr
     
+    # Memory views & numpy views onto them used for properties that return numpy views
+    cdef double[::1] centre_mem_view
+    cdef np.ndarray  centre_np
+    
     @property
     def centre(self):
-        return make_numpy_from_arr(dereference(self.c_sph_ptr).centre)
+        self.centre_mem_view = <double[:2]>( dereference(self.c_sph_ptr).centre.data() )
+        
+        centre_np = np.asarray(self.centre_mem_view)
+        
+        return centre_np
     @centre.setter
     def centre(self, double[:] centre):
         assert tuple(centre.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
