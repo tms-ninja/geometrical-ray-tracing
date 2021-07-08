@@ -23,7 +23,7 @@ public:
 	template <typename T>
 	void add(T c)
 	{
-		comps.push_back(std::make_unique<T>(c));
+		comps.push_back(std::make_shared<T>(c));
 	}
 };
 

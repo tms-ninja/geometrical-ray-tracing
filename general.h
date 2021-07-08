@@ -13,7 +13,7 @@ class Ray;
 
 // Type aliases for the length two std::array and component vector
 using arr = std::array<double, 2>;
-using comp_list = std::vector<std::unique_ptr<Component>>;
+using comp_list = std::vector<std::shared_ptr<Component>>;
 
 std::pair<size_t, bool> next_component(const std::vector<double> &t);
 
@@ -32,7 +32,7 @@ void trace(const T &c, std::vector<Ray*> &rays, int n, bool fill_up = true);
 template <typename T>
 void add_component(comp_list &vec, T c)
 {
-	vec.push_back(std::make_unique<T>(c));
+	vec.push_back(std::make_shared<T>(c));
 }
 
 // Saves rays to file

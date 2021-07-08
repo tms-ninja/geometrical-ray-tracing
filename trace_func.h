@@ -17,7 +17,8 @@ template <typename T>
 void trace(const T &c, std::vector<Ray*> &rays, int n, bool fill_up);
 
 // Explicity initiate these template types to allows component list to contain either unique_ptr or raw pointers
-template void trace(const std::vector<std::unique_ptr<Component>> &c, std::vector<Ray*> &rays, int n, bool fill_up);
+template void trace(const std::vector<std::shared_ptr<Component>> &c, std::vector<Ray*> &rays, int n, bool fill_up);
+//template void trace(const std::vector<std::unique_ptr<Component>> &c, std::vector<Ray*> &rays, int n, bool fill_up);
 template void trace(const std::vector<Component*> &c, std::vector<Ray*> &rays, int n, bool fill_up);
  
 // Saves rays to file

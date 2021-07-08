@@ -1,6 +1,6 @@
 # distutils: language = c++
 from cython.operator import dereference
-from libcpp.memory cimport unique_ptr
+from libcpp.memory cimport shared_ptr
 from libcpp.vector cimport vector
 from libcpp cimport bool
 from cython_header cimport *
@@ -11,7 +11,7 @@ cimport numpy as np
 
 # Problem with cython's code generation of std::move, use explicit definition
 cdef extern from "<utility>" namespace "std" nogil:
-    unique_ptr[Component] move(unique_ptr[Component])
+    shared_ptr[Component] move(shared_ptr[Component])
   
 
 # Shape of 1d numpy array with 2 elements
@@ -31,19 +31,19 @@ def PyTrace(list components, list rays, int n, bool fill_up=True):
         
     for c in components:
         if isinstance(c, PyMirror_Plane):
-            vec_comp.push_back( (<PyMirror_Plane>c).c_component_ptr )
+            vec_comp.push_back( (<PyMirror_Plane>c).c_component_ptr.get() )
             
         elif isinstance(c, PyRefract_Plane):
-            vec_comp.push_back( (<PyRefract_Plane>c).c_component_ptr )
+            vec_comp.push_back( (<PyRefract_Plane>c).c_component_ptr.get() )
             
         elif isinstance(c, PyMirror_Sph):
-            vec_comp.push_back( (<PyMirror_Sph>c).c_component_ptr )
+            vec_comp.push_back( (<PyMirror_Sph>c).c_component_ptr.get() )
             
         elif isinstance(c, PyRefract_Sph):
-            vec_comp.push_back( (<PyRefract_Sph>c).c_component_ptr )
+            vec_comp.push_back( (<PyRefract_Sph>c).c_component_ptr.get() )
             
         elif isinstance(c, PyCC_Wrap):  # Complex derived from PyCC_Wrap
-            vec_comp.push_back( ( <PyComplex_Component>( c.PyCC )).c_component_ptr )
+            vec_comp.push_back( ( <PyComplex_Component>( c.PyCC )).c_component_ptr.get() )
             
         else:
             raise TypeError(f"Type '{type(c)}' is not a recognised type for a component")
@@ -103,18 +103,8 @@ cdef class PyRay:
         return self.pos
 
     
-
 cdef class _PyComponent:
-    cdef Component* c_component_ptr
-    cdef public bool OWNDATA
-    
-    def __cinit__(self):
-        self.OWNDATA = True
-        
-    def __dealloc__(self):
-        if self.OWNDATA:
-            del self.c_component_ptr
-
+    cdef shared_ptr[Component] c_component_ptr
 
 
 # Planar components
@@ -175,7 +165,7 @@ cdef class PyMirror_Plane(_PyPlane):
                                        make_arr_from_numpy(end))
         
         self.c_plane_ptr = <Plane*>self.c_data
-        self.c_component_ptr = <Component*>self.c_data
+        self.c_component_ptr = shared_ptr[Component]( <Component*>self.c_data )
         
 
 
@@ -192,7 +182,7 @@ cdef class PyRefract_Plane(_PyPlane):
                                         make_arr_from_numpy(end), n1, n2)
         
         self.c_plane_ptr = <Plane*>self.c_data
-        self.c_component_ptr = <Component*>self.c_data
+        self.c_component_ptr = shared_ptr[Component]( <Component*>self.c_data )
     
     @property
     def n1(self):
@@ -275,7 +265,7 @@ cdef class PyMirror_Sph(_PySpherical):
                                      end)
         
         self.c_sph_ptr = <Spherical*>self.c_data
-        self.c_component_ptr = <Component*>self.c_data
+        self.c_component_ptr = shared_ptr[Component]( <Component*>self.c_data )
         
         
     
@@ -290,7 +280,7 @@ cdef class PyRefract_Sph(_PySpherical):
                                      end, n1, n2)
         
         self.c_sph_ptr = <Spherical*>self.c_data
-        self.c_component_ptr = <Component*>self.c_data
+        self.c_component_ptr = shared_ptr[Component]( <Component*>self.c_data )
                 
     @property
     def n1(self):
@@ -315,37 +305,28 @@ cdef class PyComplex_Component(_PyComponent):
     
     def __cinit__(self, list comps):
         self.c_data = new Complex_Component()
-        self.c_component_ptr = <Component*>self.c_data
-        
+        self.c_component_ptr = shared_ptr[Component]( <Component*>self.c_data )
         
         cdef Component* comp_ptr
-        cdef unique_ptr[Component] comp_unique_ptr
-        
-        
+        cdef shared_ptr[Component] comp_shared_ptr
+                
         for c in comps:
             if isinstance(c, PyMirror_Plane):
-                comp_ptr = ( <PyMirror_Plane>c ).c_component_ptr
+                comp_shared_ptr = ( <PyMirror_Plane>c ).c_component_ptr
                 
             elif isinstance(c, PyRefract_Plane):
-                comp_ptr = ( <PyRefract_Plane>c ).c_component_ptr
-            
+                comp_shared_ptr = ( <PyRefract_Plane>c ).c_component_ptr
+                
             elif isinstance(c, PyMirror_Sph):
-                comp_ptr = ( <PyMirror_Sph>c ).c_component_ptr
+                comp_shared_ptr = ( <PyMirror_Sph>c ).c_component_ptr
                 
             elif isinstance(c, PyRefract_Sph):
-                comp_ptr = ( <PyRefract_Sph>c ).c_component_ptr
+                comp_shared_ptr = ( <PyRefract_Sph>c ).c_component_ptr
                 
             elif isinstance(c, PyCC_Wrap):
-                comp_ptr = ( <PyComplex_Component>( c.PyCC )).c_component_ptr
-                
+                comp_shared_ptr = ( <PyComplex_Component?>( c.PyCC )).c_component_ptr
             
-            comp_unique_ptr = unique_ptr[Component](comp_ptr)
-            
-            dereference(self.c_data).comps.push_back(move(comp_unique_ptr))
-                        
-            # Tell these instances they no longer own the data
-            c.OWNDATA = False
-        
+            dereference(self.c_data).comps.push_back(comp_shared_ptr)   
         
         
 class PyCC_Wrap:

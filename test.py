@@ -22,7 +22,7 @@ m.start[0] = 5.5
 
 print(f"Mirror's new start is {m.start} and end is still {m.end}")
 print()
-print(f"Does the mirror own its data? {m.OWNDATA}")
+#print(f"Does the mirror own its data? {m.OWNDATA}")
 print()
 
 
@@ -43,8 +43,8 @@ l = [m, p]
 
 complex_comp = PyComplex_Component(l)
 
-print("Do the above objects still own their data?")
-print([blah.OWNDATA for blah in l])
+#print("Do the above objects still own their data?")
+#print([blah.OWNDATA for blah in l])
 print()
 
 
@@ -61,10 +61,10 @@ class Prism(PyCC_Wrap):
         super().__init__(comps)  # Must remember to call super __init__
         
         
-my_prism = Prism(a, b, c, 2.0, 1.0)
+my_prism = Prism(a, b, c, 1.2, 1.0)
 
 
-print(my_prism[0].OWNDATA)
+#print(my_prism[0].OWNDATA)
 print(my_prism.plot())
 print()
 
@@ -80,32 +80,38 @@ print(r.pos)
 print()
 
 
+print("Testing numpy view returned is safe and doesn't end up with a dangling pointer")
+print(f"Ray's v is {r.v}")
+
+r = r.v
+
+print(f"It is now {r}")
+print()
+
+
 
 # Tracing
+comps = [my_prism]
 
-comps = [] #[PyRefract_Plane(np.array([0.0, -1.0]), np.array([0.25, 0.5]), 1.0, 2)]
+theta = 20.0 * np.pi / 180.0
 
-comps.append(PyMirror_Plane(np.array([0.0, 1.0]), np.array([2.0, -1.0])))
+rays = [PyRay(np.array([1.0, 4.0]), np.array([np.cos(theta), np.sin(theta)]))]
 
-#comps.append(PyMirror_Plane(np.array([-5.0, 5.0]), np.array([2.0, -10.0])))
-
-
-theta = 60.0 * np.pi / 180.0
-
-rays = [PyRay(np.array([0.0, 0.0]), np.array([np.cos(theta), np.sin(theta)]))]
-
-PyTrace(comps, rays, 3)
-
-print(rays[0].pos)
+PyTrace(comps, rays, 5)
 
 
 # Test plotting
 plt.figure(figsize=(6, 6))
 
 for cp in comps:
-    points = cp.plot()
+    points = np.array(cp.plot())
+
+    points = points.reshape(points.shape[0]*points.shape[1], 2)
+    
+    print(points)
     
     plt.plot(points[:, 0], points[:, 1])
+
 
 for ry in rays:
     points = ry.plot()
@@ -115,6 +121,42 @@ for ry in rays:
 
 plt.gca().set_aspect('equal')
 plt.show()
+
+
+
+
+# comps = [] #[PyRefract_Plane(np.array([0.0, -1.0]), np.array([0.25, 0.5]), 1.0, 2)]
+
+# comps.append(PyMirror_Plane(np.array([0.0, 1.0]), np.array([2.0, -1.0])))
+
+# #comps.append(PyMirror_Plane(np.array([-5.0, 5.0]), np.array([2.0, -10.0])))
+
+
+# theta = 60.0 * np.pi / 180.0
+
+# rays = [PyRay(np.array([0.0, 0.0]), np.array([np.cos(theta), np.sin(theta)]))]
+
+# PyTrace(comps, rays, 3)
+
+# print(rays[0].pos)
+
+
+# # Test plotting
+# plt.figure(figsize=(6, 6))
+
+# for cp in comps:
+#     points = cp.plot()
+    
+#     plt.plot(points[:, 0], points[:, 1])
+
+# for ry in rays:
+#     points = ry.plot()
+    
+#     plt.plot(points[:, 0], points[:, 1])
+
+
+# plt.gca().set_aspect('equal')
+# plt.show()
 
 
 

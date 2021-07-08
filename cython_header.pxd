@@ -1,6 +1,6 @@
 # distutils: language = c++
 from libcpp.vector cimport vector
-from libcpp.memory cimport unique_ptr
+from libcpp.memory cimport shared_ptr
 
 # Typedefs used
 
@@ -12,7 +12,7 @@ cdef extern from "<array>" namespace "std" nogil:
         size_t size()
 
 
-ctypedef vector[unique_ptr[Component]] comp_list
+ctypedef vector[shared_ptr[Component]] comp_list
 
 # Ray definitions
 
