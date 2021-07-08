@@ -104,11 +104,7 @@ PyTrace(comps, rays, 5)
 plt.figure(figsize=(6, 6))
 
 for cp in comps:
-    points = np.array(cp.plot())
-
-    points = points.reshape(points.shape[0]*points.shape[1], 2)
-    
-    print(points)
+    points = cp.plot()
     
     plt.plot(points[:, 0], points[:, 1])
 

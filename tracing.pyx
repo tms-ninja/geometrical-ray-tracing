@@ -352,7 +352,7 @@ class PyCC_Wrap:
                 else:
                     sol.append(p)
                     
-            return sol
+            return np.vstack(sol)
         
         return list(points)
 
