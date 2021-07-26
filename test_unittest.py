@@ -5,6 +5,7 @@ from numpy.testing import assert_array_equal
 import unittest
 
 class Test_PyMirror_Plane(unittest.TestCase):
+    
     def test_start_get(self):
         start = np.array([1.2, 3.4])
         end = np.array([5.6, 7.8])
