@@ -1,0 +1,482 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, total={6in, 8in}]{geometry}
+\usepackage{amsmath}
+\usepackage{bm}
+\usepackage{datetime}
+\usepackage{listings}  % For nicely displaying Python code
+\usepackage{xcolor}
+\definecolor{keywords}{RGB}{255,0,90}
+\definecolor{comments}{RGB}{0,150,0}
+\definecolor{black}{RGB}{0,0,0}
+\definecolor{green}{RGB}{0,171,46}
+\definecolor{purple}{RGB}{125,17,23}
+\definecolor{orange}{RGB}{240,109,18}
+\definecolor{blue}{RGB}{17,38,208}
+\definecolor{red}{RGB}{191,3,20}
+
+% Redefining vectors and define unit vectors
+\let\vec \bm
+\newcommand{\uveci}{{\bm{\hat{\textnormal{\bfseries\i}}}}}
+\newcommand{\uvecj}{{\bm{\hat{\textnormal{\bfseries\j}}}}}
+\DeclareRobustCommand{\uvec}[1]{{%
+  \ifcsname uvec#1\endcsname
+     \csname uvec#1\endcsname
+   \else
+    \bm{\hat{\mathbf{#1}}}%
+   \fi
+}}
+
+% differential operator
+\newcommand{\diff}{\textnormal{d}}
+
+
+\title{Ray tracing}
+\author{Tom Spencer}
+\date{\currenttime, \today}
+
+\begin{document}
+
+\lstset{language=Python, 
+        basicstyle=\ttfamily\small, 
+        morekeywords={self},
+        keywordstyle=\color{orange},
+        commentstyle=\color{red},
+        stringstyle=\color{green},
+        showstringspaces=false,
+        identifierstyle=\color{black},
+}
+
+\maketitle
+
+\section{Introduction}
+Aiming to make a program for tracing light rays through various optical components such as lenses, prisms and mirrors. Hope to implement it in Python first, then re-implement it in C++ and finally get Python running it in C++ (might need to use Cython or C to do this).
+
+It allows me to explore various object orientated programming concepts in C++ such as polymorphism and virtual functions.
+
+\section{Program implementation}
+We define a base component class called \texttt{component} from which each type of component derives. E.g. we have derived classes including \texttt{mirror} and \texttt{lens}. The base class declares the methods \texttt{hit\_test()} which tests if a light ray interacts with the component and \texttt{hit()}, which performs the interaction. In Python we also have a \texttt{plot()} method that plots the component to the current plot.
+
+All components present in an optical system are simply stored in a Python list.
+
+\subsection{C++ complications}
+In C++ there isn't a simple way of storing all our components in a list like container such as \texttt{std::vector} as all elements must be of the same type. Without cheating and using something like \texttt{boost::any}, this can be overcome by making use of polymorphism.
+
+Any sort of component (such as a mirror or lens) is described by a class (\texttt{Mirror} and \texttt{Lens}) that derives from a \texttt{Component} base class. The \texttt{Component} class defines the \texttt{hit\_test()} and \texttt{hit()} methods as virtual functions. These are then overridden in the derived classes.
+
+C++ allows us to create a pointer \texttt{ptr} of type \texttt{\textsuperscript{*}Component} to a derived class such as \texttt{Mirror}. Suppose \texttt{ptr} points at an instance of \texttt{Mirror}. Since \texttt{hit()} is a virtual finction, when we call it using \texttt{ptr->hit()}, the \texttt{hit()} method in the \texttt{Mirror} class is called. This is because the \texttt{hit()} defined in \texttt{Mirror} is `more derived' than the \texttt{hit()} in \texttt{Component} and when a virtual function is called, the implementation that is executed corresponds to the `most derived.' Equivalently if \texttt{ptr} was pointing at an instance of \texttt{Lens}, it would call the \texttt{hit()} method defined in \texttt{Lens}.
+
+We then store all the components in a \texttt{std::vector} of type \texttt{\textsuperscript{*}Component}. All elements in the vector are then the same type, even though they point to different types of component. To avoid having to manage the memory it would probably be a good idea to use a smart pointer like \texttt{std::unique\_ptr} rather than a raw pointer.
+
+\subsection{Memory structures}
+We know now how to store and describe the system of optical components we wish to trace the rays through. Now we need to work out how to structure the rays themselves.
+
+In Python, we used a 3 dimensional \texttt{numpy} array, with the first index identifying the ray, the second the interaction point and the third discriminating x and y coordinate. \texttt{numpy} allows us to easily slice the array to extract specific components. In C++, it doesn't seem we can do this. There would seem to be two options:
+\begin{itemize}
+    \item Create a class to define a 3d array
+    \begin{itemize}
+        \item Has the advantage memory is all in one place
+        \item Can directly interact with a numpy array when using python
+    \end{itemize}
+    \item Create a \texttt{Ray} class that contains vectors of x and y coordinates
+    \begin{itemize}
+        \item Memory is all over the place
+        \item Would need to copy everything into a \texttt{numpy} array if we wanted to do that
+    \end{itemize}
+\end{itemize}
+I think it would be easier to create a \texttt{Ray} class to keep track of everything and then wrap it in \texttt{Cython}. Could always add a function to convert it to a \texttt{numpy} array and we're never going to be dealing with large numbers of rays, so memory probably isn't an issue. It also means I just need to pass a reference to the ray to any function and the function can work out get whatever it wants.
+
+I think the best way forward is to create a \texttt{Ray} class, with member variables describing the current direction of the ray as a \texttt{std::array<double, 2>} and the interaction points as a \linebreak {\texttt{std::vector<std::array<double, 2>>}}. This has the benefit that a single mathematical vector is described as a \texttt{std::array<double, 2>}, and this can easily be passed to functions. Also the position data of a single ray is contiguous. All the rays are then stored in a vector.
+
+When initialising the \texttt{Ray} class, we should reserve the memory required for the vector, depending on how many tracings we want to do. When we compute the new position, we can then just \texttt{push\_back} the answer into the vector.
+
+\subsection{Final}
+Each ray is described by an instance of a \texttt{Ray} class. This includes:
+\begin{itemize}
+    \item A \texttt{std::array} used to describe the direction of the ray
+    \item A vector of \texttt{std::array} used to describe the initial and interaction points of the ray
+\end{itemize}
+
+Each component ultimately derives from the \texttt{Component} class. This declares:
+\begin{itemize}
+    \item A \texttt{test\_hit()} method that tests whether a ray interacts with the component. Takes a reference to a instance of \texttt{Ray} as an argument. Returns -1.0 if the ray does not interact, otherwise the time to interaction
+    \item A \texttt{hit()} method that performs the interaction. Takes a reference to a instance of \texttt{Ray} and maximum number of interactions to perform as arguments. Doesn't return anything, modifies the existing \texttt{Ray} instance.
+    \item Several helper functions for performing common tasks:
+    \begin{itemize}
+        \item Rotate function. Takes a \texttt{std::array<double, 2>} and rotates it by $-\theta$. Equivalent to rotating to a coordinate system rotated by $\theta$
+        \item A method \texttt{compute\_t()} which returns the time for a ray to reach a certain position. Assumes the position does lie along the ray's path. Uses the larger of $v_x$ or $v_y$ in magnitude so it so numerically stable.
+    \end{itemize}
+\end{itemize}
+From this three helper classes are derived. These aren't meant to be initialised directly, but help in the construction of classes that are. They are:
+\begin{itemize}
+    \item \texttt{Plane}
+    \begin{itemize}
+        \item Describes a simple planar component
+        \item Declares \texttt{start} and \texttt{end} member variables to define the start and end points of the plane
+        \item Defines a constructor to initialise the class with given start and end points
+        \item Implements the \texttt{test\_hit()} method to test for a ray hitting the plane
+    \end{itemize}
+    \item \texttt{Spherical}
+    \begin{itemize}
+        \item Describes a circular component or arc
+        \item Declares member variables for describing centre of circle/arc, its radius, and start/end angles for defining arc
+        \item Defines constructor for these variables
+        \item Implements the \texttt{test\_hit()} method to test for a ray hitting the circle/arc
+    \end{itemize}
+    \item \texttt{Complex\_Component}
+    \begin{itemize}
+        \item Describes a complex component composed of several other components
+        \item Declares a vector of type \texttt{std::unique\_ptr<Component>} to store the sub-components of this component
+        \item Implements both the \texttt{test\_hit()} and \texttt{hit()} method:
+        \begin{itemize}
+            \item For \texttt{test\_hit()}, we simply need to iterate over all the sub-components, return -1.0 if there are no interactions, otherwise the smallest positive time
+            \item For \texttt{hit()}, we wish to trace a ray through these sub-components with a maximum number of interactions
+            \item This is the same as the original problem, so we can just call the \texttt{trace\_ray()} function that will do this for us
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+From these there are four basic components implemented:
+\begin{itemize}
+    \item \texttt{Mirror} - plane mirror
+    \item \texttt{Mirror\_Sph} - spherical mirror
+    \item \texttt{Refract\_Plane} - refraction at a planar boundary
+    \item \texttt{Refract\_Sph} - refraction at a spherical boundary
+\end{itemize}
+
+Once these basic components have been implemented, complex components such as prisms or lenses should be exceedingly easy to implement. All that would need to be implemented would be a constructor that constructs the sub-components and adds them to the vector of sub-components.
+
+To perform the tracing, there are two relevant functions:
+\begin{itemize}
+    \item \texttt{trace\_ray()} traces a single ray through a number of components, up to a maximum number of iteration, $n$. Takes a reference to a \texttt{Ray} instance, vector of \texttt{std::unique\_ptr<Component>} and maximum number of iterations as arguments. Works directly on the ray instance
+    \item \texttt{trace()} takes a vector of rays and traces them through the components given using \texttt{trace\_ray()}
+\end{itemize}
+
+\section{Determining the intersection of a ray with a surface}
+We shall always consider the light ray in question to start at $\vec{r}_0 = x_0 \uveci + y_0 \uvecj$ and follow a path,
+\begin{equation}
+    \vec{r}(t) = \vec{r}_0 + \vec{v}t,
+\end{equation}
+where $\vec{v}$ is a unit vector indicating the direction of travel. $t$ is a time-like quantity and for an interaction we must have $t > 0$ for the interaction to be in the future. If there are multiple components that could interact we select the one with the smallest $t$.
+
+We first determine expressions for computing where a ray interested with either a planar or spherical surface, since all components possess a combination of planar and spherical surfaces.
+
+\subsection{Ray intersection with a planar surface}
+We define a plane as starting at $\vec{r}_1$ and ending at $\vec{r}_2$. It is reflecting on both sides and is described by,
+\begin{equation}
+    \vec{r}_\mathrm{m}(t')
+    =
+    \vec{r}_1 + (\vec{r}_2 - \vec{r}_1) t',
+\end{equation}
+where $0 \le t' \le 1$ for a point to be on the mirror.
+
+We can derive where the ray interests as obeying,
+\begin{align}
+    t'
+    &=
+    \frac{v_y(x_1 - x_0) - v_x(y_1 - y_0)}{v_x(y_2 - y_1) - v_y(x_2 - x_1)}, &
+    t
+    &=
+    \frac{x_{0} \left(- y_{1} + y_{2}\right) - x_{1} y_{2} + x_{2} y_{1} + y_{0} \left(x_{1} - x_{2}\right)}{v_{x} \left(y_{1} - y_{2}\right) + v_{y} \left(- x_{1} + x_{2}\right)}
+\end{align}
+Remember we require both a unique solution for $t$ to exist and $0 \le t' \le 1$ for it to intersect the plane. We have to check the denominator is not zero in both cases.
+
+\subsection{Ray intersection with a spherical surface}
+We consider a circle with centre $(x_l, y_l)$ and radius $R$. In general, only a portion of its surface is modelled with $\theta_i \le t' \le \theta_f$. Here $t'$ is a parameter in the range $0 \le t' < 2\pi$ that takes the place of the polar angle. Its surface can be described by,
+\begin{equation}
+    \vec{r}_\mathrm{s}(t')
+    =
+    (x_l + R\cos t') \uveci
+    +
+    (y_l + R\sin t') \uvecj.
+\end{equation}
+This gives us two simultaneous equations, namely,
+\begin{align}
+    x_0 + v_x t &= x_l + R\cos t' \\
+    y_0 + v_y t &= y_l + R\sin t'.
+\end{align}
+Letting $\Delta x = x_0 - x_l$, $\Delta y = y_0 - y_l$ we get,
+\begin{align}
+    \Delta x + v_x t &= R\cos t' \\
+    \Delta y + v_y t &= R\sin t'.
+\end{align}
+Eliminating $t$ and substituting $\tan \theta = v_y/v_x$ produces,
+\begin{equation}
+    \Delta y - \Delta x \tan \theta + R \tan \theta \cos t'
+    =
+    R\sin t'.
+\end{equation}
+Defining $\gamma = \Delta y - \Delta x \tan \theta$ and $u = \cos t'$ produces,
+\begin{equation}
+    \left(
+        \gamma + R u\tan \theta
+    \right)^2
+    =
+    R^2 \left(
+        1-u^2
+    \right).
+\end{equation}
+The $a, b, c$ components of this quadratic are,
+\begin{align}
+    a
+    &=
+    R^2 \left( 1 + \tan^2 \theta \right), \\
+    b
+    &=
+    2 R\gamma \tan \theta, \\
+    c
+    &=
+    \gamma^2 - R^2.
+\end{align}
+The solution we have is,
+\begin{equation}
+    u = \cos t'
+    =
+    \frac{-2R\gamma \tan \theta 
+    \pm
+    \sqrt{
+    4R^2 \gamma^2 \tan^2 \theta
+    -
+    4
+    R^2 \left( 1 + \tan^2 \theta \right)
+    \left(
+        \gamma^2 - R^2
+    \right)
+    }}{2R^2 \left( 1 + \tan^2 \theta \right)}.
+\end{equation}
+This will actually generate four solutions; two due to the $\pm$ and a further two since if $t'$ is a solution, then so is $2\pi - t'$. We will need to work out how to determine to correct solution for the intersection. Now we need to be careful in case $v_x$ is small, as in this case $\tan \theta \rightarrow \infty$. Substituting back in $\tan \theta$ and multiplying top and bottom by $v_x^2$ produces,
+\begin{align}
+    \cos t'
+    &=
+    \frac{-2R\gamma v_x v_y
+    \pm
+    \sqrt{
+    4R^2 \gamma^2 v_x^2 v_y^2
+    -
+    4
+    R^2 \left( v_x^4 + v_x^2 v_y^2 \right)
+    \left(
+        \gamma^2 - R^2
+    \right)
+    }}{2R^2 \left( v_x^2 + v_y^2 \right)}, \\
+    &=
+    \frac{-\gamma v_x v_y
+    \pm
+    v_x
+    \sqrt{
+     \gamma^2 v_y^2
+    -
+    \left(
+        \gamma^2 - R^2
+    \right)
+    }}{R},
+\end{align}
+where the second line follows from $v_x^2 + v_y^2 = 1$ since $\vec{v}$ is normalised. $\gamma$ also has a dependence on $\tan \theta$, so we need to be careful again:
+\begin{equation}
+    \cos t'
+    =
+    \frac{1}{R}
+    \left(
+        -v_y
+        \delta
+        \pm
+        \sqrt{
+         \delta^2 
+        \left(
+            v_y^2 - 1
+        \right)
+        +
+        \left(
+            v_x R
+        \right)^2
+        }
+    \right),
+\end{equation}
+where $\delta = \left( \Delta y v_x - \Delta x v_y \right)$. This form should be numerically stable with no problems when $v_x$ is small. We shall denoted the two solutions to $\cos t'$ as $u$ and $v$.
+
+Now we must work out which of the four possible solutions is the one we are after. The solution can be determined by testing each possible solution in the following way,
+\begin{enumerate}
+    \item First if $u$ ($v$) are in the range $-1 \le u \le 1$ ($-1 \le v \le 1$)
+    \item Then determine which, (if any) $t'$ are in the necessary range for the surface, $\theta_i \le t' \le \theta_f$
+    \item Determine which solutions are true solutions and lie along the light ray's path
+    \item Finally if there are two solutions left, choose the solution with the smaller $t$ parameter
+\end{enumerate}
+
+\section{Components}
+We would like to provide implementations for the following components:
+\begin{itemize}
+    \item Mirrors, plane and spherical
+    \item Lenses
+    \item Prisms
+    \item Absorbing screen
+\end{itemize}
+We will first provide four basic components from which most other components we might be interested in can be described. These will be two that perform reflection/refraction at a planar surface and two that do the same but at a spherical (circular) surface.
+
+\section{Reflecting basic components}
+\subsection{Plane mirrors}
+We define a plane mirror as starting at $\vec{r}_1$ and ending at $\vec{r}_2$. It is reflecting on both sides and is described by,
+\begin{equation}
+    \vec{x}_\mathrm{m}(t')
+    =
+    \vec{x}_1 + (\vec{x}_2 - \vec{x}_1) t',
+\end{equation}
+where $0 \le t' \le 1$ for a point to be on the mirror. Once we have determined that a ray will intersect with a plane mirror, we need to determine how the ray will reflect. The basic law is that the angle of incidence is equal to the angle of reflection.
+
+We can compute the new starting position for the ray using the standard equation describing the ray as we have $t$. To find the new velocity, we compute the angle, $\alpha$, the plane makes with the $x$ axis,
+\begin{equation}
+    \label{eq:plane_angle}
+    \tan \alpha
+    =
+    \frac{y_2 - y_1}{x_2 - x_1}.
+\end{equation}
+
+Now we must be careful with the cases of $\alpha = \frac{\pi}{2}, \frac{3\pi}{2}$ since the tangent is infinite in these cases. Moreover as tangent is $\pi$ periodic, $\arctan$ will give the correct answer up to $\pm \pi$. Fortunately \texttt{numpy} has the function \texttt{atan2(y, x)} which specifically accounts for these two cases, and also will always return the correct sign. In C++ we will have to be careful here and possibly implement our own function for this purpose.
+
+We can now perform the reflection by rotating our coordinates by $\alpha$ to coordinates $(x', y')$. In these coordinates the ray is normal to the plane so the reflection is then simply a case of negating the $y'$ component. The standard rotation matrix to rotate a point anticlockwise from $(x, y)$ to $x', y')$ by $\theta$ is,
+\begin{equation}
+    \begin{pmatrix}
+        \cos \theta & -\sin \theta \\
+        \sin \theta &  \cos \theta
+    \end{pmatrix}.
+\end{equation}
+However, this rotates a point anticlockwise, we want to rotate our coordinates, so we require a minus sign for our matrix,
+\begin{equation}
+    \label{eq:rotation_matrix}
+    R(\theta)
+    =
+    \begin{pmatrix}
+         \cos \theta & \sin \theta \\
+        -\sin \theta & \cos \theta
+    \end{pmatrix}.
+\end{equation}
+
+Once we've negated the $y'$ component, we can then rotate back using $R(-\theta)$ to get the new direction of the ray.
+
+\subsection{Spherical mirror}
+To reflect at a spherical surface, we follow a broadly similar method to that of a planar surface. First we determine the $t, t'$ values where the ray intersects the surface. The intersection location is given by,
+\begin{align}
+    x
+    &=
+    x_s + R \cos t',
+    &
+    y
+    &=
+    y_s + R \sin t',
+\end{align}
+for a surface with centre $(x_s, y_s)$.
+
+We must then determine the angle $\alpha$ as before. We can easily compute $\alpha$ with the help of a little geometry as we know the angle $t'$ where the intersection occurs. We then have,
+\begin{equation}
+    \label{eq:alpha_sph}
+    \alpha = t' - \frac{\pi}{2}.
+\end{equation}
+
+After that it is identical to the plane mirror. We use Eq.~\ref{eq:rotation_matrix} to rotate the axis by $\alpha$, negate the $y'$ component, and finally rotate back to get the new direction.
+
+\section{Refracting basic components}
+Refraction is based on Snell's law, that the angle of incidence, $\theta_i$, and the angle of refraction, $\theta_f$, obey,
+\begin{equation}
+    n_i \sin \theta_i 
+    =
+    n_f \sin \theta_f,
+\end{equation}
+where both angles are measured from the normal of the surface. $n_i$ and $n_f$ are the refractive indices of the initial and final media. A complication of refraction is the possibility of total internal reflection. This occurs when,
+\begin{equation}
+    \sin \theta_f 
+    =
+    \frac{n_i \sin \theta_i}{n_f} > 1.
+\end{equation}
+The value of $\theta_i$ for which $\sin{\theta_f} = 1$ is known as the critical angle. It is therefore,
+\begin{equation}
+    \theta_c
+    =
+    \arcsin{\frac{n_f}{n_i}}.
+\end{equation}
+So once we compute the angle of incidence we ought to compute the critical angle to check if we will actually have total internal reflection.
+
+We will also need some way of describing the refractive index on each side. We can construct a vector normal to the surface that points in a consistent direction.
+
+\subsection{Refraction at a planar surface}
+Once again we want to rotate our system so that it is convenient. We will rotate our coordinates round by $\alpha$ (angle of the plane) so that normal lies along the y-axis. We then have,
+\begin{equation}
+    \theta_i 
+    =
+    \frac{\pi}{2} - \theta',
+\end{equation}
+where $\theta'$ is the angle of $\vec{v}'$, that is $\vec v$ in the rotated coordinates. Applying Snell's law to compute $\theta_f$, the new direction of the ray in the rotated coordinates is,
+\begin{equation}
+    \vec{v}'
+    = 
+    \cos{
+    \left(
+        \frac{\pi}{2} - \theta_f
+    \right)
+    } \uveci'
+    +
+    \sin{
+    \left(
+        \frac{\pi}{2} - \theta_f
+    \right)
+    } \uvecj'.
+\end{equation}
+Finally we then just have to rotate back to our original coordinates. 
+
+If total internal reflection is determined to happen, then we simply need to reflect the ray at the point of intersection.
+
+\subsection{Refraction at a spherical surface}
+At a spherical surface we already have a method for determining where a ray intersects the surface. The angle we must rotate through is given again by Eq.~\ref{eq:alpha_sph},
+\begin{equation}
+    \alpha = t' - \frac{\pi}{2}.
+\end{equation}
+Other than the different equation for computing $\alpha$, the method should be very similar to that of a plane.
+
+\section{Complex components}
+A complex component is one that is composed of other sub-components. These include objects such as lenses and prisms that can be described in terms of basic sub-components or a objects such as system of lenses, which are composed themselves of complex components. Equally, a complex component could be created from a mixture of basic and complex components.
+
+\subsection{Lenses}
+We shall first consider a lens to be composed of two spherical surface. Later we might include a class to consider what happens if one side of the lens if flat.
+
+
+\section{Calling from Python}
+To call from Python we wrap the C++ using Cython. We wrap each C++ class to produce a similarly named class as that in C++ but roughly with "Py" at the front. Class equivalents are detailed in Tab.~\ref{tab:C++ to Cython mappings}. Similarly we also produce a tracing function that takes in Python components and traces them in C++ named \texttt{PyTrace}.
+
+\begin{table}[h!]
+\centering
+    \begin{tabular}{ |c|c| } 
+         \hline
+         C++ & Cython \\ 
+         \hline
+         \texttt{Component} & \texttt{\_PyComponent} \\ 
+         \texttt{Complex\_Component} & \texttt{PyComplex\_Complex} \\ 
+         \texttt{Plane} & \texttt{\_PyPlane} \\ 
+         \texttt{Spherical} & \texttt{\_PySpherical} \\ 
+         \texttt{Mirror\_Plane} & \texttt{PyMirror\_Plane} \\ 
+         \texttt{Refract\_Plane} & \texttt{PyRefract\_Plane} \\ 
+         \texttt{Mirror\_Sph} & \texttt{PyMirror\_Sph} \\ 
+         \texttt{Refract\_Sph} & \texttt{PyRefract\_Sph} \\ 
+         \texttt{Ray} & \texttt{PyRay} \\ 
+         \hline
+         
+    \end{tabular}
+    \caption{C++ classes and their equivalent Cython versions.}
+    \label{tab:C++ to Cython mappings}
+\end{table}
+
+Properties such as the start and end points of planes are exposed as properties. In most cases points are returned as a \texttt{numpy} view. As such they can be edited element wise. The exception to this is \texttt{PyRay.pos} which returns a copy due to the way \texttt{Ray.pos} is stored in C++. Cython classes are initialised using a \texttt{\_\_cinit\_\_()} initialiser. Unfortunately this cannot be overloaded with the current version of Cython, though I do not believe this is an issue.
+
+Furthermore, we have an additional class, \texttt{PyCC\_Wrap}. \texttt{PyCC\_Wrap} is intended to allow easy creation of complex components from Python by simply inheriting from \texttt{PyCC\_Wrap} and passing the Cython components needed to describe the component to the \texttt{PyCC\_Wrap} initialiser. For example, a triangular prism defined through the positions of its vertices and interior/exterior refractive indices can be created using:
+\begin{lstlisting}[language=Python]
+class Prism(PyCC_Wrap):
+    
+    def __init__(self, a, b, c, n_in, n_out=1.0):
+        comps = [
+                PyRefract_Plane(a, b, n_out, n_in),
+                PyRefract_Plane(b, c, n_out, n_in),
+                PyRefract_Plane(c, a, n_out, n_in)
+            ]
+            
+        # Must remember to call super __init__()
+        super().__init__(comps)  
+\end{lstlisting}
+Like other components, \texttt{PyCC\_Wrap} provides a \texttt{Plot()} method useful for plotting the component.
+
+\end{document}
