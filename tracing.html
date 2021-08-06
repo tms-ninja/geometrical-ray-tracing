@@ -286,13 +286,8 @@ body.cython { font-family: courier; font-size: 12; }
 .cython.score-252 {background-color: #FFFF09;}
 .cython.score-253 {background-color: #FFFF09;}
 .cython.score-254 {background-color: #FFFF09;}
-pre { line-height: 125%; margin: 0; }
-td.linenos pre { color: #000000; background-color: #f0f0f0; padding-left: 5px; padding-right: 5px; }
-span.linenos { color: #000000; background-color: #f0f0f0; padding-left: 5px; padding-right: 5px; }
-td.linenos pre.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
-span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
 .cython .hll { background-color: #ffffcc }
-.cython { background: #f8f8f8; }
+.cython  { background: #f8f8f8; }
 .cython .c { color: #408080; font-style: italic } /* Comment */
 .cython .err { border: 1px solid #FF0000 } /* Error */
 .cython .k { color: #008000; font-weight: bold } /* Keyword */
@@ -395,11 +390,11 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <pre class="cython line score-0">&#xA0;<span class="">016</span>: </pre>
 <pre class="cython line score-0">&#xA0;<span class="">017</span>: <span class="c"># Shape of 1d numpy array with 2 elements</span></pre>
 <pre class="cython line score-10" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">018</span>: <span class="n">_arr_shape</span> <span class="o">=</span> <span class="p">(</span><span class="mf">2</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="mf">0</span><span class="p">)</span></pre>
-<pre class='cython code score-10 '>  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_d, __pyx_n_s_arr_shape, __pyx_tuple__48) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 18, __pyx_L1_error)</span>
+<pre class='cython code score-10 '>  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_d, __pyx_n_s_arr_shape, __pyx_tuple__53) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 18, __pyx_L1_error)</span>
 /* … */
-  __pyx_tuple__48 = <span class='py_c_api'>PyTuple_Pack</span>(8, __pyx_int_2, __pyx_int_0, __pyx_int_0, __pyx_int_0, __pyx_int_0, __pyx_int_0, __pyx_int_0, __pyx_int_0);<span class='error_goto'> if (unlikely(!__pyx_tuple__48)) __PYX_ERR(0, 18, __pyx_L1_error)</span>
-  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_tuple__48);
-  <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_tuple__48);
+  __pyx_tuple__53 = <span class='py_c_api'>PyTuple_Pack</span>(8, __pyx_int_2, __pyx_int_0, __pyx_int_0, __pyx_int_0, __pyx_int_0, __pyx_int_0, __pyx_int_0, __pyx_int_0);<span class='error_goto'> if (unlikely(!__pyx_tuple__53)) __PYX_ERR(0, 18, __pyx_L1_error)</span>
+  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_tuple__53);
+  <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_tuple__53);
 </pre><pre class="cython line score-0">&#xA0;<span class="">019</span>: </pre>
 <pre class="cython line score-0">&#xA0;<span class="">020</span>: </pre>
 <pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">021</span>: <span class="k">cdef</span> <span class="kt">arr</span> <span class="nf">make_arr_from_numpy</span><span class="p">(</span><span class="n">double</span><span class="p">[:]</span> <span class="n">n</span><span class="p">):</span></pre>
@@ -590,15 +585,15 @@ static PyObject *__pyx_pf_7tracing_PyTrace(CYTHON_UNUSED PyObject *__pyx_self, P
   return __pyx_r;
 }
 /* … */
-  __pyx_tuple__49 = <span class='py_c_api'>PyTuple_Pack</span>(8, __pyx_n_s_components, __pyx_n_s_rays, __pyx_n_s_n, __pyx_n_s_fill_up, __pyx_n_s_vec_comp, __pyx_n_s_c, __pyx_n_s_vec_rays, __pyx_n_s_r);<span class='error_goto'> if (unlikely(!__pyx_tuple__49)) __PYX_ERR(0, 44, __pyx_L1_error)</span>
-  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_tuple__49);
-  <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_tuple__49);
+  __pyx_tuple__54 = <span class='py_c_api'>PyTuple_Pack</span>(8, __pyx_n_s_components, __pyx_n_s_rays, __pyx_n_s_n, __pyx_n_s_fill_up, __pyx_n_s_vec_comp, __pyx_n_s_c, __pyx_n_s_vec_rays, __pyx_n_s_r);<span class='error_goto'> if (unlikely(!__pyx_tuple__54)) __PYX_ERR(0, 44, __pyx_L1_error)</span>
+  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_tuple__54);
+  <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_tuple__54);
 /* … */
   __pyx_t_1 = PyCFunction_NewEx(&amp;__pyx_mdef_7tracing_1PyTrace, NULL, __pyx_n_s_tracing);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 44, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
   if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_d, __pyx_n_s_PyTrace, __pyx_t_1) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 44, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_codeobj__50 = (PyObject*)<span class='pyx_c_api'>__Pyx_PyCode_New</span>(4, 0, 8, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__49, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_tracing_pyx, __pyx_n_s_PyTrace, 44, __pyx_empty_bytes);<span class='error_goto'> if (unlikely(!__pyx_codeobj__50)) __PYX_ERR(0, 44, __pyx_L1_error)</span>
+  __pyx_codeobj__55 = (PyObject*)<span class='pyx_c_api'>__Pyx_PyCode_New</span>(4, 0, 8, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__54, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_tracing_pyx, __pyx_n_s_PyTrace, 44, __pyx_empty_bytes);<span class='error_goto'> if (unlikely(!__pyx_codeobj__55)) __PYX_ERR(0, 44, __pyx_L1_error)</span>
 </pre><pre class="cython line score-0">&#xA0;<span class="">045</span>:     <span class="sd">&quot;&quot;&quot;</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">046</span>: <span class="sd">    Traces the rays through the component list for n iterations.</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">047</span>: </pre>
@@ -3179,7 +3174,7 @@ static PyObject *__pyx_pf_7tracing_12_PySpherical_plot(struct __pyx_obj_7tracing
   __pyx_tuple__14 = <span class='py_c_api'>PyTuple_Pack</span>(2, __pyx_slice__13, __pyx_int_0);<span class='error_goto'> if (unlikely(!__pyx_tuple__14)) __PYX_ERR(0, 578, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_tuple__14);
   <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_tuple__14);
-</pre><pre class="cython line score-51" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">579</span>:         <span class="n">points</span><span class="p">[:,</span> <span class="mf">1</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">centre</span><span class="p">[</span><span class="mf">1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">t</span><span class="p">)</span></pre>
+</pre><pre class="cython line score-51" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">579</span>:         <span class="n">points</span><span class="p">[:,</span> <span class="mf">1</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">centre</span><span class="p">[</span><span class="mf">1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">t</span><span class="p">)</span></pre>
 <pre class='cython code score-51 '>  __pyx_t_7 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(((PyObject *)__pyx_v_self), __pyx_n_s_centre);<span class='error_goto'> if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 579, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_7);
   __pyx_t_1 = <span class='pyx_c_api'>__Pyx_GetItemInt</span>(__pyx_t_7, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 579, __pyx_L1_error)</span>
@@ -3189,7 +3184,7 @@ static PyObject *__pyx_pf_7tracing_12_PySpherical_plot(struct __pyx_obj_7tracing
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_7);
   <span class='pyx_c_api'>__Pyx_GetModuleGlobalName</span>(__pyx_t_5, __pyx_n_s_np);<span class='error_goto'> if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 579, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_5);
-  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_t_5, __pyx_n_s_cos);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 579, __pyx_L1_error)</span>
+  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_t_5, __pyx_n_s_sin);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 579, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_5); __pyx_t_5 = 0;
   __pyx_t_5 = NULL;
@@ -4116,15 +4111,15 @@ static PyObject *__pyx_pf_7tracing_9PyCC_Wrap___init__(CYTHON_UNUSED PyObject *_
   return __pyx_r;
 }
 /* … */
-  __pyx_tuple__51 = <span class='py_c_api'>PyTuple_Pack</span>(2, __pyx_n_s_self, __pyx_n_s_ls);<span class='error_goto'> if (unlikely(!__pyx_tuple__51)) __PYX_ERR(0, 773, __pyx_L1_error)</span>
-  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_tuple__51);
-  <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_tuple__51);
+  __pyx_tuple__56 = <span class='py_c_api'>PyTuple_Pack</span>(2, __pyx_n_s_self, __pyx_n_s_ls);<span class='error_goto'> if (unlikely(!__pyx_tuple__56)) __PYX_ERR(0, 773, __pyx_L1_error)</span>
+  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_tuple__56);
+  <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_tuple__56);
 /* … */
-  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_CyFunction_New</span>(&amp;__pyx_mdef_7tracing_9PyCC_Wrap_1__init__, 0, __pyx_n_s_PyCC_Wrap___init, NULL, __pyx_n_s_tracing, __pyx_d, ((PyObject *)__pyx_codeobj__52));<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 773, __pyx_L1_error)</span>
+  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_CyFunction_New</span>(&amp;__pyx_mdef_7tracing_9PyCC_Wrap_1__init__, 0, __pyx_n_s_PyCC_Wrap___init, NULL, __pyx_n_s_tracing, __pyx_d, ((PyObject *)__pyx_codeobj__57));<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 773, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
   if (<span class='pyx_c_api'>__Pyx_SetNameInClass</span>(__pyx_t_1, __pyx_n_s_init_2, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 773, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_codeobj__52 = (PyObject*)<span class='pyx_c_api'>__Pyx_PyCode_New</span>(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__51, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_tracing_pyx, __pyx_n_s_init_2, 773, __pyx_empty_bytes);<span class='error_goto'> if (unlikely(!__pyx_codeobj__52)) __PYX_ERR(0, 773, __pyx_L1_error)</span>
+  __pyx_codeobj__57 = (PyObject*)<span class='pyx_c_api'>__Pyx_PyCode_New</span>(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__56, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_tracing_pyx, __pyx_n_s_init_2, 773, __pyx_empty_bytes);<span class='error_goto'> if (unlikely(!__pyx_codeobj__57)) __PYX_ERR(0, 773, __pyx_L1_error)</span>
 </pre><pre class="cython line score-0">&#xA0;<span class="">774</span>:         <span class="sd">&quot;&quot;&quot;</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">775</span>: <span class="sd">        Creates an instance of PyCC_Wrap.</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">776</span>: </pre>
@@ -4240,15 +4235,15 @@ static PyObject *__pyx_pf_7tracing_9PyCC_Wrap_2__getitem__(CYTHON_UNUSED PyObjec
   return __pyx_r;
 }
 /* … */
-  __pyx_tuple__53 = <span class='py_c_api'>PyTuple_Pack</span>(2, __pyx_n_s_self, __pyx_n_s_key);<span class='error_goto'> if (unlikely(!__pyx_tuple__53)) __PYX_ERR(0, 797, __pyx_L1_error)</span>
-  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_tuple__53);
-  <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_tuple__53);
+  __pyx_tuple__58 = <span class='py_c_api'>PyTuple_Pack</span>(2, __pyx_n_s_self, __pyx_n_s_key);<span class='error_goto'> if (unlikely(!__pyx_tuple__58)) __PYX_ERR(0, 797, __pyx_L1_error)</span>
+  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_tuple__58);
+  <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_tuple__58);
 /* … */
-  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_CyFunction_New</span>(&amp;__pyx_mdef_7tracing_9PyCC_Wrap_3__getitem__, 0, __pyx_n_s_PyCC_Wrap___getitem, NULL, __pyx_n_s_tracing, __pyx_d, ((PyObject *)__pyx_codeobj__54));<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 797, __pyx_L1_error)</span>
+  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_CyFunction_New</span>(&amp;__pyx_mdef_7tracing_9PyCC_Wrap_3__getitem__, 0, __pyx_n_s_PyCC_Wrap___getitem, NULL, __pyx_n_s_tracing, __pyx_d, ((PyObject *)__pyx_codeobj__59));<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 797, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
   if (<span class='pyx_c_api'>__Pyx_SetNameInClass</span>(__pyx_t_1, __pyx_n_s_getitem, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 797, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_codeobj__54 = (PyObject*)<span class='pyx_c_api'>__Pyx_PyCode_New</span>(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__53, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_tracing_pyx, __pyx_n_s_getitem, 797, __pyx_empty_bytes);<span class='error_goto'> if (unlikely(!__pyx_codeobj__54)) __PYX_ERR(0, 797, __pyx_L1_error)</span>
+  __pyx_codeobj__59 = (PyObject*)<span class='pyx_c_api'>__Pyx_PyCode_New</span>(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__58, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_tracing_pyx, __pyx_n_s_getitem, 797, __pyx_empty_bytes);<span class='error_goto'> if (unlikely(!__pyx_codeobj__59)) __PYX_ERR(0, 797, __pyx_L1_error)</span>
 </pre><pre class="cython line score-0">&#xA0;<span class="">798</span>:         <span class="sd">&quot;&quot;&quot;</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">799</span>: <span class="sd">        Gets a component by its index.</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">800</span>: </pre>
@@ -4410,19 +4405,19 @@ static PyObject *__pyx_pf_7tracing_9PyCC_Wrap_4plot(CYTHON_UNUSED PyObject *__py
   return __pyx_r;
 }
 /* … */
-  __pyx_tuple__55 = <span class='py_c_api'>PyTuple_Pack</span>(9, __pyx_n_s_self, __pyx_n_s_flatten, __pyx_n_s_args, __pyx_n_s_kwargs, __pyx_n_s_points, __pyx_n_s_sol, __pyx_n_s_p, __pyx_n_s_genexpr, __pyx_n_s_genexpr);<span class='error_goto'> if (unlikely(!__pyx_tuple__55)) __PYX_ERR(0, 815, __pyx_L1_error)</span>
-  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_tuple__55);
-  <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_tuple__55);
-  __pyx_codeobj__56 = (PyObject*)<span class='pyx_c_api'>__Pyx_PyCode_New</span>(2, 0, 9, 0, CO_OPTIMIZED|CO_NEWLOCALS|CO_VARARGS|CO_VARKEYWORDS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__55, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_tracing_pyx, __pyx_n_s_plot, 815, __pyx_empty_bytes);<span class='error_goto'> if (unlikely(!__pyx_codeobj__56)) __PYX_ERR(0, 815, __pyx_L1_error)</span>
+  __pyx_tuple__60 = <span class='py_c_api'>PyTuple_Pack</span>(9, __pyx_n_s_self, __pyx_n_s_flatten, __pyx_n_s_args, __pyx_n_s_kwargs, __pyx_n_s_points, __pyx_n_s_sol, __pyx_n_s_p, __pyx_n_s_genexpr, __pyx_n_s_genexpr);<span class='error_goto'> if (unlikely(!__pyx_tuple__60)) __PYX_ERR(0, 815, __pyx_L1_error)</span>
+  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_tuple__60);
+  <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_tuple__60);
+  __pyx_codeobj__61 = (PyObject*)<span class='pyx_c_api'>__Pyx_PyCode_New</span>(2, 0, 9, 0, CO_OPTIMIZED|CO_NEWLOCALS|CO_VARARGS|CO_VARKEYWORDS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__60, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_tracing_pyx, __pyx_n_s_plot, 815, __pyx_empty_bytes);<span class='error_goto'> if (unlikely(!__pyx_codeobj__61)) __PYX_ERR(0, 815, __pyx_L1_error)</span>
 /* … */
-  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_CyFunction_New</span>(&amp;__pyx_mdef_7tracing_9PyCC_Wrap_5plot, 0, __pyx_n_s_PyCC_Wrap_plot, NULL, __pyx_n_s_tracing, __pyx_d, ((PyObject *)__pyx_codeobj__56));<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 815, __pyx_L1_error)</span>
+  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_CyFunction_New</span>(&amp;__pyx_mdef_7tracing_9PyCC_Wrap_5plot, 0, __pyx_n_s_PyCC_Wrap_plot, NULL, __pyx_n_s_tracing, __pyx_d, ((PyObject *)__pyx_codeobj__61));<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 815, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
-  <span class='pyx_c_api'>__Pyx_CyFunction_SetDefaultsTuple</span>(__pyx_t_2, __pyx_tuple__57);
+  <span class='pyx_c_api'>__Pyx_CyFunction_SetDefaultsTuple</span>(__pyx_t_2, __pyx_tuple__62);
   if (<span class='pyx_c_api'>__Pyx_SetNameInClass</span>(__pyx_t_1, __pyx_n_s_plot, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 815, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_tuple__57 = <span class='py_c_api'>PyTuple_Pack</span>(1, ((PyObject *)Py_True));<span class='error_goto'> if (unlikely(!__pyx_tuple__57)) __PYX_ERR(0, 815, __pyx_L1_error)</span>
-  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_tuple__57);
-  <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_tuple__57);
+  __pyx_tuple__62 = <span class='py_c_api'>PyTuple_Pack</span>(1, ((PyObject *)Py_True));<span class='error_goto'> if (unlikely(!__pyx_tuple__62)) __PYX_ERR(0, 815, __pyx_L1_error)</span>
+  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_tuple__62);
+  <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_tuple__62);
 /* … */
 struct __pyx_obj_7tracing___pyx_scope_struct__plot {
   PyObject_HEAD

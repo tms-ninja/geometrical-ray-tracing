@@ -576,7 +576,7 @@ cdef class _PySpherical(_PyComponent):
         t = np.linspace(self.start, self.end, n_points)
         
         points[:, 0] = self.centre[0] + self.R*np.cos(t)
-        points[:, 1] = self.centre[1] + self.R*np.cos(t)
+        points[:, 1] = self.centre[1] + self.R*np.sin(t)
         
         return points
 
