@@ -38,7 +38,7 @@ unit_vecs = [np.array([np.cos(ang), np.sin(ang)]) for ang in ray_angles]
 
 rays = [PyRay(1.5*R*uv, -uv) for uv in unit_vecs]
 
-PyTrace([c], rays, n=3)
+PyTrace([c], rays, n=4)
 
 # Plotting
 plt.gca().set_aspect('equal')
@@ -47,9 +47,16 @@ m_x, m_y = c.plot().T
 plt.plot(m_x, m_y)
 
 
-for r in rays:
+for i, (r, d) in enumerate(zip(rays, unit_vecs)):
 	r_x, r_y = r.plot().T
-	plt.plot(r_x, r_y)
+	plt.plot(r_x, r_y, color=f"C{i + 1 % 10}")
+	
+	# Plot an arrow to show direction of ray
+	arrow_x = r_x[1] + (r_x[0]-r_x[1])/2
+	arrow_y = r_y[1] + (r_y[0]-r_y[1])/2
+	
+	plt.arrow(arrow_x, arrow_y, -d[0]/100, -d[1]/100, color=f"C{i + 1 % 10}",
+			   length_includes_head=True, head_width=.05)
 
 plt.show()
 
