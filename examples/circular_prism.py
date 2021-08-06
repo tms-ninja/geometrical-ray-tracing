@@ -31,23 +31,26 @@ n_out = 1.0
 
 c = SemiCircPrism(centre, R, n_in, n_out)
 
+# Incidence angles for rays
+ray_angles = np.linspace(90.0, 160.0, 8)*np.pi/180.0
 
-ray_angle = 120.0*np.pi/180.0
+unit_vecs = [np.array([np.cos(ang), np.sin(ang)]) for ang in ray_angles]
 
-unit_vec = np.array([np.cos(ray_angle), np.sin(ray_angle)])
+rays = [PyRay(1.5*R*uv, -uv) for uv in unit_vecs]
 
-r = PyRay(1.5*R*unit_vec, -unit_vec) 
-
-PyTrace([c], [r], n=3)
+PyTrace([c], rays, n=3)
 
 # Plotting
-m_x, m_y = c.plot().T
-r_x, r_y = r.pos.T
-
 plt.gca().set_aspect('equal')
 
+m_x, m_y = c.plot().T
 plt.plot(m_x, m_y)
-plt.plot(r_x, r_y)
+
+
+for r in rays:
+	r_x, r_y = r.plot().T
+	plt.plot(r_x, r_y)
+
 plt.show()
 
 
