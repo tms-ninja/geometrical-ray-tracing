@@ -9,7 +9,7 @@ from Cython.Build import cythonize
 from distutils.file_util import copy_file
 
 setup(ext_modules=cythonize("tracing.pyx", compiler_directives={'language_level': 3}),
-      include_dirs=[np.get_include()])
+      include_dirs=[np.get_include(), "cpp"])
 
 # Copy the binaries if they are newer
 files_to_copy = chain(glob.glob("*.pyd"), glob.glob("*.so"))
