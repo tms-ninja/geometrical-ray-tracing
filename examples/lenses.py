@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 from tracing import PyTrace, PyRay, PyCC_Wrap, PyRefract_Plane, PyRefract_Sph
 
-class lens(PyCC_Wrap):
+class Lens(PyCC_Wrap):
     def __init__(self, centre, R_lens, R1, R2, d, n_in, n_out=1.0) -> None:
         """
         R_lens is the radius of the len itself
@@ -36,7 +36,7 @@ class lens(PyCC_Wrap):
 
         super().__init__(comps)
 
-class ConvexLens(lens):
+class ConvexLens(Lens):
     def __init__(self, centre, R_lens, R1, R2, n_in, n_out=1.0) -> None:
         """
         R_lens is the radius of the len itself
