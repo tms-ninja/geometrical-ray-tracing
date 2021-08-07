@@ -3,33 +3,7 @@
 /* BEGIN: Cython Metadata
 {
     "distutils": {
-        "depends": [
-            "Complex_Component.cpp",
-            "Complex_Component.h",
-            "Component.cpp",
-            "Component.h",
-            "Mirror_Plane.cpp",
-            "Mirror_Plane.h",
-            "Mirror_Sph.cpp",
-            "Mirror_Sph.h",
-            "Plane.cpp",
-            "Plane.h",
-            "Ray.cpp",
-            "Ray.h",
-            "Refract_Plane.cpp",
-            "Refract_Plane.h",
-            "Refract_Sph.cpp",
-            "Refract_Sph.h",
-            "Spherical.cpp",
-            "Spherical.h",
-            "general.cpp",
-            "general.h",
-            "trace_func.cpp",
-            "trace_func.h"
-        ],
-        "include_dirs": [
-            "."
-        ],
+        "depends": [],
         "language": "c++",
         "name": "tracing",
         "sources": [
