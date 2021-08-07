@@ -3,6 +3,38 @@ import matplotlib.pyplot as plt
 
 from tracing import PyTrace, PyRay, PyCC_Wrap, PyRefract_Plane, PyRefract_Sph
 
+class lens(PyCC_Wrap):
+    def __init__(self, centre, R_lens, R1, R2, d, n_in, n_out=1.0) -> None:
+        """
+        R_lens is the radius of the len itself
+        R1 is radius of curvature on left, R2 on the right
+        d is the width of the lens between each circular part
+        """
+        # cetres of the arcs used to describe lens
+        left_centre = centre.copy()
+        left_centre[0] += np.sqrt(R1**2 - R_lens**2) - d/2
+        left_ang = np.arcsin(R_lens / R1)
+
+        right_centre = centre.copy()
+        right_centre[0] -= np.sqrt(R2**2 - R_lens**2) - d/2
+        right_ang = np.arcsin(R_lens / R2)
+
+        c_x, c_y = centre
+
+        # positions o 
+        top_left = np.array([c_x - d/2, c_y + R_lens])
+        top_right = np.array([c_x + d/2, c_y + R_lens])
+        bottom_left = np.array([c_x - d/2, c_y - R_lens])
+        bottom_right = np.array([c_x + d/2, c_y - R_lens])
+
+        comps = [
+            PyRefract_Sph(left_centre, R1, np.pi-left_ang, np.pi+left_ang, n_out, n_in),
+            PyRefract_Sph(right_centre, R1, -right_ang, right_ang, n_out, n_in),
+            PyRefract_Plane(top_left, top_right, n_out, n_in),
+            PyRefract_Plane(bottom_right, bottom_left, n_out, n_in)
+        ]
+
+        super().__init__(comps)
 
 
 class ConvexLens(PyCC_Wrap):
