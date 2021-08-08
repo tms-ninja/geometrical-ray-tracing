@@ -106,7 +106,8 @@ for c in comps:
         plt.plot(c_x, c_y, color="C0")
 
 for i, r in enumerate(rays):
-    pos = r.plot().T
+    pos_plt = r.plot()
+    pos = pos_plt.T
     r_x, r_y = pos
     plt.plot(r_x, r_y, color=f"C{i + 1 % 10}")
     
@@ -114,10 +115,10 @@ for i, r in enumerate(rays):
     arrow_x = r_x[1] + (r_x[0]-r_x[1])/2
     arrow_y = r_y[1] + (r_y[0]-r_y[1])/2
     
-    d = pos[1] - pos[1]
+    d = pos_plt[1] - pos_plt[0]
 
-    plt.arrow(arrow_x, arrow_y, -d[0]/100, -d[1]/100, color=f"C{i + 1 % 10}",
-               length_includes_head=True, head_width=.05)
+    plt.arrow(arrow_x, arrow_y, d[0]/100, d[1]/100, color=f"C{i + 1 % 10}",
+               length_includes_head=True, head_width=.1)
 
 plt.show()
 
