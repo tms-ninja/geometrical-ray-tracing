@@ -864,6 +864,14 @@ class PyLens(PyCC_Wrap):
         R1 is radius of curvature on left, R2 on the right
         d is the width of the lens between each circular part
         """
+        self._centre = centre
+        self._R_lens = R_lens
+        self._R1 = R1
+        self._R2 = R2
+        self._d = d
+        self._n_in = n_in
+        self._n_out = n_out
+
         if R1 >= R_lens:
             # Convex
             # cetres of the arcs used to describe lens
@@ -871,7 +879,7 @@ class PyLens(PyCC_Wrap):
             left_centre[0] += np.sqrt(R1**2 - R_lens**2) - d/2
             left_ang = np.arcsin(R_lens / R1)
 
-            left_arc = PyRefract_Sph(left_centre, R1, np.pi-left_ang, np.pi+left_ang, n_out, n_in)
+            self._left_arc = PyRefract_Sph(left_centre, R1, np.pi-left_ang, np.pi+left_ang, n_out, n_in)
 
         elif R1 <= -R_lens:
             # Concanve
@@ -879,7 +887,7 @@ class PyLens(PyCC_Wrap):
             left_centre[0] -= np.sqrt(R1**2 - R_lens**2) + d/2
             left_ang = np.arcsin(-R_lens / R1)   
 
-            left_arc = PyRefract_Sph(left_centre, -R1, -left_ang, left_ang, n_in, n_out)
+            self._left_arc = PyRefract_Sph(left_centre, -R1, -left_ang, left_ang, n_in, n_out)
 
         else:
             raise ValueError(f"R1 = {R1} is invalid")
@@ -892,7 +900,7 @@ class PyLens(PyCC_Wrap):
             right_centre[0] -= np.sqrt(R2**2 - R_lens**2) - d/2
             right_ang = np.arcsin(R_lens / R2)
 
-            right_arc = PyRefract_Sph(right_centre, R2, -right_ang, right_ang, n_out, n_in)
+            self._right_arc = PyRefract_Sph(right_centre, R2, -right_ang, right_ang, n_out, n_in)
 
         elif R2 <= -R_lens:
             # Concanve
@@ -900,7 +908,7 @@ class PyLens(PyCC_Wrap):
             right_centre[0] += np.sqrt(R2**2 - R_lens**2) + d/2
             right_ang = np.arcsin(-R_lens / R2)
 
-            right_arc = PyRefract_Sph(right_centre, -R2, np.pi-right_ang, np.pi+right_ang, n_in, n_out)
+            self._right_arc = PyRefract_Sph(right_centre, -R2, np.pi-right_ang, np.pi+right_ang, n_in, n_out)
 
         else:
             raise ValueError(f"R2 = {R2} is invalid")
@@ -914,11 +922,14 @@ class PyLens(PyCC_Wrap):
         bottom_left = np.array([c_x - d/2, c_y - R_lens])
         bottom_right = np.array([c_x + d/2, c_y - R_lens])
 
+        self._top_plane = PyRefract_Plane(top_right, top_left, n_in, n_out)
+        self._bottom_plane = PyRefract_Plane(bottom_left, bottom_right, n_in, n_out)
+
         comps = [
-            left_arc,
-            PyRefract_Plane(bottom_left, bottom_right, n_in, n_out),
-            right_arc,
-            PyRefract_Plane(top_right, top_left, n_in, n_out),
+            self._left_arc,
+            self._bottom_plane,
+            self._right_arc,
+            self._top_plane,
         ]
 
         super().__init__(comps)
@@ -926,6 +937,37 @@ class PyLens(PyCC_Wrap):
     def plot(self):
         # Return list of sub-comp plots to avoid needing them in the correct order 
         return super().plot(flatten=False)
+
+    @property
+    def centre(self):
+        return self._centre
+
+    @property
+    def R_lens(self):
+        return self._R_lens
+
+    @property
+    def R1(self):
+        # Return signed R1 so we know if it's convex/concave
+        return self._R1
+
+    @property
+    def R2(self):
+        # Return signed R2 so we know if it's convex/concave
+        return self._R2
+
+    @property
+    def d(self):
+        return self._d
+
+    @property
+    def n_in(self):
+        return self._n_in
+
+    @property
+    def n_out(self):
+        return self._n_out
+
 
 class PyBiConvexLens(PyLens):
     def __init__(self, centre, R_lens, R1, R2, d, n_in, n_out=1.0) -> None:
