@@ -74,17 +74,20 @@ class Lens(PyCC_Wrap):
         return super().plot(flatten=False)
 
 class ConvexLens(Lens):
-    def __init__(self, centre, R_lens, R1, R2, n_in, n_out=1.0) -> None:
+    def __init__(self, centre, R_lens, R1, R2, d, n_in, n_out=1.0) -> None:
         """
         R_lens is the radius of the len itself
         R1 is radius of curvature on left, R2 on the right
         """
-        super().__init__(centre, R_lens, R1, R2, d=0.2, n_in=n_in, n_out=n_out)
+        assert R1 >= R_lens, f"{R1 = } was less than radius of lens {R_lens = }"
+        assert R2 >= R_lens, f"{R2 = } was less than radius of lens {R_lens = }"
+
+        super().__init__(centre, R_lens, R1, R2, d, n_in, n_out)
 
 
 centre = np.array([0.0, 0.0])
 
-l = ConvexLens(centre=centre, R_lens=2, R1=4, R2=4, n_in=1.33, n_out=1.0)
+l = ConvexLens(centre=centre, R_lens=2, R1=4, R2=4, d=0.2, n_in=1.33, n_out=1.0)
 
 comps = [l, Lens(centre=np.array([2.5, 0.0]), R_lens=2, R1=-4, R2=-4, d=1.5, n_in=2.0, n_out=1.0)]
 
