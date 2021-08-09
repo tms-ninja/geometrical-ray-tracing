@@ -1,9 +1,15 @@
+# Example to show how we can make complex components made from other complex
+# components. It traces rays thought first a biconvex lens and then through
+# a biconcave lens.
 import numpy as np
 import matplotlib.pyplot as plt
 
 from tracing import PyTrace, PyRay, PyLens, PyBiConvexLens, PyCC_Wrap
 
-
+# We create this LensCombo object to show we can have complex components made
+# from more complex components. PyLens is a complex components derived from
+# PyCC_Wrap in tracing. Similarly PyBiConvexLens is class derived from
+# PyLens.
 class LensCombo(PyCC_Wrap):
     def __init__(self, centre_1, centre_2) -> None:
         lens_1_param = {
@@ -31,6 +37,8 @@ class LensCombo(PyCC_Wrap):
     def plot(self):
         return super().plot(flatten=False)
 
+# This is useful as the plotting routine returns a nested list with the leaves
+# corresponding to the plotting data
 def crawl(lst):
     """Crawls a nested list and yields none-list items"""
     
@@ -52,13 +60,14 @@ PyTrace(comps, rays, n=6)
 # Plotting
 plt.gca().set_aspect('equal')
 
+# Plot components
 for c in comps:
-
     for sub_comp in crawl(c.plot()):
         c_x, c_y = sub_comp.T
 
         plt.plot(c_x, c_y, color="C0")
 
+# Plot rays with arrows
 for i, r in enumerate(rays):
     pos_plt = r.plot()
     pos = pos_plt.T
