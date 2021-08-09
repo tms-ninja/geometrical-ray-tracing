@@ -4,6 +4,10 @@
 \usepackage{amsmath}
 \usepackage{bm}
 \usepackage{datetime}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{tikz}
+
 \usepackage{listings}  % For nicely displaying Python code
 \usepackage{xcolor}
 \definecolor{keywords}{RGB}{255,0,90}
@@ -433,7 +437,54 @@ Other than the different equation for computing $\alpha$, the method should be v
 A complex component is one that is composed of other sub-components. These include objects such as lenses and prisms that can be described in terms of basic sub-components or a objects such as system of lenses, which are composed themselves of complex components. Equally, a complex component could be created from a mixture of basic and complex components.
 
 \subsection{Lenses}
-We shall first consider a lens to be composed of two spherical surface. Later we might include a class to consider what happens if one side of the lens if flat.
+We shall first consider a lens to be composed of four components. Two will always be planar boundaries corresponding to the top and bottom planes in Fig.~\ref{fig:convex lens}. The remaining two will be either arcs of planes depending on the type of lens, e.g. biconvex or plano-convex. A generic lens can then be described as a complex component composed of these four objects.
+
+To distinguish between convex, concave and plane lens faces, we take the following convention:
+\begin{itemize}
+    \item A convex component arc has a \textbf{positive} radius of curvature
+    \item A concave component arc has a \textbf{negative} radius of curvature
+    \item A plane component arc sets the radius of curvature to be \textbf{zero}
+\end{itemize}
+This means any radius of curvature where $R < |R_\mathrm{lens}|$ but $R \neq 0$ is invalid. We note we must be careful with how the interior and exterior refractive indices of the lens, $N_\mathrm{in}$ and $n_\mathrm{out}$, correspond to what refractive parameters are passed to each individual component. Changing
+a lens arc from convex to concave or swapping from left to right will require care with these refractive parameters.
+
+Note we can compute $\Delta x$ as,
+\begin{equation}
+    \Delta x = \frac{d}{2} + \sqrt{R^2 - R_\mathrm{lens}^2}.
+\end{equation}
+
+Finally we should check for self intersection if one or both of the lens arcs are concave ($R<0$). Strange behaviour might result otherwise.
+
+\begin{figure}
+    \centering
+    \begin{tikzpicture}
+        % Note (0, 2) is where tikz starts drawing the arc
+        \draw[thick] (0, 2) arc (150:210:4);
+        \draw[thick] (-1.5, 2) arc (30:-30:4);
+        \draw[thick] (0, 2) -- (-1.5, 2);
+        \draw[thick] (0, -2) -- (-1.5, -2);
+        
+        \draw[thick, |-|] (-1.5, 2.2) -- (0.0, 2.2) node[pos=0.5, above] {$d$};
+        
+        % Dashed lines on left & labels
+        \draw[thick, dashed]  (-5.37,0) -- (-1.5, 2) -- (-1.5, -2) -- (-5.37,0) -- (-1.5, 0);
+        
+        \draw[thick, |-|] (-0.75, -2.2) -- (-5.37, -2.2) node[pos=0.5, below] {$\Delta x_1$};
+        \draw[thick, |-|] (-1.6, 2.2) -- (-5.47, 0.2) node[pos=0.5, above] {$R_1$};
+        
+        % Dashed lines on right & labels
+        \draw[thick, dashed]  (3.87,0) -- (0, 2) -- (0, -2) -- (3.87,0) -- (0, 0);
+        
+        \draw[thick, |-|] (-0.75, -2.2) -- (3.97, -2.2) node[pos=0.5, below] {$\Delta x_2$};
+        \draw[thick, |-|] (0.1, 2.2) -- (3.97, 0.2) node[pos=0.5, above] {$R_2$};
+        
+        % R_lens on right
+        \draw[thick, |-|] (4.15, 0.0) -- (4.15, -2.2) node[pos=0.5, right] {$R_\mathrm{lens}$};
+    \end{tikzpicture}
+
+    \caption{Left: Parameters used to describe a lens, in this case a biconcave. $R_1$ and $R_2$ are the radii of curvature on the left and right sides respectively. $\Delta x_1$ and $\Delta x_2$ give the horizontal offset between the centre of the lens and its respective arc. $R_\mathrm{lens}$ give the radius of the lens and $d$ its thickness.}
+    \label{fig:convex lens}
+\end{figure}
 
 
 \section{Calling from Python}
