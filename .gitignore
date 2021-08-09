@@ -131,3 +131,4 @@ dmypy.json
 # User added
 tracing.cpp
 tracing.html
+tracing.c
