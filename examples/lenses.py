@@ -1,15 +1,46 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from tracing import PyTrace, PyRay, PyLens, PyBiConvexLens
+from tracing import PyTrace, PyRay, PyLens, PyBiConvexLens, PyCC_Wrap
 
 
+class LensCombo(PyCC_Wrap):
+    def __init__(self, centre_1, centre_2) -> None:
+        lens_1_param = {
+            'centre': centre_1,
+            'R_lens': 2, 
+            'R1': 4, 
+            'R2': 4, 
+            'd': 0.2, 
+            'n_in': 1.33, 
+            'n_out': 1.0
+        }
 
-centre = np.array([0.0, 0.0])
+        lens_2_param = {
+            'centre': centre_2,
+            'R_lens': 2, 
+            'R1': -4, 
+            'R2': -4, 
+            'd': 1.5, 
+            'n_in': 2.0, 
+            'n_out': 1.0
+        }
 
-l = PyBiConvexLens(centre=centre, R_lens=2, R1=4, R2=4, d=0.2, n_in=1.33, n_out=1.0)
+        super().__init__([PyBiConvexLens(**lens_1_param), PyLens(**lens_2_param)])
 
-comps = [l, PyLens(centre=np.array([2.5, 0.0]), R_lens=2, R1=-4, R2=-4, d=1.5, n_in=2.0, n_out=1.0)]
+    def plot(self):
+        return super().plot(flatten=False)
+
+def crawl(lst):
+    """Crawls a nested list and yields none-list items"""
+    
+    if isinstance(lst, list):  # If lst is a list, we want to crawl its elements
+        for elem in lst:
+            yield from crawl(elem)
+    else:
+        yield lst
+
+comps = [LensCombo(np.array([0.0, 0.0]), np.array([2.5, 0.0]))]
 
 ray_starting_y = np.linspace(-1.8, 1.8, 8)
 
@@ -23,7 +54,7 @@ plt.gca().set_aspect('equal')
 
 for c in comps:
 
-    for sub_comp in c.plot():
+    for sub_comp in crawl(c.plot()):
         c_x, c_y = sub_comp.T
 
         plt.plot(c_x, c_y, color="C0")
