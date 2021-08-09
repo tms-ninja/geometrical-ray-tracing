@@ -858,12 +858,40 @@ class PyCC_Wrap:
 # Pre defined Complex components
 
 class PyLens(PyCC_Wrap):
+    """A class to represent a lens"""
+
     def __init__(self, centre, R_lens, R1, R2, d, n_in, n_out=1.0) -> None:
         """
-        R_lens is the radius of the len itself
-        R1 is radius of curvature on left, R2 on the right
-        d is the width of the lens between each circular part
+        Creates an instance of PyLens.
+
+        Parameters
+        ----------
+        centre : numpy.ndarray
+            A numpy array of shape (2, ) that gives the centre of the lens.
+        R_lens : double
+            The radius of the lens.
+        R1 : double
+            The radius of curvature of the left side of the lens. If R1 is
+            positive this arc of the lens is convex, if it is negative it 
+            is concave. R1 must satisfy R1 >= R_lens or R1 <= -R_lens.
+        R2 : double
+            The radius of curvature of the right side of the lens. If R2 is
+            positive this arc of the lens is convex, if it is negative it 
+            is concave. R2 must satisfy R2 >= R_lens or R2 <= -R_lens.
+        d : double
+            The distance between the end of one arc and the nearest end
+            of the other.
+        n_in : double
+            The refractive index of the interior of the lens.
+        n_out : double, optional
+            The refractive index outside of the lens. The default is 1.0.
+
+        Returns
+        -------
+        None.
+
         """
+
         self._centre = centre
         self._R_lens = R_lens
         self._R1 = R1
@@ -940,41 +968,136 @@ class PyLens(PyCC_Wrap):
 
     @property
     def centre(self):
+        """
+        The centre of the lens.
+
+        Returns
+        -------
+        numpy.ndarray
+            A numpy array with shape (2, ) giving the lens centre.
+
+        """
+
         return self._centre
 
     @property
     def R_lens(self):
+        """
+        The radius of the lens.
+
+        Returns
+        -------
+        double
+            The radius of the lens.
+        """
+
         return self._R_lens
 
     @property
     def R1(self):
-        # Return signed R1 so we know if it's convex/concave
+        """
+        The radius of curvature the left side of the lens. R1 is positive if
+        the left side is convex, negative if it is concave.
+
+        Returns
+        -------
+        double
+            The radius of curvature the left side of the lens.
+        """
+
         return self._R1
 
     @property
     def R2(self):
-        # Return signed R2 so we know if it's convex/concave
+        """
+        The radius of curvature the left side of the lens. R2 is positive if
+        the left side is convex, negative if it is concave.
+
+        Returns
+        -------
+        double
+            The radius of curvature the left side of the lens.
+        """
+
         return self._R2
 
     @property
     def d(self):
+        """
+        The distance between the end of one arc and the nearest end of the 
+        other.
+
+        Returns
+        -------
+        double
+            The distance between the end of one arc and the nearest end of
+            the other.
+        """
+
         return self._d
 
     @property
     def n_in(self):
+        """
+        The refractive index inside the lens.
+
+        Returns
+        -------
+        double
+            The refractive index inside the lens.
+        """
+
         return self._n_in
 
     @property
     def n_out(self):
+        """
+        The refractive index outside the lens.
+
+        Returns
+        -------
+        double
+            The refractive index outside the lens.
+        """
+        
         return self._n_out
 
 
 class PyBiConvexLens(PyLens):
+    """A class to represent a Bi-convex lens"""
+
     def __init__(self, centre, R_lens, R1, R2, d, n_in, n_out=1.0) -> None:
         """
-        R_lens is the radius of the len itself
-        R1 is radius of curvature on left, R2 on the right
+        Creates an instance of PyBiConvexLens.
+
+        Parameters
+        ----------
+        centre : numpy.ndarray
+            A numpy array of shape (2, ) that gives the centre of the lens.
+        R_lens : double
+            The radius of the lens.
+        R1 : double
+            The radius of curvature of the left side of the lens. If R1 is
+            positive this arc of the lens is convex, if it is negative it 
+            is concave. R1 must statisfy R1 >= R_lens.
+        R2 : double
+            The radius of curvature of the right side of the lens. If R2 is
+            positive this arc of the lens is convex, if it is negative it 
+            is concave. R2 must statisfy R2 >= R_lens.
+        d : double
+            The distance between the end of one arc and the nearest end
+            of the other.
+        n_in : double
+            The refractive index of the interior of the lens.
+        n_out : double, optional
+            The refractive index outside of the lens. The default is 1.0.
+
+        Returns
+        -------
+        None.
+
         """
+
         assert R1 >= R_lens, f"R1 = {R1} was less than radius of lens R_lens = {R_lens}"
         assert R2 >= R_lens, f"R2 = {R2} was less than radius of lens R_lens = {R_lens}"
 
