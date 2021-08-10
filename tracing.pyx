@@ -535,6 +535,8 @@ cdef class _PySpherical(_PyComponent):
         return dereference(self.c_sph_ptr).start
     @start.setter
     def start(self, double start):
+        assert start < self.end, "start angle must be less than end angle"
+
         dereference(self.c_sph_ptr).start = start
         
     @property
@@ -553,6 +555,8 @@ cdef class _PySpherical(_PyComponent):
         return dereference(self.c_sph_ptr).end
     @end.setter
     def end(self, double end):
+        assert end > self.start, "end angle must be greater than start angle"
+
         dereference(self.c_sph_ptr).end = end
         
     def plot(self, n_points=100):
