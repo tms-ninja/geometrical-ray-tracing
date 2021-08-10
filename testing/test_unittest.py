@@ -297,7 +297,7 @@ class Test_PyMirror_Sph(unittest.TestCase, useful_checks):
         m.start = m.end - 1.0
 
         # Raises exception if it's more
-        with self.assertRaises(AssertionError) as context:
+        with self.assertRaises(ValueError) as context:
             m.start = m.end = 1.0
 
     # Testing property end
@@ -328,7 +328,7 @@ class Test_PyMirror_Sph(unittest.TestCase, useful_checks):
         m.end = m.start + 1.0
 
         # Raises exception when trying to set end less than start
-        with self.assertRaises(AssertionError) as context:
+        with self.assertRaises(ValueError) as context:
             m.end = m.start - 1.0
 
     # Test plot() method
@@ -443,7 +443,7 @@ class Test_PyRefract_Sph(unittest.TestCase, useful_checks):
         m.start = m.end - 1.0
 
         # Raises exception if it's more
-        with self.assertRaises(AssertionError) as context:
+        with self.assertRaises(ValueError) as context:
             m.start = m.end = 1.0
 
     # Testing property end
@@ -474,7 +474,7 @@ class Test_PyRefract_Sph(unittest.TestCase, useful_checks):
         m.end = m.start + 1.0
 
         # Raises exception when trying to set end less than start
-        with self.assertRaises(AssertionError) as context:
+        with self.assertRaises(ValueError) as context:
             m.end = m.start - 1.0
 
     # Test property n1 (first refractive index)

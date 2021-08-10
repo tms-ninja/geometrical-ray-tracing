@@ -146,9 +146,12 @@ cdef class PyRay:
 
         """
         
-        assert tuple(init.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
-        assert tuple(v.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
-        
+        if tuple(init.shape) != _arr_shape:
+            raise TypeError("init should have shape (2, )")
+
+        if tuple(v.shape) != _arr_shape:
+            raise TypeError("v should have shape (2, )")
+
         self.c_data = new Ray(make_arr_from_numpy(init), 
                               make_arr_from_numpy(v))
         
@@ -206,7 +209,8 @@ cdef class PyRay:
         return v_np
     @v.setter
     def v(self, double[:] v not None):
-        assert tuple(v.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
+        if tuple(v.shape) != _arr_shape:
+            raise TypeError("v should have shape (2, )")
         
         dereference(self.c_data).v = make_arr_from_numpy(v)
         
@@ -297,7 +301,8 @@ cdef class _PyPlane(_PyComponent):
         return start_np
     @start.setter
     def start(self, double[:] start not None):
-        assert tuple(start.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
+        if tuple(start.shape) != _arr_shape:
+            raise TypeError("start should have shape (2, )")
         
         dereference(self.c_plane_ptr).start = make_arr_from_numpy(start)
         
@@ -321,8 +326,9 @@ cdef class _PyPlane(_PyComponent):
         return end_np
     @end.setter
     def end(self, double[:] end not None):
-        assert tuple(end.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
-        
+        if tuple(end.shape) != _arr_shape:
+            raise TypeError("end should have shape (2, )")
+
         dereference(self.c_plane_ptr).end = make_arr_from_numpy(end)
         
     def plot(self):
@@ -372,9 +378,12 @@ cdef class PyMirror_Plane(_PyPlane):
         None.
 
         """
-        
-        assert tuple(start.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
-        assert tuple(end.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"       
+
+        if tuple(start.shape) != _arr_shape:
+            raise TypeError("start should have shape (2, )")
+
+        if tuple(end.shape) != _arr_shape:
+            raise TypeError("end should have shape (2, )")     
         
         self.c_data = new Mirror_Plane(make_arr_from_numpy(start), 
                                        make_arr_from_numpy(end))
@@ -418,8 +427,11 @@ cdef class PyRefract_Plane(_PyPlane):
 
         """
         
-        assert tuple(start.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
-        assert tuple(end.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
+        if tuple(start.shape) != _arr_shape:
+            raise TypeError("start should have shape (2, )")
+
+        if tuple(end.shape) != _arr_shape:
+            raise TypeError("end should have shape (2, )")  
         
         self.c_data = new Refract_Plane(make_arr_from_numpy(start), 
                                         make_arr_from_numpy(end), n1, n2)
@@ -498,8 +510,9 @@ cdef class _PySpherical(_PyComponent):
         return centre_np
     @centre.setter
     def centre(self, double[:] centre not None):
-        assert tuple(centre.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
-        
+        if tuple(centre.shape) != _arr_shape:
+            raise TypeError("centre should have shape (2, )")
+
         dereference(self.c_sph_ptr).centre = make_arr_from_numpy(centre)
         
     @property
@@ -516,7 +529,7 @@ cdef class _PySpherical(_PyComponent):
         
         return dereference(self.c_sph_ptr).R
     @R.setter
-    def R(self, double R):       
+    def R(self, double R):
         dereference(self.c_sph_ptr).R = R
         
     @property
@@ -535,7 +548,8 @@ cdef class _PySpherical(_PyComponent):
         return dereference(self.c_sph_ptr).start
     @start.setter
     def start(self, double start):
-        assert start < self.end, "start angle must be less than end angle"
+        if start >= self.end:
+            raise ValueError("start angle must be less than end angle")
 
         dereference(self.c_sph_ptr).start = start
         
@@ -555,7 +569,8 @@ cdef class _PySpherical(_PyComponent):
         return dereference(self.c_sph_ptr).end
     @end.setter
     def end(self, double end):
-        assert end > self.start, "end angle must be greater than start angle"
+        if end <= self.start:
+            raise ValueError("end angle must be greater than start angle")
 
         dereference(self.c_sph_ptr).end = end
         
@@ -614,9 +629,10 @@ cdef class PyMirror_Sph(_PySpherical):
         None.
 
         """
-        
-        assert tuple(centre.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
-        
+
+        if tuple(centre.shape) != _arr_shape:
+            raise TypeError("centre should have shape (2, )")
+                
         self.c_data = new Mirror_Sph(make_arr_from_numpy(centre), R, start, 
                                      end)
         
@@ -662,7 +678,8 @@ cdef class PyRefract_Sph(_PySpherical):
 
         """
         
-        assert tuple(centre.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
+        if tuple(centre.shape) != _arr_shape:
+            raise TypeError("centre should have shape (2, )")
         
         self.c_data = new Refract_Sph(make_arr_from_numpy(centre), R, start, 
                                      end, n1, n2)
