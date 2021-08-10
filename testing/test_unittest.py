@@ -12,15 +12,15 @@ class useful_checks:
         """Checks a float property for read write"""
 
         # Check its curret value is what we expect
-        assert_array_equal(getattr(obj, attr), expected)
+        unittest.TestCase.assertEqual(self, getattr(obj, attr), expected)
 
         # Change it to something else
         setattr(obj, attr, new_v)
-        assert_array_equal(getattr(obj, attr), new_v)
+        unittest.TestCase.assertEqual(self, getattr(obj, attr), new_v)
 
         # Set it back
         setattr(obj, attr, expected)
-        assert_array_equal(getattr(obj, attr), expected)
+        unittest.TestCase.assertEqual(self, getattr(obj, attr), expected)
 
     def check_np_view_shape_2_set(self, obj, attr, expected, new_vw):
         """Checks a numpy view with shape (2, )
@@ -280,7 +280,7 @@ class Test_PyMirror_Sph(unittest.TestCase, useful_checks):
         """Tests property start setting"""
         m = self.create_Obj()
 
-        self.check_float_property(m, 'start', self._start, 123.0)
+        self.check_float_property(m, 'start', self._start, self._end - 123.0)
         
     def test_start_set_none_not_allowed(self):
         """Tests property start can't be set to None"""
@@ -311,7 +311,7 @@ class Test_PyMirror_Sph(unittest.TestCase, useful_checks):
         """Tests property end setting"""
         m = self.create_Obj()
 
-        self.check_float_property(m, 'end', self._end, 123.0)
+        self.check_float_property(m, 'end', self._end, self._start + 123.0)
 
     def test_end_set_none_not_allowed(self):
         """Tests property end cannot be set to None"""
