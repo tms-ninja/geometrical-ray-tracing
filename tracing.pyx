@@ -296,7 +296,7 @@ cdef class _PyPlane(_PyComponent):
         
         return start_np
     @start.setter
-    def start(self, double[:] start):
+    def start(self, double[:] start not None):
         assert tuple(start.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
         
         dereference(self.c_plane_ptr).start = make_arr_from_numpy(start)
@@ -320,7 +320,7 @@ cdef class _PyPlane(_PyComponent):
         
         return end_np
     @end.setter
-    def end(self, double[:] end):
+    def end(self, double[:] end not None):
         assert tuple(end.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
         
         dereference(self.c_plane_ptr).end = make_arr_from_numpy(end)
@@ -354,7 +354,7 @@ cdef class PyMirror_Plane(_PyPlane):
     
     cdef Mirror_Plane* c_data
     
-    def __cinit__(self, double[:] start, double[:] end):
+    def __cinit__(self, double[:] start not None, double[:] end not None):
         """
         Creates an instance of PyMirror_Plane.
 
@@ -392,7 +392,7 @@ cdef class PyRefract_Plane(_PyPlane):
     
     cdef Refract_Plane* c_data
     
-    def __cinit__(self, double[:] start, double[:] end, double n1=1.0, 
+    def __cinit__(self, double[:] start not None, double[:] end not None, double n1=1.0, 
                   double n2=1.0):
         """
         Creates an instance of PyRefract_Plane.
@@ -497,7 +497,7 @@ cdef class _PySpherical(_PyComponent):
         
         return centre_np
     @centre.setter
-    def centre(self, double[:] centre):
+    def centre(self, double[:] centre not None):
         assert tuple(centre.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
         
         dereference(self.c_sph_ptr).centre = make_arr_from_numpy(centre)
