@@ -289,6 +289,17 @@ class Test_PyMirror_Sph(unittest.TestCase, useful_checks):
         with self.assertRaises(TypeError) as context:
             m.start = None
 
+    def test_start_must_be_less_than_end(self):
+        """Tests when setting property start that it must be greater than property end"""
+        m = self.create_Obj()
+
+        # OK to set it something less than end
+        m.start = m.end - 1.0
+
+        # Raises exception if it's more
+        with self.assertRaises(AssertionError) as context:
+            m.start = m.end = 1.0
+
     # Testing property end
     def test_end_get(self):
         """Tests property end getting"""
@@ -308,6 +319,17 @@ class Test_PyMirror_Sph(unittest.TestCase, useful_checks):
 
         with self.assertRaises(TypeError) as context:
             m.end = None
+
+    def test_end_must_be_greater_than_start(self):
+        """Tests when setting property start that it must be greater than property end"""
+        m = self.create_Obj()
+
+        # OK to set it something less than end
+        m.end = m.start + 1.0
+
+        # Raises exception when trying to set end less than start
+        with self.assertRaises(AssertionError) as context:
+            m.end = m.start - 1.0
 
     # Test plot() method
     def test_plot(self):
