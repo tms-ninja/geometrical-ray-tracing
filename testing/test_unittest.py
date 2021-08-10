@@ -183,6 +183,16 @@ class Test_PyRefract_Plane(unittest.TestCase, useful_checks):
         with self.assertRaises(TypeError) as context:
             m.n1 = None
 
+    def test_PyRefract_Plane_n1_Set_Negative_not_allowed(self):
+        """Tests property n1 cannot be n1 <= 0.0"""
+        m = self.create_Obj()
+
+        with self.assertRaises(ValueError) as context:
+            m.n1 = 0.0
+
+        with self.assertRaises(ValueError) as context:
+            m.n1 = -1.0
+
     # Test property n2 (second refractive index)
     def test_PyRefract_Plane_n2_get(self):
         """Tests property n2 getting"""
@@ -202,6 +212,16 @@ class Test_PyRefract_Plane(unittest.TestCase, useful_checks):
 
         with self.assertRaises(TypeError) as context:
             m.n2 = None
+
+    def test_PyRefract_Plane_n2_Set_Negative_not_allowed(self):
+        """Tests property n2 cannot be n2 <= 0.0"""
+        m = self.create_Obj()
+
+        with self.assertRaises(ValueError) as context:
+            m.n2 = 0.0
+
+        with self.assertRaises(ValueError) as context:
+            m.n2 = -1.0
 
     # Test plot() method
     def test_PyRefract_Plane_plot(self):
@@ -268,6 +288,16 @@ class Test_PyMirror_Sph(unittest.TestCase, useful_checks):
 
         with self.assertRaises(TypeError) as context:
             m.R = None
+
+    def test_PyMirror_Sph_R_Set_Negative_not_allowed(self):
+        """Tests property R cannot be set R <= 0.0"""
+        m = self.create_Obj()
+
+        with self.assertRaises(ValueError) as context:
+            m.R = 0.0
+
+        with self.assertRaises(ValueError) as context:
+            m.R = -1.0
 
     # Testing property start
     def test_PyMirror_Sph_start_get(self):
@@ -415,6 +445,16 @@ class Test_PyRefract_Sph(unittest.TestCase, useful_checks):
         with self.assertRaises(TypeError) as context:
             m.R = None
 
+    def test_PyRefract_Sph_R_Set_Negative_not_allowed(self):
+        """Tests property R cannot be R <= 0.0"""
+        m = self.create_Obj()
+
+        with self.assertRaises(ValueError) as context:
+            m.R = 0.0
+
+        with self.assertRaises(ValueError) as context:
+            m.R = -1.0
+
     # Testing property start
     def test_PyRefract_Sph_start_get(self):
         """Tests property start getting"""
@@ -497,6 +537,16 @@ class Test_PyRefract_Sph(unittest.TestCase, useful_checks):
         with self.assertRaises(TypeError) as context:
             m.n1 = None
 
+    def test_PyRefract_Sph_n1_Set_Negative_not_allowed(self):
+        """Tests property n1 cannot be n1 <= 0"""
+        m = self.create_Obj()
+
+        with self.assertRaises(ValueError) as context:
+            m.n1 = 0.0
+
+        with self.assertRaises(ValueError) as context:
+            m.n1 = -1.0
+
     # Test property n2 (second refractive index)
     def test_PyRefract_Sph_n2_get(self):
         """Tests property n2 getting"""
@@ -516,6 +566,16 @@ class Test_PyRefract_Sph(unittest.TestCase, useful_checks):
 
         with self.assertRaises(TypeError) as context:
             m.n2 = None
+
+    def test_PyRefract_Sph_n2_Set_Negative_not_allowed(self):
+        """Tests property n2 cannot be n2 <= 0.0"""
+        m = self.create_Obj()
+
+        with self.assertRaises(ValueError) as context:
+            m.n2 = 0.0
+
+        with self.assertRaises(ValueError) as context:
+            m.n2 = -1.0
 
     # Test plot() method
     def test_PyRefract_Sph_plot(self):

@@ -455,6 +455,9 @@ cdef class PyRefract_Plane(_PyPlane):
         return dereference(self.c_data).n1
     @n1.setter
     def n1(self, double n1):
+        if n1 <= 0.0:
+            raise ValueError("n1 cannot be less than or equal to zero")
+
         dereference(self.c_data).n1 = n1
     
     @property
@@ -473,6 +476,9 @@ cdef class PyRefract_Plane(_PyPlane):
         return dereference(self.c_data).n2
     @n2.setter
     def n2(self, double n2):
+        if n2 <= 0.0:
+            raise ValueError("n2 cannot be less than or equal to zero")
+
         dereference(self.c_data).n2 = n2
         
 
@@ -530,6 +536,9 @@ cdef class _PySpherical(_PyComponent):
         return dereference(self.c_sph_ptr).R
     @R.setter
     def R(self, double R):
+        if R <= 0.0:
+            raise ValueError("R cannot be less than or equal to zero")
+
         dereference(self.c_sph_ptr).R = R
         
     @property
@@ -702,6 +711,9 @@ cdef class PyRefract_Sph(_PySpherical):
         return dereference(self.c_data).n1
     @n1.setter
     def n1(self, double n1):
+        if n1 <= 0.0:
+            raise ValueError("n1 cannot be less than or equal to zero")
+
         dereference(self.c_data).n1 = n1
     
     @property
@@ -719,6 +731,9 @@ cdef class PyRefract_Sph(_PySpherical):
         return dereference(self.c_data).n2
     @n2.setter
     def n2(self, double n2):
+        if n2 <= 0.0:
+            raise ValueError("n2 cannot be less than or equal to zero")
+
         dereference(self.c_data).n2 = n2
     
 
