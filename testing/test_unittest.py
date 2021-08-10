@@ -56,19 +56,19 @@ class Test_PyMirror_Plane(unittest.TestCase, useful_checks):
     # TODO: Test __cinit__()
 
     # Testing property start
-    def test_start_get(self):
+    def test_PyMirror_Plane_start_get(self):
         """Tests property start getting"""
         m = self.create_Obj()
 
         assert_array_equal(m.start, self._start)
 
-    def test_start_set(self):
+    def test_PyMirror_Plane_start_set(self):
         """Tests property start setting"""
         m = self.create_Obj()
 
         self.check_np_view_shape_2_set(m, 'start', self._start, np.array([6.7, 8.9]))
         
-    def test_start_set_none_not_allowed(self):
+    def test_PyMirror_Plane_start_set_none_not_allowed(self):
         """Tests property start can't be set to None"""
         m = self.create_Obj()
 
@@ -76,19 +76,19 @@ class Test_PyMirror_Plane(unittest.TestCase, useful_checks):
             m.start = None
 
     # Testing property end
-    def test_end_get(self):
+    def test_PyMirror_Plane_end_get(self):
         """Tests property end getting"""
         m = self.create_Obj()
 
         assert_array_equal(m.end, self._end)
 
-    def test_end_set(self):
+    def test_PyMirror_Plane_end_set(self):
         """Tests property end setting"""
         m = self.create_Obj()
 
         self.check_np_view_shape_2_set(m, 'end', self._end, np.array([6.7, 8.9]))
 
-    def test_end_set_none_not_allowed(self):
+    def test_PyMirror_Plane_end_set_none_not_allowed(self):
         """Tests property end cannot be set to None"""
         m = self.create_Obj()
 
@@ -96,7 +96,7 @@ class Test_PyMirror_Plane(unittest.TestCase, useful_checks):
             m.end = None
 
     # Test plot() method
-    def test_plot(self):
+    def test_PyMirror_Plane_plot(self):
         """Tests the plot method returns start point followed by end point"""
         m = self.create_Obj()
 
@@ -124,19 +124,19 @@ class Test_PyRefract_Plane(unittest.TestCase, useful_checks):
 
 
     # Testing property start
-    def test_start_get(self):
+    def test_PyRefract_Plane_start_get(self):
         """Tests property start getting"""
         m = self.create_Obj()
 
         assert_array_equal(m.start, self._start)
 
-    def test_start_set(self):
+    def test_PyRefract_Plane_start_set(self):
         """Tests property start setting"""
         m = self.create_Obj()
 
         self.check_np_view_shape_2_set(m, 'start', self._start, np.array([6.7, 8.9]))
         
-    def test_start_set_none_not_allowed(self):
+    def test_PyRefract_Plane_start_set_none_not_allowed(self):
         """Tests property end can't be set to None"""
         m = self.create_Obj()
 
@@ -144,19 +144,19 @@ class Test_PyRefract_Plane(unittest.TestCase, useful_checks):
             m.start = None
 
     # Testing property end
-    def test_end_get(self):
+    def test_PyRefract_Plane_end_get(self):
         """Tests property end getting"""
         m = self.create_Obj()
 
         assert_array_equal(m.end, self._end)
 
-    def test_end_set(self):
+    def test_PyRefract_Plane_end_set(self):
         """Tests property end setting"""
         m = self.create_Obj()
 
         self.check_np_view_shape_2_set(m, 'end', self._end, np.array([6.7, 8.9]))
 
-    def test_end_set_none_not_allowed(self):
+    def test_PyRefract_Plane_end_set_none_not_allowed(self):
         """Tests property end cannot be set to None"""
         m = self.create_Obj()
 
@@ -164,19 +164,19 @@ class Test_PyRefract_Plane(unittest.TestCase, useful_checks):
             m.end = None
 
     # Test property n1 (first refractive index)
-    def test_n1_get(self):
+    def test_PyRefract_Plane_n1_get(self):
         """Tests property n1 getting"""
         m = self.create_Obj()
 
         self.assertEqual(m.n1, self._n1)
 
-    def test_n1_set(self):
+    def test_PyRefract_Plane_n1_set(self):
         """Tests property n1 getting"""
         m = self.create_Obj()
 
         self.check_float_property(m, 'n1', self._n1, self._n1 + 10.0)
 
-    def test_n1_Set_None_not_allowed(self):
+    def test_PyRefract_Plane_n1_Set_None_not_allowed(self):
         """Tests property n1 cannot be set to None"""
         m = self.create_Obj()
 
@@ -184,19 +184,19 @@ class Test_PyRefract_Plane(unittest.TestCase, useful_checks):
             m.n1 = None
 
     # Test property n2 (second refractive index)
-    def test_n2_get(self):
+    def test_PyRefract_Plane_n2_get(self):
         """Tests property n2 getting"""
         m = self.create_Obj()
 
         self.assertEqual(m.n2, self._n2)
         
-    def test_n2_set(self):
+    def test_PyRefract_Plane_n2_set(self):
         """Tests property n2 setting"""
         m = self.create_Obj()
 
         self.check_float_property(m, 'n2', self._n2, self._n2 + 10.0)
 
-    def test_n2_Set_None_not_allowed(self):
+    def test_PyRefract_Plane_n2_Set_None_not_allowed(self):
         """Tests property n2 cannot be set to None"""
         m = self.create_Obj()
 
@@ -204,7 +204,7 @@ class Test_PyRefract_Plane(unittest.TestCase, useful_checks):
             m.n2 = None
 
     # Test plot() method
-    def test_plot(self):
+    def test_PyRefract_Plane_plot(self):
         """Tests the plot method returns start point followed by end point"""
         m = self.create_Obj()
 
@@ -230,19 +230,19 @@ class Test_PyMirror_Sph(unittest.TestCase, useful_checks):
     # TODO: Test __cinit__()
 
     # Testing property centre
-    def test_centre_get(self):
+    def test_PyMirror_Sph_centre_get(self):
         """Tests property centre getting"""
         m = self.create_Obj()
 
         assert_array_equal(m.centre, self._centre)
 
-    def test_centre_set(self):
+    def test_PyMirror_Sph_centre_set(self):
         """Tests property centre setting"""
         m = self.create_Obj()
 
         self.check_np_view_shape_2_set(m, 'centre', self._centre, self._centre + 10.0)
 
-    def test_centre_set_none_not_allowed(self):
+    def test_PyMirror_Sph_centre_set_none_not_allowed(self):
         """Tests property centre cannot be set to None"""
         m = self.create_Obj()
 
@@ -250,19 +250,19 @@ class Test_PyMirror_Sph(unittest.TestCase, useful_checks):
             m.centre = None
 
     # Testing property R
-    def test_R_get(self):
+    def test_PyMirror_Sph_R_get(self):
         """Tests property R getting"""
         m = self.create_Obj()
 
         self.assertEqual(m.R, self._R)
 
-    def test_R_set(self):
+    def test_PyMirror_Sph_R_set(self):
         """Tests property R getting"""
         m = self.create_Obj()
 
         self.check_float_property(m, 'R', self._R, self._R + 10.0)
 
-    def test_R_Set_None_not_allowed(self):
+    def test_PyMirror_Sph_R_Set_None_not_allowed(self):
         """Tests property R cannot be set to None"""
         m = self.create_Obj()
 
@@ -270,26 +270,26 @@ class Test_PyMirror_Sph(unittest.TestCase, useful_checks):
             m.R = None
 
     # Testing property start
-    def test_start_get(self):
+    def test_PyMirror_Sph_start_get(self):
         """Tests property start getting"""
         m = self.create_Obj()
 
         self.assertEqual(m.start, self._start)
 
-    def test_start_set(self):
+    def test_PyMirror_Sph_start_set(self):
         """Tests property start setting"""
         m = self.create_Obj()
 
         self.check_float_property(m, 'start', self._start, self._end - 123.0)
         
-    def test_start_set_none_not_allowed(self):
+    def test_PyMirror_Sph_start_set_none_not_allowed(self):
         """Tests property start can't be set to None"""
         m = self.create_Obj()
 
         with self.assertRaises(TypeError) as context:
             m.start = None
 
-    def test_start_must_be_less_than_end(self):
+    def test_PyMirror_Sph_start_must_be_less_than_end(self):
         """Tests when setting property start that it must be greater than property end"""
         m = self.create_Obj()
 
@@ -301,26 +301,26 @@ class Test_PyMirror_Sph(unittest.TestCase, useful_checks):
             m.start = m.end = 1.0
 
     # Testing property end
-    def test_end_get(self):
+    def test_PyMirror_Sph_end_get(self):
         """Tests property end getting"""
         m = self.create_Obj()
 
         self.assertEqual(m.end, self._end)
 
-    def test_end_set(self):
+    def test_PyMirror_Sph_end_set(self):
         """Tests property end setting"""
         m = self.create_Obj()
 
         self.check_float_property(m, 'end', self._end, self._start + 123.0)
 
-    def test_end_set_none_not_allowed(self):
+    def test_PyMirror_Sph_end_set_none_not_allowed(self):
         """Tests property end cannot be set to None"""
         m = self.create_Obj()
 
         with self.assertRaises(TypeError) as context:
             m.end = None
 
-    def test_end_must_be_greater_than_start(self):
+    def test_PyMirror_Sph_end_must_be_greater_than_start(self):
         """Tests when setting property start that it must be greater than property end"""
         m = self.create_Obj()
 
@@ -332,7 +332,7 @@ class Test_PyMirror_Sph(unittest.TestCase, useful_checks):
             m.end = m.start - 1.0
 
     # Test plot() method
-    def test_plot(self):
+    def test_PyMirror_Sph_plot(self):
         """Tests the plot method returns start point followed by end point"""
         m = self.create_Obj()
 
@@ -376,19 +376,19 @@ class Test_PyRefract_Sph(unittest.TestCase, useful_checks):
     # TODO: Test __cinit__()
 
     # Testing property centre
-    def test_centre_get(self):
+    def test_PyRefract_Sph_centre_get(self):
         """Tests property centre getting"""
         m = self.create_Obj()
 
         assert_array_equal(m.centre, self._centre)
 
-    def test_centre_set(self):
+    def test_PyRefract_Sph_centre_set(self):
         """Tests property centre setting"""
         m = self.create_Obj()
 
         self.check_np_view_shape_2_set(m, 'centre', self._centre, self._centre + 10.0)
 
-    def test_centre_set_none_not_allowed(self):
+    def test_PyRefract_Sph_centre_set_none_not_allowed(self):
         """Tests property centre cannot be set to None"""
         m = self.create_Obj()
 
@@ -396,19 +396,19 @@ class Test_PyRefract_Sph(unittest.TestCase, useful_checks):
             m.centre = None
 
     # Testing property R
-    def test_R_get(self):
+    def test_PyRefract_Sph_R_get(self):
         """Tests property R getting"""
         m = self.create_Obj()
 
         self.assertEqual(m.R, self._R)
 
-    def test_R_set(self):
+    def test_PyRefract_Sph_R_set(self):
         """Tests property R getting"""
         m = self.create_Obj()
 
         self.check_float_property(m, 'R', self._R, self._R + 10.0)
 
-    def test_R_Set_None_not_allowed(self):
+    def test_PyRefract_Sph_R_Set_None_not_allowed(self):
         """Tests property R cannot be set to None"""
         m = self.create_Obj()
 
@@ -416,26 +416,26 @@ class Test_PyRefract_Sph(unittest.TestCase, useful_checks):
             m.R = None
 
     # Testing property start
-    def test_start_get(self):
+    def test_PyRefract_Sph_start_get(self):
         """Tests property start getting"""
         m = self.create_Obj()
 
         self.assertEqual(m.start, self._start)
 
-    def test_start_set(self):
+    def test_PyRefract_Sph_start_set(self):
         """Tests property start setting"""
         m = self.create_Obj()
 
         self.check_float_property(m, 'start', self._start, self._end - 123.0)
         
-    def test_start_set_none_not_allowed(self):
+    def test_PyRefract_Sph_start_set_none_not_allowed(self):
         """Tests property start can't be set to None"""
         m = self.create_Obj()
 
         with self.assertRaises(TypeError) as context:
             m.start = None
 
-    def test_start_must_be_less_than_end(self):
+    def test_PyRefract_Sph_start_must_be_less_than_end(self):
         """Tests when setting property start that it must be greater than property end"""
         m = self.create_Obj()
 
@@ -447,26 +447,26 @@ class Test_PyRefract_Sph(unittest.TestCase, useful_checks):
             m.start = m.end = 1.0
 
     # Testing property end
-    def test_end_get(self):
+    def test_PyRefract_Sph_end_get(self):
         """Tests property end getting"""
         m = self.create_Obj()
 
         self.assertEqual(m.end, self._end)
 
-    def test_end_set(self):
+    def test_PyRefract_Sph_end_set(self):
         """Tests property end setting"""
         m = self.create_Obj()
 
         self.check_float_property(m, 'end', self._end, self._start + 123.0)
 
-    def test_end_set_none_not_allowed(self):
+    def test_PyRefract_Sph_end_set_none_not_allowed(self):
         """Tests property end cannot be set to None"""
         m = self.create_Obj()
 
         with self.assertRaises(TypeError) as context:
             m.end = None
 
-    def test_end_must_be_greater_than_start(self):
+    def test_PyRefract_Sph_end_must_be_greater_than_start(self):
         """Tests when setting property start that it must be greater than property end"""
         m = self.create_Obj()
 
@@ -478,19 +478,19 @@ class Test_PyRefract_Sph(unittest.TestCase, useful_checks):
             m.end = m.start - 1.0
 
     # Test property n1 (first refractive index)
-    def test_n1_get(self):
+    def test_PyRefract_Sph_n1_get(self):
         """Tests property n1 getting"""
         m = self.create_Obj()
 
         self.assertEqual(m.n1, self._n1)
 
-    def test_n1_set(self):
+    def test_PyRefract_Sph_n1_set(self):
         """Tests property n1 getting"""
         m = self.create_Obj()
 
         self.check_float_property(m, 'n1', self._n1, self._n1 + 10.0)
 
-    def test_n1_Set_None_not_allowed(self):
+    def test_PyRefract_Sph_n1_Set_None_not_allowed(self):
         """Tests property n1 cannot be set to None"""
         m = self.create_Obj()
 
@@ -498,19 +498,19 @@ class Test_PyRefract_Sph(unittest.TestCase, useful_checks):
             m.n1 = None
 
     # Test property n2 (second refractive index)
-    def test_n2_get(self):
+    def test_PyRefract_Sph_n2_get(self):
         """Tests property n2 getting"""
         m = self.create_Obj()
 
         self.assertEqual(m.n2, self._n2)
         
-    def test_n2_set(self):
+    def test_PyRefract_Sph_n2_set(self):
         """Tests property n2 setting"""
         m = self.create_Obj()
 
         self.check_float_property(m, 'n2', self._n2, self._n2 + 10.0)
 
-    def test_n2_Set_None_not_allowed(self):
+    def test_PyRefract_Sph_n2_Set_None_not_allowed(self):
         """Tests property n2 cannot be set to None"""
         m = self.create_Obj()
 
@@ -518,7 +518,7 @@ class Test_PyRefract_Sph(unittest.TestCase, useful_checks):
             m.n2 = None
 
     # Test plot() method
-    def test_plot(self):
+    def test_PyRefract_Sph_plot(self):
         """Tests the plot method returns start point followed by end point"""
         m = self.create_Obj()
 
