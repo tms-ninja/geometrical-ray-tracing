@@ -255,6 +255,33 @@ class Test_PyRefract_Plane(unittest.TestCase, useful_checks):
     # Testing correct ray tracing
     # TODO: add tests to verify correct ray tracing
 
+    def test_PyRefract_Plane_tracing(self):
+        """Tests a ray is traced through correctly"""
+        start=np.array([1.0, 0.0])
+        end=np.array([1.0, 2.0])
+        n1=2.0
+        n2=3.0
+
+        c = tr.PyRefract_Plane(start=start, end=end, n1=n1, n2=n2)
+
+        # Ray starting at origin and travelling diagonally at 45 degrees
+        ang = 45 * np.pi/180.0
+        r = tr.PyRay(init=np.array([0.0, 0.0]), v=np.array([np.cos(ang), np.sin(ang)]))
+
+        # Trace ray
+        tr.PyTrace([c], [r], n=2, fill_up=False)
+
+        # new angle, applying Snell's law
+        new_ang = np.arcsin(np.sin(ang)*n1/n2)
+
+        expected_ans = np.array([
+            [0.0, 0.0],
+            [1.0, 1.0],
+            [1.0 + np.cos(new_ang), 1.0 + np.sin(new_ang)],
+        ])
+
+        assert_allclose(r.pos, expected_ans)
+
 
 class Test_PyMirror_Sph(unittest.TestCase, useful_checks):
     """Tests property access and methods of PyMirror_Plane"""
