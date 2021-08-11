@@ -43,8 +43,6 @@ class useful_checks:
         assert_array_equal(getattr(obj, attr), expected)
 
 
-
-
 class Test_PyMirror_Plane(unittest.TestCase, useful_checks):
     """Tests property access and methods of PyMirror_Plane"""
     _start = np.array([1.2, 3.4])
@@ -56,6 +54,42 @@ class Test_PyMirror_Plane(unittest.TestCase, useful_checks):
 
     # TODO: Test __cinit__()
 
+    def test_PyMirror_Plane_cinit_none_check(self):
+        """Test PyMirror_Plane c initiliser, check None is not allowed"""
+        with self.assertRaises(TypeError) as context:
+            c = tr.PyMirror_Plane(None, self._end)
+
+        with self.assertRaises(TypeError) as context:
+            c = tr.PyMirror_Plane(self._start, None)
+
+    def test_PyMirror_Plane_cinit_shape_check(self):
+        """
+        Test PyMirror_Plane c initiliser, check passed numpy arrays have 
+        correct shape of (2, )
+        """
+        # Correct shape should pass
+        c = tr.PyMirror_Plane(self._start, self._end)
+
+        with self.assertRaises(TypeError) as context:
+            c = tr.PyMirror_Plane(np.array([1.0]), self._end)
+
+        with self.assertRaises(TypeError) as context:
+            c = tr.PyMirror_Plane(np.array([1.0, 2.0, 3.0]), self._end)
+
+        # Cython checks dimensions before my code does
+        with self.assertRaises(ValueError) as context:
+            c = tr.PyMirror_Plane(np.array([[1.0, 2.0], [3.0, 4.0]]), self._end)
+
+        with self.assertRaises(TypeError) as context:
+            c = tr.PyMirror_Plane(self._start, np.array([1.0]))
+
+        with self.assertRaises(TypeError) as context:
+            c = tr.PyMirror_Plane(self._start, np.array([1.0, 2.0, 3.0]))
+
+        with self.assertRaises(ValueError) as context:
+            c = tr.PyMirror_Plane(self._start, np.array([[1.0, 2.0], [3.0, 4.0]]))
+
+        
     # Testing property start
     def test_PyMirror_Plane_start_get(self):
         """Tests property start getting"""
@@ -142,6 +176,43 @@ class Test_PyRefract_Plane(unittest.TestCase, useful_checks):
 
     # TODO: Test __cinit__()
 
+    def test_PyRefract_Plane_cinit_none_check(self):
+        """
+        Test PyRefract_Plane c initiliser, check None can't be passed to
+        arguments that take numpy arrays
+        """
+        with self.assertRaises(TypeError) as context:
+            c = tr.PyRefract_Plane(None, self._end, self._n1, self._n2)
+
+        with self.assertRaises(TypeError) as context:
+            c = tr.PyRefract_Plane(self._start, None, self._n1, self._n2)
+
+    def test_PyRefract_Plane_cinit_shape_check(self):
+        """
+        Test PyRefract_Plane c initiliser, check passed numpy arrays have 
+        correct shape of (2, )
+        """
+        # Correct shape should pass
+        c = tr.PyRefract_Plane(self._start, self._end, self._n1, self._n2)
+
+        with self.assertRaises(TypeError) as context:
+            c = tr.PyRefract_Plane(np.array([1.0]), self._end, self._n1, self._n2)
+
+        with self.assertRaises(TypeError) as context:
+            c = tr.PyRefract_Plane(np.array([1.0, 2.0, 3.0]), self._end, self._n1, self._n2)
+
+        # Cython checks dimensions before my code does
+        with self.assertRaises(ValueError) as context:
+            c = tr.PyRefract_Plane(np.array([[1.0, 2.0], [3.0, 4.0]]), self._end, self._n1, self._n2)
+
+        with self.assertRaises(TypeError) as context:
+            c = tr.PyRefract_Plane(self._start, np.array([1.0]), self._n1, self._n2)
+
+        with self.assertRaises(TypeError) as context:
+            c = tr.PyRefract_Plane(self._start, np.array([1.0, 2.0, 3.0]), self._n1, self._n2)
+
+        with self.assertRaises(ValueError) as context:
+            c = tr.PyRefract_Plane(self._start, np.array([[1.0, 2.0], [3.0, 4.0]]), self._n1, self._n2)
 
     # Testing property start
     def test_PyRefract_Plane_start_get(self):
@@ -295,6 +366,34 @@ class Test_PyMirror_Sph(unittest.TestCase, useful_checks):
         return tr.PyMirror_Sph(self._centre, self._R, self._start, self._end)
 
     # TODO: Test __cinit__()
+    def test_PyMirror_Sph_cinit_none_check(self):
+        """
+        Test PyMirror_Sph c initiliser, check None can't be passed to
+        arguments that take numpy arrays
+        """
+        with self.assertRaises(TypeError) as context:
+            c = tr.PyMirror_Sph(None, self._R, self._start, self._end)
+
+    def test_PyMirror_Sph_cinit_shape_check(self):
+        """
+        Test PyMirror_Sph c initiliser, check passed numpy arrays have 
+        correct shape of (2, )
+        """
+        # Correct shape should pass
+        c = tr.PyMirror_Sph(self._centre, self._R, self._start, self._end)
+
+        with self.assertRaises(TypeError) as context:
+            c = tr.PyMirror_Sph(np.array([1.0]), self._R, self._start, 
+                                self._end)
+
+        with self.assertRaises(TypeError) as context:
+            c = tr.PyMirror_Sph(np.array([1.0, 2.0, 3.0]), self._R, 
+                                self._start, self._end)
+
+        # Cython checks dimensions before my code does
+        with self.assertRaises(ValueError) as context:
+            c = tr.PyMirror_Sph(np.array([[1.0, 2.0], [3.0, 4.0]]), self._R, 
+                                self._start, self._end)
 
     # Testing property centre
     def test_PyMirror_Sph_centre_get(self):
@@ -474,7 +573,7 @@ class Test_PyMirror_Sph(unittest.TestCase, useful_checks):
 
 
 class Test_PyRefract_Sph(unittest.TestCase, useful_checks):
-    """Tests property access and methods of PyMirror_Plane"""
+    """Tests property access and methods of PyRefract_Sph"""
     _centre = np.array([5.6, 7.8])
     _R = 4.5
     _start = 1.2
@@ -483,11 +582,43 @@ class Test_PyRefract_Sph(unittest.TestCase, useful_checks):
     _n_out = 2.0
     
     def create_Obj(self):
-        """Creates an instance of PyMirror_Sph"""
+        """Creates an instance of PyRefract_Sph"""
         return tr.PyRefract_Sph(self._centre, self._R, self._start, 
                                 self._end, self._n_in, self._n_out)
 
     # TODO: Test __cinit__()
+    def test_PyRefract_Sph_cinit_none_check(self):
+        """
+        Test PyRefract_Sph c initiliser, check None can't be passed to
+        arguments that take numpy arrays
+        """
+        with self.assertRaises(TypeError) as context:
+            c = tr.PyRefract_Sph(None, self._R, self._start, self._end, 
+                                 self._n_in, self._n_out)
+
+    def test_PyRefract_Sph_cinit_shape_check(self):
+        """
+        Test PyRefract_Sph c initiliser, check passed numpy arrays have 
+        correct shape of (2, )
+        """
+        # Correct shape should pass
+        c = tr.PyRefract_Sph(self._centre, self._R, self._start, self._end,
+                            self._n_in, self._n_out)
+
+        with self.assertRaises(TypeError) as context:
+            c = tr.PyRefract_Sph(np.array([1.0]), self._R, self._start, 
+                                self._end, self._n_in, self._n_out)
+
+        with self.assertRaises(TypeError) as context:
+            c = tr.PyRefract_Sph(np.array([1.0, 2.0, 3.0]), self._R, 
+                                self._start, self._end, self._n_in, 
+                                self._n_out)
+
+        # Cython checks dimensions before my code does
+        with self.assertRaises(ValueError) as context:
+            c = tr.PyRefract_Sph(np.array([[1.0, 2.0], [3.0, 4.0]]), self._R, 
+                                self._start, self._end, self._n_in, 
+                                self._n_out)
 
     # Testing property centre
     def test_PyRefract_Sph_centre_get(self):
