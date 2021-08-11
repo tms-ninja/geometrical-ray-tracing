@@ -655,7 +655,7 @@ cdef class PyMirror_Sph(_PySpherical):
 
 
 
- # class PyrefractSph
+# class PyrefractSph
 
 cdef class PyRefract_Sph(_PySpherical):
     """
