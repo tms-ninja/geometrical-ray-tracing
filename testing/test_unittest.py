@@ -1,7 +1,7 @@
 import unittest
 
 import numpy as np
-from numpy.testing import assert_array_equal
+from numpy.testing import assert_array_equal, assert_allclose
 
 import tracing as tr
 
@@ -41,6 +41,7 @@ class useful_checks:
         setattr(obj, attr, expected)
 
         assert_array_equal(getattr(obj, attr), expected)
+
 
 
 
@@ -106,6 +107,25 @@ class Test_PyMirror_Plane(unittest.TestCase, useful_checks):
 
     # Testing correct ray tracing
     # TODO: add tests to verify correct ray tracing
+
+    def test_PyMirror_Plane_tracing(sef):
+        # Vertical mirror at x = 1.0
+        m = tr.PyMirror_Plane(start=np.array([1.0, 0.0]), end=np.array([1.0, 2.0]))
+
+        # Ray starting at origin and travelling diagonally at 45 degrees
+        ang = 45 * np.pi/180.0
+        r = tr.PyRay(init=np.array([0.0, 0.0]), v=np.array([np.cos(ang), np.sin(ang)]))
+
+        # Trace ray
+        tr.PyTrace([m], [r], n=2, fill_up=False)
+
+        expected_ans = np.array([
+            [0.0, 0.0],
+            [1.0, 1.0],
+            [1.0 + np.cos(ang + np.pi/2), 1.0 + np.sin(ang + np.pi/2)],
+        ])
+
+        assert_allclose(r.pos, expected_ans)
 
 
 class Test_PyRefract_Plane(unittest.TestCase, useful_checks):
