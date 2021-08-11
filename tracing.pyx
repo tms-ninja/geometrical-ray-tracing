@@ -659,7 +659,7 @@ cdef class PyRefract_Sph(_PySpherical):
     cdef Refract_Sph* c_data
     
     def __cinit__(self, double[:] centre, double R, double start, double end,
-                  double n1=1.0, double n2=1.0):
+                  double n_in=1.0, double n_out=1.0):
         """
         Creates an instance of PyRefract_Sph.
 
@@ -676,9 +676,9 @@ cdef class PyRefract_Sph(_PySpherical):
         end : double
             The end angle of the arc, in radians. It is measured anti-clockwise 
             from the x axis.
-        n1 : double, optional
+        n_in : double, optional
             The refractive index for r < R. The default is 1.0.
-        n2 : double, optional
+        n_out : double, optional
             The refractive index for r > R. The default is 1.0.
 
         Returns
@@ -691,33 +691,33 @@ cdef class PyRefract_Sph(_PySpherical):
             raise TypeError("centre should have shape (2, )")
         
         self.c_data = new Refract_Sph(make_arr_from_numpy(centre), R, start, 
-                                     end, n1, n2)
+                                     end, n_out, n_in)
         
         self.c_sph_ptr = <Spherical*>self.c_data
         self.c_component_ptr = shared_ptr[Component]( <Component*>self.c_data )
                 
     @property
-    def n1(self):
+    def n_in(self):
         """
         The refractive index "inside" the arc where r < R.
 
         Returns
         -------
         double
-            The refractive index n1.
+            The refractive index n_in.
 
         """
         
-        return dereference(self.c_data).n1
-    @n1.setter
-    def n1(self, double n1):
-        if n1 <= 0.0:
-            raise ValueError("n1 cannot be less than or equal to zero")
+        return dereference(self.c_data).n2
+    @n_in.setter
+    def n_in(self, double n_in):
+        if n_in <= 0.0:
+            raise ValueError("n_in cannot be less than or equal to zero")
 
-        dereference(self.c_data).n1 = n1
+        dereference(self.c_data).n2 = n_in
     
     @property
-    def n2(self):
+    def n_out(self):
         """
         The refractive index "outside" the arc where r > R.
 
@@ -728,13 +728,13 @@ cdef class PyRefract_Sph(_PySpherical):
 
         """
         
-        return dereference(self.c_data).n2
-    @n2.setter
-    def n2(self, double n2):
-        if n2 <= 0.0:
-            raise ValueError("n2 cannot be less than or equal to zero")
+        return dereference(self.c_data).n1
+    @n_out.setter
+    def n_out(self, double n_out):
+        if n_out <= 0.0:
+            raise ValueError("n_out cannot be less than or equal to zero")
 
-        dereference(self.c_data).n2 = n2
+        dereference(self.c_data).n1 = n_out
     
 
 
@@ -943,7 +943,7 @@ class PyLens(PyCC_Wrap):
             left_centre[0] += np.sqrt(R1**2 - R_lens**2) - d/2
             left_ang = np.arcsin(R_lens / R1)
 
-            self._left_arc = PyRefract_Sph(left_centre, R1, np.pi-left_ang, np.pi+left_ang, n_out, n_in)
+            self._left_arc = PyRefract_Sph(left_centre, R1, np.pi-left_ang, np.pi+left_ang, n_in, n_out)
 
         elif R1 <= -R_lens:
             # Concanve
@@ -951,7 +951,7 @@ class PyLens(PyCC_Wrap):
             left_centre[0] -= np.sqrt(R1**2 - R_lens**2) + d/2
             left_ang = np.arcsin(-R_lens / R1)   
 
-            self._left_arc = PyRefract_Sph(left_centre, -R1, -left_ang, left_ang, n_in, n_out)
+            self._left_arc = PyRefract_Sph(left_centre, -R1, -left_ang, left_ang, n_out, n_in)
 
         else:
             raise ValueError(f"R1 = {R1} is invalid")
@@ -964,7 +964,7 @@ class PyLens(PyCC_Wrap):
             right_centre[0] -= np.sqrt(R2**2 - R_lens**2) - d/2
             right_ang = np.arcsin(R_lens / R2)
 
-            self._right_arc = PyRefract_Sph(right_centre, R2, -right_ang, right_ang, n_out, n_in)
+            self._right_arc = PyRefract_Sph(right_centre, R2, -right_ang, right_ang, n_in, n_out)
 
         elif R2 <= -R_lens:
             # Concanve
@@ -972,7 +972,7 @@ class PyLens(PyCC_Wrap):
             right_centre[0] += np.sqrt(R2**2 - R_lens**2) + d/2
             right_ang = np.arcsin(-R_lens / R2)
 
-            self._right_arc = PyRefract_Sph(right_centre, -R2, np.pi-right_ang, np.pi+right_ang, n_in, n_out)
+            self._right_arc = PyRefract_Sph(right_centre, -R2, np.pi-right_ang, np.pi+right_ang, n_out, n_in)
 
         else:
             raise ValueError(f"R2 = {R2} is invalid")
