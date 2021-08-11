@@ -435,6 +435,43 @@ class Test_PyMirror_Sph(unittest.TestCase, useful_checks):
     # Testing correct ray tracing
     # TODO: add tests to verify correct ray tracing
 
+    def test_PyMirror_Sph_tracing(self):
+        """Tests a ray is traced correctly"""
+        d = 1.0
+        centre = np.array([d, 0.0])
+        R = 3.0
+        start = -60.0 * np.pi/180.0
+        end = 60.0 * np.pi/180.0
+
+        c = tr.PyMirror_Sph(centre=centre, R=R, start=start, end=end)
+
+        # Setup ray
+        ray_ang = 30 * np.pi/180.0
+        r = tr.PyRay(init=np.zeros(2), v=np.array([np.cos(ray_ang), np.sin(ray_ang)]))
+
+        tr.PyTrace([c], [r], n=2, fill_up=True)
+
+        # Verify
+        expected_ans = np.zeros((3, 2))
+
+        # Intercept where ray hits mirror
+        expected_ans[1, 0] = d * np.cos(ray_ang)**2 + np.cos(ray_ang)*np.sqrt(( R**2 - d*np.sin(ray_ang)**2 ))
+        expected_ans[1, 1] = np.sqrt(R**2 - (expected_ans[1, 0] - d)**2)
+
+        # Verify, theta is angle ray intersects PyMirrir_Sph measured from
+        # centre of PyMirrir_Sph
+        theta = np.arctan(expected_ans[1, 1] / (expected_ans[1, 0] - d))
+
+        # angle of incidence and the angle of the new ray (not ang of refl)
+        ang_inc = theta - ray_ang
+
+        ray_ref_ang = np.pi + ray_ang + 2*ang_inc
+
+        # Position of ray after reflection
+        expected_ans[2] = expected_ans[1] + np.array([np.cos(ray_ref_ang), np.sin(ray_ref_ang)])
+
+        assert_allclose(r.pos, expected_ans)
+
 
 class Test_PyRefract_Sph(unittest.TestCase, useful_checks):
     """Tests property access and methods of PyMirror_Plane"""
