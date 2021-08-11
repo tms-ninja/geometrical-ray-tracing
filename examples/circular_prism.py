@@ -18,7 +18,7 @@ class SemiCircPrism(PyCC_Wrap):
 		
 		comps = [
 					PyRefract_Plane(left, right, n_in, n_out),
-					PyRefract_Sph(centre, R, start=0.0, end=np.pi, n1=n_in, n2=n_out)
+					PyRefract_Sph(centre, R, start=0.0, end=np.pi, n_in=n_in, n_out=n_out)
 				]
 		
 		super().__init__(comps)  # Must remember to call super __init__

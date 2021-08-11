@@ -479,13 +479,13 @@ class Test_PyRefract_Sph(unittest.TestCase, useful_checks):
     _R = 4.5
     _start = 1.2
     _end = 3.4
-    _n1 = 1.33
-    _n2 = 2.0
+    _n_in = 1.33
+    _n_out = 2.0
     
     def create_Obj(self):
         """Creates an instance of PyMirror_Sph"""
         return tr.PyRefract_Sph(self._centre, self._R, self._start, 
-                                self._end, self._n1, self._n2)
+                                self._end, self._n_in, self._n_out)
 
     # TODO: Test __cinit__()
 
@@ -601,65 +601,65 @@ class Test_PyRefract_Sph(unittest.TestCase, useful_checks):
         with self.assertRaises(ValueError) as context:
             m.end = m.start - 1.0
 
-    # Test property n1 (first refractive index)
-    def test_PyRefract_Sph_n1_get(self):
-        """Tests property n1 getting"""
+    # Test property n_in (efractive index r < R)
+    def test_PyRefract_Sph_n_in_get(self):
+        """Tests property n_in getting"""
         m = self.create_Obj()
 
-        self.assertEqual(m.n1, self._n1)
+        self.assertEqual(m.n_in, self._n_in)
 
-    def test_PyRefract_Sph_n1_set(self):
-        """Tests property n1 getting"""
+    def test_PyRefract_Sph_n_in_set(self):
+        """Tests property n_in getting"""
         m = self.create_Obj()
 
-        self.check_float_property(m, 'n1', self._n1, self._n1 + 10.0)
+        self.check_float_property(m, 'n_in', self._n_in, self._n_in + 10.0)
 
-    def test_PyRefract_Sph_n1_Set_None_not_allowed(self):
-        """Tests property n1 cannot be set to None"""
+    def test_PyRefract_Sph_n_in_Set_None_not_allowed(self):
+        """Tests property n_in cannot be set to None"""
         m = self.create_Obj()
 
         with self.assertRaises(TypeError) as context:
-            m.n1 = None
+            m.n_in = None
 
-    def test_PyRefract_Sph_n1_Set_Negative_not_allowed(self):
-        """Tests property n1 cannot be n1 <= 0"""
+    def test_PyRefract_Sph_n_in_Set_Negative_not_allowed(self):
+        """Tests property n_in cannot be n_in <= 0"""
         m = self.create_Obj()
 
         with self.assertRaises(ValueError) as context:
-            m.n1 = 0.0
+            m.n_in = 0.0
 
         with self.assertRaises(ValueError) as context:
-            m.n1 = -1.0
+            m.n_in = -1.0
 
-    # Test property n2 (second refractive index)
-    def test_PyRefract_Sph_n2_get(self):
-        """Tests property n2 getting"""
+    # Test property n_out (refractive index r > R)
+    def test_PyRefract_Sph_n_out_get(self):
+        """Tests property n_out getting"""
         m = self.create_Obj()
 
-        self.assertEqual(m.n2, self._n2)
+        self.assertEqual(m.n_out, self._n_out)
         
-    def test_PyRefract_Sph_n2_set(self):
-        """Tests property n2 setting"""
+    def test_PyRefract_Sph_n_out_set(self):
+        """Tests property n_out setting"""
         m = self.create_Obj()
 
-        self.check_float_property(m, 'n2', self._n2, self._n2 + 10.0)
+        self.check_float_property(m, 'n_out', self._n_out, self._n_out + 10.0)
 
-    def test_PyRefract_Sph_n2_Set_None_not_allowed(self):
-        """Tests property n2 cannot be set to None"""
+    def test_PyRefract_Sph_n_out_Set_None_not_allowed(self):
+        """Tests property n_out cannot be set to None"""
         m = self.create_Obj()
 
         with self.assertRaises(TypeError) as context:
-            m.n2 = None
+            m.n_out = None
 
-    def test_PyRefract_Sph_n2_Set_Negative_not_allowed(self):
-        """Tests property n2 cannot be n2 <= 0.0"""
+    def test_PyRefract_Sph_n_out_Set_Negative_not_allowed(self):
+        """Tests property n_out cannot be n_out <= 0.0"""
         m = self.create_Obj()
 
         with self.assertRaises(ValueError) as context:
-            m.n2 = 0.0
+            m.n_out = 0.0
 
         with self.assertRaises(ValueError) as context:
-            m.n2 = -1.0
+            m.n_out = -1.0
 
     # Test plot() method
     def test_PyRefract_Sph_plot(self):
@@ -687,6 +687,48 @@ class Test_PyRefract_Sph(unittest.TestCase, useful_checks):
 
     # Testing correct ray tracing
     # TODO: add tests to verify correct ray tracing
+
+    def test_PyRefract_Sph_tracing(self):
+        """Tests a ray is traced correctly through a PyRefract_Sph"""
+        d = 1.0  # X offset for centre of PyRefract_Sph 
+        centre = np.array([d, 0.0])
+        R = 3.0
+        start = -60.0 * np.pi/180.0
+        end = 60.0 * np.pi/180.0
+        n_in = 2.0
+        n_out = 3.0
+
+        c = tr.PyRefract_Sph(centre=centre, R=R, start=start, end=end, 
+                                n_in=n_in, n_out=n_out)
+
+        # Setup ray
+        ray_ang = 30 * np.pi/180.0
+        r = tr.PyRay(init=np.zeros(2), v=np.array([np.cos(ray_ang), np.sin(ray_ang)]))
+
+        tr.PyTrace([c], [r], n=2, fill_up=True)
+
+        # Verify
+        expected_ans = np.zeros((3, 2))
+
+        # Intercept where ray hits PyRefract_Sph
+        expected_ans[1, 0] = d * np.cos(ray_ang)**2 + np.cos(ray_ang)*np.sqrt(( R**2 - d*np.sin(ray_ang)**2 ))
+        expected_ans[1, 1] = np.sqrt(R**2 - (expected_ans[1, 0] - d)**2)
+
+        # Verify, theta is angle ray intersects PyRefract_Sph measured from
+        # centre of PyRefract_Sph
+        theta = np.arctan(expected_ans[1, 1] / (expected_ans[1, 0] - d))
+
+        # angle of incidence
+        ang_inc = theta - ray_ang
+
+        # Apply Snell's law
+        ray_ref_ang = theta - np.arcsin(np.sin(ang_inc) * n_in / n_out)
+
+        # Position of ray after refraction
+        expected_ans[2] = expected_ans[1] + np.array([np.cos(ray_ref_ang), np.sin(ray_ref_ang)])
+
+        assert_allclose(r.pos, expected_ans)
+
 
 
 
