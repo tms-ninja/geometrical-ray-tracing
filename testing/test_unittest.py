@@ -5,6 +5,7 @@ from numpy.testing import assert_array_equal, assert_allclose
 
 import tracing as tr
 
+
 # Contains useful checks to avoid duplicating code
 class useful_checks:
 
@@ -42,7 +43,99 @@ class useful_checks:
 
         assert_array_equal(getattr(obj, attr), expected)
 
+# Tests for PyRay and PyTrace
+class Test_PyRay(unittest.TestCase, useful_checks):
 
+    # God values for initialisation
+    _init = np.array([1.0, 2.0])
+    _v = np.array([0.3, 0.4])*2
+
+    def create_obj(self):
+        return tr.PyRay(self._init, self._v)
+    
+    # Test __cinit__()
+
+    def test_PyRay_cinit_none_check(self):
+        """Test PyRay c initiliser, check None is not allowed"""
+
+        with self.assertRaises(TypeError) as context:
+            c = tr.PyRay(None, self._v)
+
+        with self.assertRaises(TypeError) as context:
+            c = tr.PyRay(self._init, None)
+
+    def test_PyRay_cinit_shape_check(self):
+        """
+        Test PyRay c initiliser, check passed numpy arrays must have correct
+        shape of (2, )
+        """
+
+        # Correct shape should pass
+        c = tr.PyRay(self._init, self._v)
+
+        with self.assertRaises(TypeError) as context:
+            c = tr.PyRay(np.array([1.0]), self._v)
+
+        with self.assertRaises(TypeError) as context:
+            c = tr.PyRay(np.array([1.0, 2.0, 3.0]), self._v)
+
+        # Cython checks dimensions before my code does
+        with self.assertRaises(ValueError) as context:
+            c = tr.PyRay(np.array([[1.0, 2.0], [3.0, 4.0]]), self._v)
+
+        with self.assertRaises(TypeError) as context:
+            c = tr.PyRay(self._init, np.array([1.0]))
+
+        with self.assertRaises(TypeError) as context:
+            c = tr.PyRay(self._init, np.array([1.0, 2.0, 3.0]))
+
+        with self.assertRaises(ValueError) as context:
+            c = tr.PyRay(self._init, np.array([[1.0, 2.0], [3.0, 4.0]]))
+
+    # Testing property v
+    def test_PyRay_v_get(self):
+        """Tests PyRay.v get"""
+        r = self.create_obj()
+
+        assert_array_equal(r.v, self._v)
+
+    def test_PyRay_v_set(self):
+        """Tests PyRay.v set"""
+        r = self.create_obj()
+
+        self.check_np_view_shape_2_set(r, 'v', self._v, np.array([6.7, 8.9]))
+
+    # Testing property pos
+    def test_PyRay_v_get(self):
+        """Tests PyRay.pos get"""
+        r = self.create_obj()
+        
+        # Note pos is an array with shape (N, 2)
+        assert_array_equal(r.pos, self._init[np.newaxis, ...])
+
+    # Testing method plot()
+    def test_PyRay_Plot(self):
+        """Test plot() method by computing ray bouncing of PyMirror_Plane"""
+        # Vertical mirror at x = 1.0
+        m = tr.PyMirror_Plane(start=np.array([1.0, 0.0]), end=np.array([1.0, 2.0]))
+
+        # Ray starting at origin and travelling diagonally at 45 degrees
+        ang = 45 * np.pi/180.0
+        r = tr.PyRay(init=np.array([0.0, 0.0]), v=np.array([np.cos(ang), np.sin(ang)]))
+
+        # Trace ray
+        tr.PyTrace([m], [r], n=2, fill_up=False)
+
+        expected_ans = np.array([
+            [0.0, 0.0],
+            [1.0, 1.0],
+            [1.0 + np.cos(ang + np.pi/2), 1.0 + np.sin(ang + np.pi/2)],
+        ])
+
+        assert_allclose(r.plot(), expected_ans)
+
+
+# Base components
 class Test_PyMirror_Plane(unittest.TestCase, useful_checks):
     """Tests property access and methods of PyMirror_Plane"""
     _start = np.array([1.2, 3.4])
@@ -859,8 +952,6 @@ class Test_PyRefract_Sph(unittest.TestCase, useful_checks):
         expected_ans[2] = expected_ans[1] + np.array([np.cos(ray_ref_ang), np.sin(ray_ref_ang)])
 
         assert_allclose(r.pos, expected_ans)
-
-
 
 
 if __name__ == '__main__':
