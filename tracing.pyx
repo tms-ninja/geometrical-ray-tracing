@@ -40,6 +40,7 @@ cdef arr make_arr_from_numpy(double[:] n):
     
     return a
     
+# PyTrace function
 
 def PyTrace(list components, list rays, int n, bool fill_up=True):
     """
@@ -98,6 +99,7 @@ def PyTrace(list components, list rays, int n, bool fill_up=True):
         
     trace(vec_comp, vec_rays, n, fill_up)
 
+# class PyRay
 
 cdef class PyRay:
     """
@@ -227,6 +229,7 @@ cdef class PyRay:
         
         return self.pos
 
+# class _PyComponent
     
 cdef class _PyComponent:
     """
@@ -250,6 +253,7 @@ cdef class _PyComponent:
 
 
 # Planar components
+# class _PyPlane
 
 cdef class _PyPlane(_PyComponent):
     """
@@ -350,13 +354,12 @@ cdef class _PyPlane(_PyComponent):
         
         return points
 
-
+# class PyMirror_Plane
 
 cdef class PyMirror_Plane(_PyPlane):
     """
     A class to represent a plane mirror. Mirrors C++ class Mirror_Plane.
     """
-    
     
     cdef Mirror_Plane* c_data
     
@@ -391,7 +394,7 @@ cdef class PyMirror_Plane(_PyPlane):
         self.c_plane_ptr = <Plane*>self.c_data
         self.c_component_ptr = shared_ptr[Component]( <Component*>self.c_data )
         
-
+# class Pyrefract_Plane
 
 cdef class PyRefract_Plane(_PyPlane):
     """
@@ -484,6 +487,7 @@ cdef class PyRefract_Plane(_PyPlane):
 
 
 # Spherical components
+# class _PySpherical
 
 cdef class _PySpherical(_PyComponent):
     """
@@ -609,6 +613,7 @@ cdef class _PySpherical(_PyComponent):
         return points
 
 
+# class PyMirror_Sph 
 
 cdef class PyMirror_Sph(_PySpherical):
     """A class to represent a circular mirror. Mirrors C++ class Mirror_Sph"""
@@ -647,9 +652,11 @@ cdef class PyMirror_Sph(_PySpherical):
         
         self.c_sph_ptr = <Spherical*>self.c_data
         self.c_component_ptr = shared_ptr[Component]( <Component*>self.c_data )
-        
-        
-    
+
+
+
+ # class PyrefractSph
+
 cdef class PyRefract_Sph(_PySpherical):
     """
     A class to describe a circular arc at which refraction occurs. Mirrors
@@ -790,8 +797,9 @@ cdef class PyComplex_Component(_PyComponent):
                 comp_shared_ptr = ( <PyComplex_Component?>( c.PyCC )).c_component_ptr
             
             dereference(self.c_data).comps.push_back(comp_shared_ptr)   
-        
-        
+
+# class PyCCWrap
+
 class PyCC_Wrap:
     """
     A class for creating complex components. It is not intended to be 
@@ -1098,6 +1106,9 @@ class PyLens(PyCC_Wrap):
         
         return self._n_out
 
+
+
+# class PyBiConvexLens
 
 class PyBiConvexLens(PyLens):
     """A class to represent a Bi-convex lens"""
