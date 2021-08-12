@@ -1,6 +1,7 @@
 #include "Ray.h"
 
 Ray::Ray(arr init, arr v)
+: continue_tracing(true)
 {
 	pos.push_back(init);
 	Ray::v = v;
