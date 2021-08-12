@@ -40,6 +40,7 @@ cdef arr make_arr_from_numpy(double[:] n):
     
     return a
     
+# PyTrace function
 
 def PyTrace(list components, list rays, int n, bool fill_up=True):
     """
@@ -98,6 +99,7 @@ def PyTrace(list components, list rays, int n, bool fill_up=True):
         
     trace(vec_comp, vec_rays, n, fill_up)
 
+# class PyRay
 
 cdef class PyRay:
     """
@@ -146,9 +148,12 @@ cdef class PyRay:
 
         """
         
-        assert tuple(init.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
-        assert tuple(v.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
-        
+        if tuple(init.shape) != _arr_shape:
+            raise TypeError("init should have shape (2, )")
+
+        if tuple(v.shape) != _arr_shape:
+            raise TypeError("v should have shape (2, )")
+
         self.c_data = new Ray(make_arr_from_numpy(init), 
                               make_arr_from_numpy(v))
         
@@ -206,7 +211,8 @@ cdef class PyRay:
         return v_np
     @v.setter
     def v(self, double[:] v not None):
-        assert tuple(v.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
+        if tuple(v.shape) != _arr_shape:
+            raise TypeError("v should have shape (2, )")
         
         dereference(self.c_data).v = make_arr_from_numpy(v)
         
@@ -223,6 +229,7 @@ cdef class PyRay:
         
         return self.pos
 
+# class _PyComponent
     
 cdef class _PyComponent:
     """
@@ -246,6 +253,7 @@ cdef class _PyComponent:
 
 
 # Planar components
+# class _PyPlane
 
 cdef class _PyPlane(_PyComponent):
     """
@@ -296,8 +304,9 @@ cdef class _PyPlane(_PyComponent):
         
         return start_np
     @start.setter
-    def start(self, double[:] start):
-        assert tuple(start.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
+    def start(self, double[:] start not None):
+        if tuple(start.shape) != _arr_shape:
+            raise TypeError("start should have shape (2, )")
         
         dereference(self.c_plane_ptr).start = make_arr_from_numpy(start)
         
@@ -320,9 +329,10 @@ cdef class _PyPlane(_PyComponent):
         
         return end_np
     @end.setter
-    def end(self, double[:] end):
-        assert tuple(end.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
-        
+    def end(self, double[:] end not None):
+        if tuple(end.shape) != _arr_shape:
+            raise TypeError("end should have shape (2, )")
+
         dereference(self.c_plane_ptr).end = make_arr_from_numpy(end)
         
     def plot(self):
@@ -344,17 +354,16 @@ cdef class _PyPlane(_PyComponent):
         
         return points
 
-
+# class PyMirror_Plane
 
 cdef class PyMirror_Plane(_PyPlane):
     """
     A class to represent a plane mirror. Mirrors C++ class Mirror_Plane.
     """
     
-    
     cdef Mirror_Plane* c_data
     
-    def __cinit__(self, double[:] start, double[:] end):
+    def __cinit__(self, double[:] start not None, double[:] end not None):
         """
         Creates an instance of PyMirror_Plane.
 
@@ -372,9 +381,12 @@ cdef class PyMirror_Plane(_PyPlane):
         None.
 
         """
-        
-        assert tuple(start.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
-        assert tuple(end.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"       
+
+        if tuple(start.shape) != _arr_shape:
+            raise TypeError("start should have shape (2, )")
+
+        if tuple(end.shape) != _arr_shape:
+            raise TypeError("end should have shape (2, )")     
         
         self.c_data = new Mirror_Plane(make_arr_from_numpy(start), 
                                        make_arr_from_numpy(end))
@@ -382,7 +394,7 @@ cdef class PyMirror_Plane(_PyPlane):
         self.c_plane_ptr = <Plane*>self.c_data
         self.c_component_ptr = shared_ptr[Component]( <Component*>self.c_data )
         
-
+# class Pyrefract_Plane
 
 cdef class PyRefract_Plane(_PyPlane):
     """
@@ -392,7 +404,7 @@ cdef class PyRefract_Plane(_PyPlane):
     
     cdef Refract_Plane* c_data
     
-    def __cinit__(self, double[:] start, double[:] end, double n1=1.0, 
+    def __cinit__(self, double[:] start not None, double[:] end not None, double n1=1.0, 
                   double n2=1.0):
         """
         Creates an instance of PyRefract_Plane.
@@ -418,8 +430,11 @@ cdef class PyRefract_Plane(_PyPlane):
 
         """
         
-        assert tuple(start.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
-        assert tuple(end.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
+        if tuple(start.shape) != _arr_shape:
+            raise TypeError("start should have shape (2, )")
+
+        if tuple(end.shape) != _arr_shape:
+            raise TypeError("end should have shape (2, )")  
         
         self.c_data = new Refract_Plane(make_arr_from_numpy(start), 
                                         make_arr_from_numpy(end), n1, n2)
@@ -443,6 +458,9 @@ cdef class PyRefract_Plane(_PyPlane):
         return dereference(self.c_data).n1
     @n1.setter
     def n1(self, double n1):
+        if n1 <= 0.0:
+            raise ValueError("n1 cannot be less than or equal to zero")
+
         dereference(self.c_data).n1 = n1
     
     @property
@@ -461,11 +479,15 @@ cdef class PyRefract_Plane(_PyPlane):
         return dereference(self.c_data).n2
     @n2.setter
     def n2(self, double n2):
+        if n2 <= 0.0:
+            raise ValueError("n2 cannot be less than or equal to zero")
+
         dereference(self.c_data).n2 = n2
         
 
 
 # Spherical components
+# class _PySpherical
 
 cdef class _PySpherical(_PyComponent):
     """
@@ -497,9 +519,10 @@ cdef class _PySpherical(_PyComponent):
         
         return centre_np
     @centre.setter
-    def centre(self, double[:] centre):
-        assert tuple(centre.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
-        
+    def centre(self, double[:] centre not None):
+        if tuple(centre.shape) != _arr_shape:
+            raise TypeError("centre should have shape (2, )")
+
         dereference(self.c_sph_ptr).centre = make_arr_from_numpy(centre)
         
     @property
@@ -516,7 +539,10 @@ cdef class _PySpherical(_PyComponent):
         
         return dereference(self.c_sph_ptr).R
     @R.setter
-    def R(self, double R):       
+    def R(self, double R):
+        if R <= 0.0:
+            raise ValueError("R cannot be less than or equal to zero")
+
         dereference(self.c_sph_ptr).R = R
         
     @property
@@ -535,6 +561,9 @@ cdef class _PySpherical(_PyComponent):
         return dereference(self.c_sph_ptr).start
     @start.setter
     def start(self, double start):
+        if start >= self.end:
+            raise ValueError("start angle must be less than end angle")
+
         dereference(self.c_sph_ptr).start = start
         
     @property
@@ -553,6 +582,9 @@ cdef class _PySpherical(_PyComponent):
         return dereference(self.c_sph_ptr).end
     @end.setter
     def end(self, double end):
+        if end <= self.start:
+            raise ValueError("end angle must be greater than start angle")
+
         dereference(self.c_sph_ptr).end = end
         
     def plot(self, n_points=100):
@@ -581,6 +613,7 @@ cdef class _PySpherical(_PyComponent):
         return points
 
 
+# class PyMirror_Sph 
 
 cdef class PyMirror_Sph(_PySpherical):
     """A class to represent a circular mirror. Mirrors C++ class Mirror_Sph"""
@@ -610,17 +643,20 @@ cdef class PyMirror_Sph(_PySpherical):
         None.
 
         """
-        
-        assert tuple(centre.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
-        
+
+        if tuple(centre.shape) != _arr_shape:
+            raise TypeError("centre should have shape (2, )")
+                
         self.c_data = new Mirror_Sph(make_arr_from_numpy(centre), R, start, 
                                      end)
         
         self.c_sph_ptr = <Spherical*>self.c_data
         self.c_component_ptr = shared_ptr[Component]( <Component*>self.c_data )
-        
-        
-    
+
+
+
+# class PyrefractSph
+
 cdef class PyRefract_Sph(_PySpherical):
     """
     A class to describe a circular arc at which refraction occurs. Mirrors
@@ -630,7 +666,7 @@ cdef class PyRefract_Sph(_PySpherical):
     cdef Refract_Sph* c_data
     
     def __cinit__(self, double[:] centre, double R, double start, double end,
-                  double n1=1.0, double n2=1.0):
+                  double n_in=1.0, double n_out=1.0):
         """
         Creates an instance of PyRefract_Sph.
 
@@ -647,9 +683,9 @@ cdef class PyRefract_Sph(_PySpherical):
         end : double
             The end angle of the arc, in radians. It is measured anti-clockwise 
             from the x axis.
-        n1 : double, optional
+        n_in : double, optional
             The refractive index for r < R. The default is 1.0.
-        n2 : double, optional
+        n_out : double, optional
             The refractive index for r > R. The default is 1.0.
 
         Returns
@@ -658,33 +694,37 @@ cdef class PyRefract_Sph(_PySpherical):
 
         """
         
-        assert tuple(centre.shape) == _arr_shape, "Expected a 1d numpy array with 2 elements"
+        if tuple(centre.shape) != _arr_shape:
+            raise TypeError("centre should have shape (2, )")
         
         self.c_data = new Refract_Sph(make_arr_from_numpy(centre), R, start, 
-                                     end, n1, n2)
+                                     end, n_out, n_in)
         
         self.c_sph_ptr = <Spherical*>self.c_data
         self.c_component_ptr = shared_ptr[Component]( <Component*>self.c_data )
                 
     @property
-    def n1(self):
+    def n_in(self):
         """
         The refractive index "inside" the arc where r < R.
 
         Returns
         -------
         double
-            The refractive index n1.
+            The refractive index n_in.
 
         """
         
-        return dereference(self.c_data).n1
-    @n1.setter
-    def n1(self, double n1):
-        dereference(self.c_data).n1 = n1
+        return dereference(self.c_data).n2
+    @n_in.setter
+    def n_in(self, double n_in):
+        if n_in <= 0.0:
+            raise ValueError("n_in cannot be less than or equal to zero")
+
+        dereference(self.c_data).n2 = n_in
     
     @property
-    def n2(self):
+    def n_out(self):
         """
         The refractive index "outside" the arc where r > R.
 
@@ -695,10 +735,13 @@ cdef class PyRefract_Sph(_PySpherical):
 
         """
         
-        return dereference(self.c_data).n2
-    @n2.setter
-    def n2(self, double n2):
-        dereference(self.c_data).n2 = n2
+        return dereference(self.c_data).n1
+    @n_out.setter
+    def n_out(self, double n_out):
+        if n_out <= 0.0:
+            raise ValueError("n_out cannot be less than or equal to zero")
+
+        dereference(self.c_data).n1 = n_out
     
 
 
@@ -754,8 +797,9 @@ cdef class PyComplex_Component(_PyComponent):
                 comp_shared_ptr = ( <PyComplex_Component?>( c.PyCC )).c_component_ptr
             
             dereference(self.c_data).comps.push_back(comp_shared_ptr)   
-        
-        
+
+# class PyCCWrap
+
 class PyCC_Wrap:
     """
     A class for creating complex components. It is not intended to be 
@@ -907,7 +951,7 @@ class PyLens(PyCC_Wrap):
             left_centre[0] += np.sqrt(R1**2 - R_lens**2) - d/2
             left_ang = np.arcsin(R_lens / R1)
 
-            self._left_arc = PyRefract_Sph(left_centre, R1, np.pi-left_ang, np.pi+left_ang, n_out, n_in)
+            self._left_arc = PyRefract_Sph(left_centre, R1, np.pi-left_ang, np.pi+left_ang, n_in, n_out)
 
         elif R1 <= -R_lens:
             # Concanve
@@ -915,7 +959,7 @@ class PyLens(PyCC_Wrap):
             left_centre[0] -= np.sqrt(R1**2 - R_lens**2) + d/2
             left_ang = np.arcsin(-R_lens / R1)   
 
-            self._left_arc = PyRefract_Sph(left_centre, -R1, -left_ang, left_ang, n_in, n_out)
+            self._left_arc = PyRefract_Sph(left_centre, -R1, -left_ang, left_ang, n_out, n_in)
 
         else:
             raise ValueError(f"R1 = {R1} is invalid")
@@ -928,7 +972,7 @@ class PyLens(PyCC_Wrap):
             right_centre[0] -= np.sqrt(R2**2 - R_lens**2) - d/2
             right_ang = np.arcsin(R_lens / R2)
 
-            self._right_arc = PyRefract_Sph(right_centre, R2, -right_ang, right_ang, n_out, n_in)
+            self._right_arc = PyRefract_Sph(right_centre, R2, -right_ang, right_ang, n_in, n_out)
 
         elif R2 <= -R_lens:
             # Concanve
@@ -936,7 +980,7 @@ class PyLens(PyCC_Wrap):
             right_centre[0] += np.sqrt(R2**2 - R_lens**2) + d/2
             right_ang = np.arcsin(-R_lens / R2)
 
-            self._right_arc = PyRefract_Sph(right_centre, -R2, np.pi-right_ang, np.pi+right_ang, n_in, n_out)
+            self._right_arc = PyRefract_Sph(right_centre, -R2, np.pi-right_ang, np.pi+right_ang, n_out, n_in)
 
         else:
             raise ValueError(f"R2 = {R2} is invalid")
@@ -1062,6 +1106,9 @@ class PyLens(PyCC_Wrap):
         
         return self._n_out
 
+
+
+# class PyBiConvexLens
 
 class PyBiConvexLens(PyLens):
     """A class to represent a Bi-convex lens"""
