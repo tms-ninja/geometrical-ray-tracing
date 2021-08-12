@@ -6,6 +6,11 @@ from numpy.testing import assert_array_equal, assert_allclose
 import tracing as tr
 
 def unit_vec(angle):
+    """
+    Returns a normalised unit vector in the direction pg angle. Angle is
+    measured from the x axis counter-clockwise
+    """
+
     return np.array([np.cos(angle), np.sin(angle)])
 
 # Contains useful checks to avoid duplicating code
@@ -123,7 +128,7 @@ class Test_PyRay(unittest.TestCase, useful_checks):
 
         # Ray starting at origin and travelling diagonally at 45 degrees
         ang = 45 * np.pi/180.0
-        r = tr.PyRay(init=np.array([0.0, 0.0]), v=np.array([np.cos(ang), np.sin(ang)]))
+        r = tr.PyRay(init=np.array([0.0, 0.0]), v=unit_vec(ang))
 
         # Trace ray
         tr.PyTrace([m], [r], n=2, fill_up=False)
@@ -199,8 +204,6 @@ class Test_PyTrace(unittest.TestCase, useful_checks):
             comps = [c1, FakeComponent(), c2]
 
             tr.PyTrace(comps, rays, n=2, fill_up=True)
-
-
 
 
 # Base components
@@ -309,7 +312,7 @@ class Test_PyMirror_Plane(unittest.TestCase, useful_checks):
 
         # Ray starting at origin and travelling diagonally at 45 degrees
         ang = 45 * np.pi/180.0
-        r = tr.PyRay(init=np.array([0.0, 0.0]), v=np.array([np.cos(ang), np.sin(ang)]))
+        r = tr.PyRay(init=np.array([0.0, 0.0]), v=unit_vec(ang))
 
         # Trace ray
         tr.PyTrace([m], [r], n=2, fill_up=False)
@@ -498,7 +501,7 @@ class Test_PyRefract_Plane(unittest.TestCase, useful_checks):
 
         # Ray starting at origin and travelling diagonally at 45 degrees
         ang = 45 * np.pi/180.0
-        r = tr.PyRay(init=np.array([0.0, 0.0]), v=np.array([np.cos(ang), np.sin(ang)]))
+        r = tr.PyRay(init=np.array([0.0, 0.0]), v=unit_vec(ang))
 
         # Trace ray
         tr.PyTrace([c], [r], n=2, fill_up=False)
@@ -707,7 +710,7 @@ class Test_PyMirror_Sph(unittest.TestCase, useful_checks):
 
         # Setup ray
         ray_ang = 30 * np.pi/180.0
-        r = tr.PyRay(init=np.zeros(2), v=np.array([np.cos(ray_ang), np.sin(ray_ang)]))
+        r = tr.PyRay(init=np.zeros(2), v=unit_vec(ray_ang))
 
         tr.PyTrace([c], [r], n=2, fill_up=True)
 
@@ -728,7 +731,7 @@ class Test_PyMirror_Sph(unittest.TestCase, useful_checks):
         ray_ref_ang = np.pi + ray_ang + 2*ang_inc
 
         # Position of ray after reflection
-        expected_ans[2] = expected_ans[1] + np.array([np.cos(ray_ref_ang), np.sin(ray_ref_ang)])
+        expected_ans[2] = expected_ans[1] + unit_vec(ray_ref_ang)
 
         assert_allclose(r.pos, expected_ans)
 
@@ -995,7 +998,7 @@ class Test_PyRefract_Sph(unittest.TestCase, useful_checks):
 
         # Setup ray
         ray_ang = 30 * np.pi/180.0
-        r = tr.PyRay(init=np.zeros(2), v=np.array([np.cos(ray_ang), np.sin(ray_ang)]))
+        r = tr.PyRay(init=np.zeros(2), v=unit_vec(ray_ang))
 
         tr.PyTrace([c], [r], n=2, fill_up=True)
 
@@ -1017,7 +1020,7 @@ class Test_PyRefract_Sph(unittest.TestCase, useful_checks):
         ray_ref_ang = theta - np.arcsin(np.sin(ang_inc) * n_in / n_out)
 
         # Position of ray after refraction
-        expected_ans[2] = expected_ans[1] + np.array([np.cos(ray_ref_ang), np.sin(ray_ref_ang)])
+        expected_ans[2] = expected_ans[1] + unit_vec(ray_ref_ang)
 
         assert_allclose(r.pos, expected_ans)
 
