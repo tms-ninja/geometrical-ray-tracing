@@ -5,6 +5,8 @@ from numpy.testing import assert_array_equal, assert_allclose
 
 import tracing as tr
 
+def unit_vec(angle):
+    return np.array([np.cos(angle), np.sin(angle)])
 
 # Contains useful checks to avoid duplicating code
 class useful_checks:
@@ -133,6 +135,72 @@ class Test_PyRay(unittest.TestCase, useful_checks):
         ])
 
         assert_allclose(r.plot(), expected_ans)
+
+
+class Test_PyTrace(unittest.TestCase, useful_checks):
+    """Tests for the tracing function PyTrace"""
+
+    def test_PyTrace_Fill_Up_True(self):
+        """
+        Tests fill_up=True parameter by tracing a ray through two 
+        components
+        """
+        n1, n2 = 3.0, 2.0
+
+        c1 = tr.PyMirror_Plane(np.array([-1.0, 1.0]), np.array([1.0, 1.0]))
+        c2 = tr.PyRefract_Plane(np.array([1.0, 1.0]), np.array([1.0, -1.0]),
+                                n1=n1, n2=n2)
+
+        r1 = tr.PyRay(np.array([-1.0, 0.0]), unit_vec(45*np.pi/180))
+
+        tr.PyTrace([c1, c2], [r1], n=6, fill_up=True)
+
+        expected_ans = [
+            [-1.0, 0.0],
+            [0.0, 1.0],
+            [1.0, 0.0],
+        ]
+
+        # Position of ray after refraction
+        expected_ans.append(unit_vec(-np.arcsin( np.sin(45*np.pi/180) *n2/n1 )))
+        expected_ans[-1][0] += 1
+        expected_ans[-1] = list(expected_ans[-1])
+
+        # Fill up array with last position as fill_up=True
+        expected_ans.extend([expected_ans[-1]] * 3)
+        expected_ans = np.array(expected_ans)
+        
+        # Increase atol as some entries in expected_ans are zero
+        assert_allclose(r1.pos, expected_ans, atol=1e-15)
+
+
+    # TODO: check fill_up=False, needs C++ updating not handled properly
+
+    def test_PyTrace_Invalid_Components(self):
+        """
+        Tests PyTrace raises TypeError if an invalid component is
+        passed in the components list
+        """
+        # "Good" components
+        c1 = tr.PyMirror_Plane(np.array([1.0, 0.0]), np.array([1.0, 2.0]))
+        c2 = tr.PyRefract_Plane(np.array([-1.0, 0.0]), np.array([-1.0, 4.0]))
+
+        rays = [tr.PyRay(np.array([0.0, 0.0]), np.array([1.0, 0.0]))]
+
+        with self.assertRaises(TypeError):
+            comps = [c1, 5, c2]
+
+            tr.PyTrace(comps, rays, n=2, fill_up=True)
+
+        with self.assertRaises(TypeError):
+            class FakeComponent:
+                pass
+
+            comps = [c1, FakeComponent(), c2]
+
+            tr.PyTrace(comps, rays, n=2, fill_up=True)
+
+
 
 
 # Base components
