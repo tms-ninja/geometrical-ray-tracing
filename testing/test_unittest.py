@@ -147,8 +147,8 @@ class Test_PyTrace(unittest.TestCase, useful_checks):
 
     def test_PyTrace_Fill_Up_True(self):
         """
-        Tests fill_up=True parameter by tracing a ray through two 
-        components
+        Tests fill_up=True parameter by tracing two rays through two 
+        components. One ray goes through both, the other goes throguh neither.
         """
         n1, n2 = 3.0, 2.0
 
@@ -156,28 +156,78 @@ class Test_PyTrace(unittest.TestCase, useful_checks):
         c2 = tr.PyRefract_Plane(np.array([1.0, 1.0]), np.array([1.0, -1.0]),
                                 n1=n1, n2=n2)
 
-        r1 = tr.PyRay(np.array([-1.0, 0.0]), unit_vec(45*np.pi/180))
+        r1 = tr.PyRay(np.array([-0.25, 0.0]), unit_vec(180*np.pi/180))
+        r2 = tr.PyRay(np.array([-1.0, 0.0]), unit_vec(45*np.pi/180))
 
-        tr.PyTrace([c1, c2], [r1], n=6, fill_up=True)
+        rays = [r1, r2]
+
+        tr.PyTrace([c1, c2], rays, n=6, fill_up=True)
+
+        # Angle of the refracted ray r2
+        refract_ray_ang = -np.arcsin( np.sin(45*np.pi/180) *n2/n1 )
 
         expected_ans = [
-            [-1.0, 0.0],
-            [0.0, 1.0],
-            [1.0, 0.0],
+            [  # r1 path
+                [-0.25, 0.0],
+                [-1.25, 0.0],
+            ],
+            [
+                [-1.0, 0.0],
+                [0.0, 1.0],
+                [1.0, 0.0],
+                [1.0 + np.cos(refract_ray_ang), 0.0 + np.sin(refract_ray_ang)]
+            ]
         ]
 
-        # Position of ray after refraction
-        expected_ans.append(unit_vec(-np.arcsin( np.sin(45*np.pi/180) *n2/n1 )))
-        expected_ans[-1][0] += 1
-        expected_ans[-1] = list(expected_ans[-1])
+        # Do the filling up
+        expected_ans[0].extend([expected_ans[0][-1]] * 5)
+        expected_ans[1].extend([expected_ans[1][-1]] * 3)
 
-        # Fill up array with last position as fill_up=True
-        expected_ans.extend([expected_ans[-1]] * 3)
         expected_ans = np.array(expected_ans)
         
         # Increase atol as some entries in expected_ans are zero
-        assert_allclose(r1.pos, expected_ans, atol=1e-15)
+        for r, exp in zip(rays, expected_ans):
+            assert_allclose(r.pos, exp, atol=1e-15)
 
+    def test_PyTrace_Fill_Up_False(self):
+        """
+        Tests fill_up=False parameter by tracing two rays through two 
+        components. One ray goes through both, the other goes throguh neither.
+        """
+        n1, n2 = 3.0, 2.0
+
+        c1 = tr.PyMirror_Plane(np.array([-1.0, 1.0]), np.array([1.0, 1.0]))
+        c2 = tr.PyRefract_Plane(np.array([1.0, 1.0]), np.array([1.0, -1.0]),
+                                n1=n1, n2=n2)
+
+        r1 = tr.PyRay(np.array([-0.25, 0.0]), unit_vec(180*np.pi/180))
+        r2 = tr.PyRay(np.array([-1.0, 0.0]), unit_vec(45*np.pi/180))
+
+        rays = [r1, r2]
+
+        tr.PyTrace([c1, c2], rays, n=6, fill_up=False)
+
+        # Angle of the refracted ray r2
+        refract_ray_ang = -np.arcsin( np.sin(45*np.pi/180) *n2/n1 )
+
+        expected_ans = [
+            [  # r1 path
+                [-0.25, 0.0],
+                [-1.25, 0.0],
+            ],
+            [
+                [-1.0, 0.0],
+                [0.0, 1.0],
+                [1.0, 0.0],
+                [1.0 + np.cos(refract_ray_ang), 0.0 + np.sin(refract_ray_ang)]
+            ]
+        ]
+
+        expected_ans = [np.array(p) for p in expected_ans]
+        
+        # Increase atol as some entries in expected_ans are zero
+        for r, exp in zip(rays, expected_ans):
+            assert_allclose(r.pos, exp, atol=1e-15)
 
     # TODO: check fill_up=False, needs C++ updating not handled properly
 
