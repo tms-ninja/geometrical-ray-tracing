@@ -23,36 +23,24 @@ void trace_ray(const T &c, Ray* ry, int n, bool fill_up)
 
 		if (found) // work out next interaction
 		{
-			
 			c[next_ind]->hit(ry);
 		}
-		else if (fill_up)  // no more interactions, fill up to desired n
+		else // no more interactions
 		{
 			const arr end = { r[0] + ry->v[0], r[1] + ry->v[1] };
 
-			for (int j = 0; j < n - i; ++j)
+			if (fill_up)  // fill up to desired n
 			{
-				ry->pos.push_back(end);
+				for (int j = 0; j < n - i; ++j)
+				{
+					ry->pos.push_back(end);
+				}
 			}
-
+			else
+				ry->pos.push_back(end);  // show result of last interaction
+			
 			return;  // Exit the function as we have nothing else to do
 		}
-
-		//if (next_ind == -1 && fill_up)  // no more interactions, fill up to desired n
-		//{
-		//	const arr end = { r[0] + ry->v[0], r[1] + ry->v[1] };
-
-		//	for (int j = 0; j < n - i; ++j)
-		//	{
-		//		ry->pos.push_back(end);
-		//	}
-
-		//	return;  // Exit the function as we have nothing else to do
-		//}
-		//else if (next_ind >= 0)  // work out next interaction
-		//{
-		//	c[next_ind]->hit(ry);
-		//}
 	}
 }
 
