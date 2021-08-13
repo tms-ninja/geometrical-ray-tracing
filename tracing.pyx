@@ -78,6 +78,9 @@ def PyTrace(list components, list rays, int n, bool fill_up=True):
             
         elif isinstance(c, PyRefract_Plane):
             vec_comp.push_back( (<PyRefract_Plane>c).c_component_ptr.get() )
+
+        elif isinstance(c, PyScreen_Plane):
+            vec_comp.push_back( (<PyScreen_Plane>c).c_component_ptr.get() )
             
         elif isinstance(c, PyMirror_Sph):
             vec_comp.push_back( (<PyMirror_Sph>c).c_component_ptr.get() )
