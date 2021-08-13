@@ -17,6 +17,14 @@ cdef extern from "<utility>" namespace "std" nogil:
 # Shape of 1d numpy array with 2 elements
 _arr_shape = (2, 0, 0, 0, 0, 0, 0, 0)
 
+def wrong_np_shape_except(var_name, bad_arr):
+    """
+    Returns an exception to be used when an array doesn't have the same shape
+    as _arr_shape = (2, 0, 0, 0, 0, 0, 0, 0) 
+    """
+
+    return TypeError(f"expected {var_name} to have shape (2,) but got array with shape {bad_arr.shape}")
+
 
 cdef arr make_arr_from_numpy(double[:] n):
     """
@@ -92,7 +100,7 @@ def PyTrace(list components, list rays, int n, bool fill_up=True):
             vec_comp.push_back( ( <PyComplex_Component>( c.PyCC )).c_component_ptr.get() )
             
         else:
-            raise TypeError(f"Type '{type(c)}' is not a recognised type for a component")
+            raise TypeError(f"type {type(c)} is not a recognised type for a component")
             
         
     cdef vector[Ray*] vec_rays
@@ -152,10 +160,10 @@ cdef class PyRay:
         """
         
         if tuple(init.shape) != _arr_shape:
-            raise TypeError("init should have shape (2, )")
+            raise wrong_np_shape_except("init", init)
 
         if tuple(v.shape) != _arr_shape:
-            raise TypeError("v should have shape (2, )")
+            raise wrong_np_shape_except("v", v)
 
         self.c_data = new Ray(make_arr_from_numpy(init), 
                               make_arr_from_numpy(v))
@@ -215,7 +223,7 @@ cdef class PyRay:
     @v.setter
     def v(self, double[:] v not None):
         if tuple(v.shape) != _arr_shape:
-            raise TypeError("v should have shape (2, )")
+            raise wrong_np_shape_except("v", v)
         
         dereference(self.c_data).v = make_arr_from_numpy(v)
         
@@ -309,7 +317,7 @@ cdef class _PyPlane(_PyComponent):
     @start.setter
     def start(self, double[:] start not None):
         if tuple(start.shape) != _arr_shape:
-            raise TypeError("start should have shape (2, )")
+            raise wrong_np_shape_except("start", start)
         
         dereference(self.c_plane_ptr).start = make_arr_from_numpy(start)
         
@@ -334,7 +342,7 @@ cdef class _PyPlane(_PyComponent):
     @end.setter
     def end(self, double[:] end not None):
         if tuple(end.shape) != _arr_shape:
-            raise TypeError("end should have shape (2, )")
+            raise wrong_np_shape_except("end", end)
 
         dereference(self.c_plane_ptr).end = make_arr_from_numpy(end)
         
@@ -386,10 +394,10 @@ cdef class PyMirror_Plane(_PyPlane):
         """
 
         if tuple(start.shape) != _arr_shape:
-            raise TypeError("start should have shape (2, )")
+            raise wrong_np_shape_except("start", start)
 
         if tuple(end.shape) != _arr_shape:
-            raise TypeError("end should have shape (2, )")     
+            raise wrong_np_shape_except("end", end)
         
         self.c_data = new Mirror_Plane(make_arr_from_numpy(start), 
                                        make_arr_from_numpy(end))
@@ -434,10 +442,10 @@ cdef class PyRefract_Plane(_PyPlane):
         """
         
         if tuple(start.shape) != _arr_shape:
-            raise TypeError("start should have shape (2, )")
+            raise wrong_np_shape_except("start", start)
 
         if tuple(end.shape) != _arr_shape:
-            raise TypeError("end should have shape (2, )")  
+            raise wrong_np_shape_except("end", end)
         
         self.c_data = new Refract_Plane(make_arr_from_numpy(start), 
                                         make_arr_from_numpy(end), n1, n2)
@@ -513,10 +521,10 @@ cdef class PyScreen_Plane(_PyPlane):
         """
 
         if tuple(start.shape) != _arr_shape:
-            raise TypeError("start should have shape (2, )")
+            raise wrong_np_shape_except("start", start)
 
         if tuple(end.shape) != _arr_shape:
-            raise TypeError("end should have shape (2, )")     
+            raise wrong_np_shape_except("end", end)
         
         self.c_data = new Screen_Plane(make_arr_from_numpy(start), 
                                        make_arr_from_numpy(end))
@@ -561,7 +569,7 @@ cdef class _PySpherical(_PyComponent):
     @centre.setter
     def centre(self, double[:] centre not None):
         if tuple(centre.shape) != _arr_shape:
-            raise TypeError("centre should have shape (2, )")
+            raise wrong_np_shape_except("centre", centre)
 
         dereference(self.c_sph_ptr).centre = make_arr_from_numpy(centre)
         
@@ -660,7 +668,7 @@ cdef class PyMirror_Sph(_PySpherical):
     
     cdef Mirror_Sph* c_data
     
-    def __cinit__(self, double[:] centre, double R, double start, double end):
+    def __cinit__(self, double[:] centre not None, double R, double start, double end):
         """
         Creates an instance of PyMirror_Sph.
 
@@ -685,7 +693,7 @@ cdef class PyMirror_Sph(_PySpherical):
         """
 
         if tuple(centre.shape) != _arr_shape:
-            raise TypeError("centre should have shape (2, )")
+            raise wrong_np_shape_except("centre", centre)
                 
         self.c_data = new Mirror_Sph(make_arr_from_numpy(centre), R, start, 
                                      end)
@@ -705,7 +713,7 @@ cdef class PyRefract_Sph(_PySpherical):
     
     cdef Refract_Sph* c_data
     
-    def __cinit__(self, double[:] centre, double R, double start, double end,
+    def __cinit__(self, double[:] centre not None, double R, double start, double end,
                   double n_in=1.0, double n_out=1.0):
         """
         Creates an instance of PyRefract_Sph.
@@ -735,7 +743,7 @@ cdef class PyRefract_Sph(_PySpherical):
         """
         
         if tuple(centre.shape) != _arr_shape:
-            raise TypeError("centre should have shape (2, )")
+            raise wrong_np_shape_except("centre", centre)
         
         self.c_data = new Refract_Sph(make_arr_from_numpy(centre), R, start, 
                                      end, n_out, n_in)
