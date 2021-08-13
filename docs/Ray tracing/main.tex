@@ -433,6 +433,9 @@ At a spherical surface we already have a method for determining where a ray inte
 \end{equation}
 Other than the different equation for computing $\alpha$, the method should be very similar to that of a plane.
 
+\section{Screen}
+We also include a component intended to represent a screen. When a ray hits a screen, we stop tracing it any further. We will implement only a planar screen named \texttt{Screen\_Plane}.
+
 \section{Complex components}
 A complex component is one that is composed of other sub-components. These include objects such as lenses and prisms that can be described in terms of basic sub-components or a objects such as system of lenses, which are composed themselves of complex components. Equally, a complex component could be created from a mixture of basic and complex components.
 
@@ -504,6 +507,7 @@ To call from Python we wrap the C++ using Cython. We wrap each C++ class to prod
          \texttt{Refract\_Plane} & \texttt{PyRefract\_Plane} \\ 
          \texttt{Mirror\_Sph} & \texttt{PyMirror\_Sph} \\ 
          \texttt{Refract\_Sph} & \texttt{PyRefract\_Sph} \\ 
+         \texttt{Screen\_Plane} & \texttt{PyScreen\_Plane} \\
          \texttt{Ray} & \texttt{PyRay} \\ 
          \hline
          
