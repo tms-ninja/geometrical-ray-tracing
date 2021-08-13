@@ -27,7 +27,7 @@ void trace_ray(const T &c, Ray* ry, int n, bool fill_up)
 		arr &r{ ry->pos.back() };  // last position of ray
 
 		// no more interactions or hit a screen and should stop tracing
-		if (!found || !ry->continue_tracing) 
+		if (!found || !ry->continue_tracing)
 		{
 			const arr end = { r[0] + (ry->continue_tracing ? ry->v[0] : 0.0)
 							, r[1] + (ry->continue_tracing ? ry->v[1] : 0.0) };
@@ -39,7 +39,7 @@ void trace_ray(const T &c, Ray* ry, int n, bool fill_up)
 					ry->pos.push_back(end);
 				}
 			}
-			else
+			else if (ry->continue_tracing)  // only add another if continue tracing
 				ry->pos.push_back(end);  // show result of last interaction
 			
 			return;  // Exit the function as we have nothing else to do
