@@ -1,7 +1,8 @@
 # ray-tracing-cython
- Cython interface to ray-tracing. It performs 2d geometrical ray tracing through a system of optical components such as mirrors and lenses. It contains four basic components, namely:
+ Cython interface to ray-tracing. It performs 2d geometrical ray tracing through a system of optical components such as mirrors and lenses. It contains five basic components, namely:
  - Plane mirror
  - Planar boundary at which refraction occurs
+ - A planar screen that absorbs rays
  - Mirror in the shape of a circular arc
  - Circular arc boundary at which refraction occurs
 
