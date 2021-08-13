@@ -78,7 +78,14 @@ cdef extern from "Refract_Plane.h":
         Refract_Plane(arr, arr, double, double) except+
         double n1, n2
         void hit(Ray&, int)
-        
+
+cdef extern from "Screen_Plane.cpp":
+    pass
+
+cdef extern from "Screen_Plane.h":
+    cdef cppclass Screen_Plane(Plane):
+        Screen_Plane(arr, arr) except+
+        void hit(Ray&, int)
 
 # Spherical components
 

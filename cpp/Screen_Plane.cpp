@@ -21,4 +21,5 @@ void Screen_Plane::hit(Ray* ry, int n) const
 
 	// Add collision point, no need to update v
 	ry->pos.push_back(newPos);
+	ry->continue_tracing = false;
 }

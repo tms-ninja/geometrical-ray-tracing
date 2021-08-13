@@ -484,6 +484,43 @@ cdef class PyRefract_Plane(_PyPlane):
 
         dereference(self.c_data).n2 = n2
         
+# class Screen_Plane
+cdef class PyScreen_Plane(_PyPlane):
+    """A class to represent a planar, absorbing screen"""
+
+    cdef Screen_Plane* c_data
+    
+    def __cinit__(self, double[:] start not None, double[:] end not None):
+        """
+        Creates an instance of PyScreen_Plane.
+
+        Parameters
+        ----------
+        start : numpy.ndarray
+            The start point of the plane. It should be a numpy.ndarray with 
+            shape (2,).
+        end : numpy.ndarray
+            The end point of the plane. It should be a numpy.ndarray with 
+            shape (2,).
+
+        Returns
+        -------
+        None.
+
+        """
+
+        if tuple(start.shape) != _arr_shape:
+            raise TypeError("start should have shape (2, )")
+
+        if tuple(end.shape) != _arr_shape:
+            raise TypeError("end should have shape (2, )")     
+        
+        self.c_data = new Screen_Plane(make_arr_from_numpy(start), 
+                                       make_arr_from_numpy(end))
+        
+        self.c_plane_ptr = <Plane*>self.c_data
+        self.c_component_ptr = shared_ptr[Component]( <Component*>self.c_data )
+
 
 
 # Spherical components
