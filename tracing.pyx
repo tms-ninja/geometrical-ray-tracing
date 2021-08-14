@@ -460,6 +460,7 @@ cdef class PyRefract_Plane(_PyPlane):
 
         """
         
+        # Verify start and end arrays have correct shape
         if tuple(start.shape) != _arr_shape:
             raise wrong_np_shape_except("start", start)
 
@@ -714,6 +715,9 @@ cdef class PyMirror_Sph(_PySpherical):
 
         if tuple(centre.shape) != _arr_shape:
             raise wrong_np_shape_except("centre", centre)
+
+        if R <= 0.0:
+            raise ValueError("R cannot be less than or equal to zero")
                 
         self.c_data = new Mirror_Sph(make_arr_from_numpy(centre), R, start, 
                                      end)
@@ -764,6 +768,9 @@ cdef class PyRefract_Sph(_PySpherical):
         
         if tuple(centre.shape) != _arr_shape:
             raise wrong_np_shape_except("centre", centre)
+
+        if R <= 0.0:
+            raise ValueError("R cannot be less than or equal to zero")
         
         self.c_data = new Refract_Sph(make_arr_from_numpy(centre), R, start, 
                                      end, n_out, n_in)

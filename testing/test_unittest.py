@@ -427,7 +427,7 @@ class Test_PyRefract_Plane(unittest.TestCase, useful_checks):
 
         with self.assertRaises(ValueError) as context:
             c = tr.PyRefract_Plane(self._start, np.array([[1.0, 2.0], [3.0, 4.0]]), self._n1, self._n2)
-
+    
     # Testing property start
     def test_PyRefract_Plane_start_get(self):
         """Tests property start getting"""
@@ -685,6 +685,7 @@ class Test_PyScreen_Plane(unittest.TestCase, useful_checks):
 
         assert_allclose(r.pos, expected_ans)
 
+
 class Test_PyMirror_Sph(unittest.TestCase, useful_checks):
     """Tests property access and methods of PyMirror_Plane"""
     _centre = np.array([5.6, 7.8])
@@ -725,6 +726,18 @@ class Test_PyMirror_Sph(unittest.TestCase, useful_checks):
         with self.assertRaises(ValueError) as context:
             c = tr.PyMirror_Sph(np.array([[1.0, 2.0], [3.0, 4.0]]), self._R, 
                                 self._start, self._end)
+
+    def test_PyMirror_Sph_cinit_neg_R(self):
+        """
+        Test PyMirror_Sph c initiliser, check R cannot be less than or equal to
+        zero.
+        """
+
+        with self.assertRaises(ValueError) as context:
+            c = tr.PyMirror_Sph(self._centre, -1.0, self._start, self._end)
+
+        with self.assertRaises(ValueError) as context:
+            c = tr.PyMirror_Sph(self._centre, 0.0, self._start, self._end)
 
     # Testing property centre
     def test_PyMirror_Sph_centre_get(self):
@@ -950,6 +963,20 @@ class Test_PyRefract_Sph(unittest.TestCase, useful_checks):
             c = tr.PyRefract_Sph(np.array([[1.0, 2.0], [3.0, 4.0]]), self._R, 
                                 self._start, self._end, self._n_in, 
                                 self._n_out)
+
+    def test_PyRefract_Sph_cinit_neg_R(self):
+        """
+        Test PyRefract_Sph c initiliser, check R cannot be less than or equal
+        to zero
+        """
+
+        with self.assertRaises(ValueError) as _:
+            c = tr.PyRefract_Sph(self._centre, -1.0, self._start, self._end
+                                , self._n_in, self._n_out)
+
+        with self.assertRaises(ValueError) as _:
+            c = tr.PyRefract_Sph(self._centre, 0.0, self._start, self._end
+                                , self._n_in, self._n_out)
 
     # Testing property centre
     def test_PyRefract_Sph_centre_get(self):
