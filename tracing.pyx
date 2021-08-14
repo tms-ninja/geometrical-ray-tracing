@@ -20,7 +20,20 @@ _arr_shape = (2, 0, 0, 0, 0, 0, 0, 0)
 def wrong_np_shape_except(var_name, bad_arr):
     """
     Returns an exception to be used when an array doesn't have the same shape
-    as _arr_shape = (2, 0, 0, 0, 0, 0, 0, 0) 
+    as _arr_shape = (2, 0, 0, 0, 0, 0, 0, 0)
+
+    Parameters
+    ----------
+
+    var_name : str
+        The name of the variable thatdidn't have the correct shape.
+    bad_arr : numpy.ndarray
+        The bad array itself.
+
+    Returns
+    -------
+    TypeError
+        A TypeError exception indicating incorrect shape.
     """
 
     return TypeError(f"expected {var_name} to have shape (2,) but got array with shape {bad_arr.shape}")
@@ -61,7 +74,11 @@ def PyTrace(list components, list rays, int n, bool fill_up=True):
     rays : list
         The rays to be traced.
     n : int
-        The number of iterations (i.e. interations) to be performed.
+        The number of iterations (i.e. interactions) to be performed.
+        Interactions count as interactions with top level components in 
+        components only. I.e. interactions with complex components count as
+        only one interaction even though a ray may interact with several of 
+        their sub components.
     fill_up : bool, optional
         If is detected a ray will not interact with any more components before 
         n iterations are reached, PyTrace will fill the ray's position up with 
@@ -268,7 +285,8 @@ cdef class _PyComponent:
 
 cdef class _PyPlane(_PyComponent):
     """
-    A class to mirror the C++ Plane class. Not intended to be initialised.
+    A class to mirror the C++ Plane class which represents a 2d plane. Not 
+    intended to be initialised.
     
     ...
     
@@ -284,7 +302,8 @@ cdef class _PyPlane(_PyComponent):
     -------
     
     plot() : numpy.ndarray
-        Returns a numpy array for plotting the plane with shape (2, 2).
+        Returns a numpy array for plotting the plane with shape (2, 2), with
+        the first indiex specifying the point.
     
     """
     
@@ -428,10 +447,10 @@ cdef class PyRefract_Plane(_PyPlane):
         end : numpy.ndarray
             The end point of the mirror plane. It should be a numpy.ndarray
             with shape (2,).
-        double n1 : TYPE, optional
+        n1 : double, optional
             The refractive index on the left of the planar boundary. Left is 
             defined as left of the vector start->end. The default is 1.0.
-        double n2 : TYPE, optional
+        n2 : double, optional
             The refractive index on the right of the planar boundary. Right is 
             defined as right of the vector start->end. The default is 1.0.
 
@@ -539,8 +558,8 @@ cdef class PyScreen_Plane(_PyPlane):
 
 cdef class _PySpherical(_PyComponent):
     """
-    Class to describe a circular arc, mirrors C++ class Shperical. Not intended
-    to be user initialised.
+    Class to describe a circular arc, mirrors C++ class Spherical. Not intended
+    to be initialised.
     """
     
     cdef Spherical* c_sph_ptr
@@ -552,7 +571,8 @@ cdef class _PySpherical(_PyComponent):
     @property
     def centre(self):
         """
-        The centre of the ciruclar arc.
+        The centre of the ciruclar arc. Can be set as a copy of the passed 
+        numpy array.
 
         Returns
         -------
@@ -576,7 +596,7 @@ cdef class _PySpherical(_PyComponent):
     @property
     def R(self):
         """
-        The radius of the circular arc.
+        The radius of the circular arc, must be positive.
 
         Returns
         -------
@@ -597,7 +617,7 @@ cdef class _PySpherical(_PyComponent):
     def start(self):
         """
         The start angle of the arc, in radians. It is measured anti-clockwise 
-        from the x axis.
+        from the x axis. Must be less than property end.
 
         Returns
         -------
@@ -618,7 +638,7 @@ cdef class _PySpherical(_PyComponent):
     def end(self):
         """
         The end angle of the arc, in radians. It is measured anti-clockwise 
-        from the x axis.
+        from the x axis. Must be greater than property start.
 
         Returns
         -------
@@ -664,7 +684,7 @@ cdef class _PySpherical(_PyComponent):
 # class PyMirror_Sph 
 
 cdef class PyMirror_Sph(_PySpherical):
-    """A class to represent a circular mirror. Mirrors C++ class Mirror_Sph"""
+    """A class to represent a circular mirror. Mirrors C++ class Mirror_Sph."""
     
     cdef Mirror_Sph* c_data
     
@@ -681,10 +701,10 @@ cdef class PyMirror_Sph(_PySpherical):
             The radius of the arc.
         start : double
             The start angle of the arc, in radians. It is measured 
-            anti-clockwise from the x axis.
+            anti-clockwise from the x axis. Must be less than end.
         end : double
             The end angle of the arc, in radians. It is measured anti-clockwise 
-            from the x axis.
+            from the x axis. Must be greater than start.
 
         Returns
         -------
@@ -727,10 +747,10 @@ cdef class PyRefract_Sph(_PySpherical):
             The radius of the arc.
         start : double
             The start angle of the arc, in radians. It is measured 
-            anti-clockwise from the x axis.
+            anti-clockwise from the x axis. Must be less than end.
         end : double
             The end angle of the arc, in radians. It is measured anti-clockwise 
-            from the x axis.
+            from the x axis. Must be greater than start.
         n_in : double, optional
             The refractive index for r < R. The default is 1.0.
         n_out : double, optional
@@ -779,7 +799,7 @@ cdef class PyRefract_Sph(_PySpherical):
         Returns
         -------
         double
-            The refractive index n2.
+            The refractive index n_out.
 
         """
         
@@ -811,8 +831,9 @@ cdef class PyComplex_Component(_PyComponent):
         ----------
         comps : list 
             The list of components which describe the complex component. They
-            should be one of the following: PyMirror_Plan, PyMirror_Sph,
-            PyRefract_Plane, PyRefract_Sph or inherit from PyCC_Wrap.
+            should be one of the following: PyMirror_Plane, PyRefract_Plane,
+            PyScreen_Plane, PyMirror_Sph, PyRefract_Sph or inherit from 
+            PyCC_Wrap.
 
         Returns
         -------
@@ -870,8 +891,9 @@ class PyCC_Wrap:
         ----------
         ls : list
             The list of components which describe the complex component. They
-            should be one of the following: PyMirror_Plan, PyMirror_Sph,
-            PyRefract_Plane, PyRefract_Sph or inherit from PyCC_Wrap.
+            should be one of the following: PyMirror_Plane, PyRefract_Plane,
+            PyScreen_Plane, PyMirror_Sph, PyRefract_Sph or inherit from 
+            PyCC_Wrap.
 
         Returns
         -------
@@ -959,7 +981,7 @@ class PyLens(PyCC_Wrap):
         Parameters
         ----------
         centre : numpy.ndarray
-            A numpy array of shape (2, ) that gives the centre of the lens.
+            A numpy array of shape (2,) that gives the centre of the lens.
         R_lens : double
             The radius of the lens.
         R1 : double
@@ -972,7 +994,7 @@ class PyLens(PyCC_Wrap):
             is concave. R2 must satisfy R2 >= R_lens or R2 <= -R_lens.
         d : double
             The distance between the end of one arc and the nearest end
-            of the other.
+            of the other. See figure in LaTeX docs.
         n_in : double
             The refractive index of the interior of the lens.
         n_out : double, optional
@@ -1055,6 +1077,16 @@ class PyLens(PyCC_Wrap):
         super().__init__(comps)
 
     def plot(self):
+        """
+        Returns a list of numpy arrays used to plot the lens.
+
+        Returns
+        -------
+        list of numpy.ndarray
+            A list of numpy.ndarray, each of which plots a subcomponent.
+
+        """
+
         # Return list of sub-comp plots to avoid needing them in the correct order 
         return super().plot(flatten=False)
 
@@ -1066,7 +1098,7 @@ class PyLens(PyCC_Wrap):
         Returns
         -------
         numpy.ndarray
-            A numpy array with shape (2, ) giving the lens centre.
+            A numpy array with shape (2,) giving the lens centre.
 
         """
 
@@ -1081,6 +1113,7 @@ class PyLens(PyCC_Wrap):
         -------
         double
             The radius of the lens.
+
         """
 
         return self._R_lens
@@ -1095,6 +1128,7 @@ class PyLens(PyCC_Wrap):
         -------
         double
             The radius of curvature the left side of the lens.
+
         """
 
         return self._R1
@@ -1109,6 +1143,7 @@ class PyLens(PyCC_Wrap):
         -------
         double
             The radius of curvature the left side of the lens.
+
         """
 
         return self._R2
@@ -1124,6 +1159,7 @@ class PyLens(PyCC_Wrap):
         double
             The distance between the end of one arc and the nearest end of
             the other.
+
         """
 
         return self._d
@@ -1137,6 +1173,7 @@ class PyLens(PyCC_Wrap):
         -------
         double
             The refractive index inside the lens.
+
         """
 
         return self._n_in
@@ -1150,10 +1187,10 @@ class PyLens(PyCC_Wrap):
         -------
         double
             The refractive index outside the lens.
+
         """
         
         return self._n_out
-
 
 
 # class PyBiConvexLens
@@ -1168,7 +1205,7 @@ class PyBiConvexLens(PyLens):
         Parameters
         ----------
         centre : numpy.ndarray
-            A numpy array of shape (2, ) that gives the centre of the lens.
+            A numpy array of shape (2,) that gives the centre of the lens.
         R_lens : double
             The radius of the lens.
         R1 : double
@@ -1181,7 +1218,7 @@ class PyBiConvexLens(PyLens):
             is concave. R2 must statisfy R2 >= R_lens.
         d : double
             The distance between the end of one arc and the nearest end
-            of the other.
+            of the other. See figure in LaTeX docs.
         n_in : double
             The refractive index of the interior of the lens.
         n_out : double, optional
