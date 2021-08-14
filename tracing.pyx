@@ -279,6 +279,22 @@ cdef class _PyComponent:
     
     cdef shared_ptr[Component] c_component_ptr
 
+    cdef _load_component(self, Component* cmp_ptr):
+        """
+        Sets the C++ component pointer.
+
+        Parameters
+        ----------
+        cmp_ptr : Component*
+
+        Returns
+        -------
+        None.
+
+        """
+
+        self.c_component_ptr = shared_ptr[Component](cmp_ptr)
+
 
 # Planar components
 # class _PyPlane
@@ -314,7 +330,33 @@ cdef class _PyPlane(_PyComponent):
     cdef np.ndarray  start_np
     cdef double[::1] end_mem_view
     cdef np.ndarray  end_np
+
+    cdef _load_Plane(self, Plane* pln_ptr):
+        """
+        Loads plane properties, namely start & end. Also sets the plane and
+        component pointers.
+
+        Parameters
+        ----------
+        pl_ptr : Plane*
+            Pointer to the C++ Plane.
+
+        Returns
+        -------
+        None.
         
+        """
+
+        self.c_plane_ptr = pln_ptr
+        self._load_component(<Component*>pln_ptr)
+
+        # load properties now self.c_plane_ptr is valid
+        self.start_mem_view = <double[:2]>( dereference(self.c_plane_ptr).start.data() )
+        self.start_np = np.asarray(self.start_mem_view)
+
+        self.end_mem_view = <double[:2]>( dereference(self.c_plane_ptr).end.data() )
+        self.end_np = np.asarray(self.end_mem_view)
+
     @property
     def start(self):
         """
@@ -327,19 +369,15 @@ cdef class _PyPlane(_PyComponent):
             A 2d numpy view of the start point.
 
         """
-        
-        self.start_mem_view = <double[:2]>( dereference(self.c_plane_ptr).start.data() )
-        
-        start_np = np.asarray(self.start_mem_view)
-        
-        return start_np
+
+        return self.start_np
     @start.setter
     def start(self, double[:] start not None):
         if tuple(start.shape) != _arr_shape:
             raise wrong_np_shape_except("start", start)
         
         dereference(self.c_plane_ptr).start = make_arr_from_numpy(start)
-        
+
     @property
     def end(self):
         """
@@ -353,11 +391,7 @@ cdef class _PyPlane(_PyComponent):
 
         """
         
-        self.end_mem_view = <double[:2]>( dereference(self.c_plane_ptr).end.data() )
-        
-        end_np = np.asarray(self.end_mem_view)
-        
-        return end_np
+        return self.end_np
     @end.setter
     def end(self, double[:] end not None):
         if tuple(end.shape) != _arr_shape:
@@ -421,8 +455,8 @@ cdef class PyMirror_Plane(_PyPlane):
         self.c_data = new Mirror_Plane(make_arr_from_numpy(start), 
                                        make_arr_from_numpy(end))
         
-        self.c_plane_ptr = <Plane*>self.c_data
-        self.c_component_ptr = shared_ptr[Component]( <Component*>self.c_data )
+        self._load_Plane(<Plane*>self.c_data)
+
         
 # class Pyrefract_Plane
 
@@ -470,8 +504,7 @@ cdef class PyRefract_Plane(_PyPlane):
         self.c_data = new Refract_Plane(make_arr_from_numpy(start), 
                                         make_arr_from_numpy(end), n1, n2)
         
-        self.c_plane_ptr = <Plane*>self.c_data
-        self.c_component_ptr = shared_ptr[Component]( <Component*>self.c_data )
+        self._load_Plane(<Plane*>self.c_data)
     
     @property
     def n1(self):
@@ -549,10 +582,7 @@ cdef class PyScreen_Plane(_PyPlane):
         self.c_data = new Screen_Plane(make_arr_from_numpy(start), 
                                        make_arr_from_numpy(end))
         
-        self.c_plane_ptr = <Plane*>self.c_data
-        self.c_component_ptr = shared_ptr[Component]( <Component*>self.c_data )
-
-
+        self._load_Plane(<Plane*>self.c_data)
 
 # Spherical components
 # class _PySpherical
