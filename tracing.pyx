@@ -598,6 +598,29 @@ cdef class _PySpherical(_PyComponent):
     # Memory views & numpy views onto them used for properties that return numpy views
     cdef double[::1] centre_mem_view
     cdef np.ndarray  centre_np
+
+    cdef _load_Sph(self, Spherical* sph_ptr):
+        """
+        Loads spherical properties, namely centre. Also sets the spherical and
+        component pointers.
+
+        Parameters
+        ----------
+        sph_ptr : Spherical*
+            Pointer to the C++ Spherical.
+
+        Returns
+        -------
+        None.
+        
+        """
+
+        self.c_sph_ptr = sph_ptr
+        self._load_component(<Component*>sph_ptr)
+
+        # load properties now self.c_sph_ptr is valid
+        self.centre_mem_view = <double[:2]>( dereference(sph_ptr).centre.data() )
+        self.centre_np = np.asarray(self.centre_mem_view)
     
     @property
     def centre(self):
@@ -611,12 +634,8 @@ cdef class _PySpherical(_PyComponent):
             A numpy view with shape (2,) of the centre.
 
         """
-        
-        self.centre_mem_view = <double[:2]>( dereference(self.c_sph_ptr).centre.data() )
-        
-        centre_np = np.asarray(self.centre_mem_view)
-        
-        return centre_np
+
+        return self.centre_np
     @centre.setter
     def centre(self, double[:] centre not None):
         if tuple(centre.shape) != _arr_shape:
@@ -752,9 +771,7 @@ cdef class PyMirror_Sph(_PySpherical):
         self.c_data = new Mirror_Sph(make_arr_from_numpy(centre), R, start, 
                                      end)
         
-        self.c_sph_ptr = <Spherical*>self.c_data
-        self.c_component_ptr = shared_ptr[Component]( <Component*>self.c_data )
-
+        self._load_Sph(<Spherical*>self.c_data)
 
 
 # class PyrefractSph
@@ -805,8 +822,7 @@ cdef class PyRefract_Sph(_PySpherical):
         self.c_data = new Refract_Sph(make_arr_from_numpy(centre), R, start, 
                                      end, n_out, n_in)
         
-        self.c_sph_ptr = <Spherical*>self.c_data
-        self.c_component_ptr = shared_ptr[Component]( <Component*>self.c_data )
+        self._load_Sph(<Spherical*>self.c_data)
                 
     @property
     def n_in(self):
