@@ -1305,6 +1305,12 @@ class Test_PyLens(unittest.TestCase, useful_checks):
 
         assert_array_equal(m.centre, self._centre)
 
+    def test_PyLens_centre_set(self):
+        """Tests property centre setting"""
+        m = self.create_Obj()
+
+        self.check_np_view_shape_2_set(m, 'centre', self._centre, self._centre + 10.0)
+
     # Testing property R_lens
     def test_PyLens_R_lens_get(self):
         """Tests property R_lens getting"""

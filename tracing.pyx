@@ -1113,7 +1113,9 @@ class PyLens(PyCC_Wrap):
     @property
     def centre(self):
         """
-        The centre of the lens.
+        The centre of the lens. Note centre cannot be modified by changing
+        the elements of the returned numpy.ndarray. Doing so will corrput te
+        PyLens instance.
 
         Returns
         -------
@@ -1123,6 +1125,21 @@ class PyLens(PyCC_Wrap):
         """
 
         return self._centre
+    @centre.setter
+    def centre(self, new_centre):
+        """Setter for centre"""
+        diff = new_centre - self.centre
+
+        # arcs
+        self._left_arc.centre += diff
+        self._right_arc.centre += diff
+
+        # planes
+        self._top_plane.start += diff
+        self._top_plane.end += diff
+
+        self._bottom_plane.start += diff
+        self._bottom_plane.end += diff
 
     @property
     def R_lens(self):
