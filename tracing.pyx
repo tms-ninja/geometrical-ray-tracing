@@ -1048,47 +1048,21 @@ class PyLens(PyCC_Wrap):
         self._n_in = n_in
         self._n_out = n_out
 
-        if R1 >= R_lens:
-            # Convex
-            # cetres of the arcs used to describe lens
-            left_centre = centre.copy()
-            left_centre[0] += np.sqrt(R1**2 - R_lens**2) - d/2
-            left_ang = np.arcsin(R_lens / R1)
-
-            self._left_arc = PyRefract_Sph(left_centre, R1, np.pi-left_ang, np.pi+left_ang, n_in, n_out)
-
-        elif R1 <= -R_lens:
-            # Concanve
-            left_centre = centre.copy()
-            left_centre[0] -= np.sqrt(R1**2 - R_lens**2) + d/2
-            left_ang = np.arcsin(-R_lens / R1)   
-
-            self._left_arc = PyRefract_Sph(left_centre, -R1, -left_ang, left_ang, n_out, n_in)
-
-        else:
+        # left arc
+        if -R_lens < R1 < R_lens:
             raise ValueError(f"R1 = {R1} is invalid")
 
+        l_p = self._create_arc_param(True, centre, R_lens, R1, R2, d, n_in, n_out)
 
-        if R2 >= R_lens:
-            # Convex
-            # cetres of the arc used to describe lens
-            right_centre = centre.copy()
-            right_centre[0] -= np.sqrt(R2**2 - R_lens**2) - d/2
-            right_ang = np.arcsin(R_lens / R2)
+        self._left_arc = PyRefract_Sph(**l_p)
 
-            self._right_arc = PyRefract_Sph(right_centre, R2, -right_ang, right_ang, n_in, n_out)
-
-        elif R2 <= -R_lens:
-            # Concanve
-            right_centre = centre.copy()
-            right_centre[0] += np.sqrt(R2**2 - R_lens**2) + d/2
-            right_ang = np.arcsin(-R_lens / R2)
-
-            self._right_arc = PyRefract_Sph(right_centre, -R2, np.pi-right_ang, np.pi+right_ang, n_out, n_in)
-
-        else:
+        # Right arc
+        if -R_lens < R2 < R_lens:
             raise ValueError(f"R2 = {R2} is invalid")
 
+        r_p = self._create_arc_param(False, centre, R_lens, R1, R2, d, n_in, n_out)
+
+        self._right_arc = PyRefract_Sph(**r_p)
 
         c_x, c_y = centre
 
@@ -1109,6 +1083,60 @@ class PyLens(PyCC_Wrap):
         ]
 
         super().__init__(comps)
+
+    def _comp_arc_centre(self, left, lens_centre, R_lens, R1, R2, d, n_in, n_out):
+        """Returns the centre of the arc"""
+        ans = lens_centre.copy()
+
+        R = R1 if left else R2
+        lft = 1 if left else -1
+
+        ans[0] += lft *( np.sign(R) * np.sqrt(R**2 - R_lens**2) - d/2)
+
+        return ans
+
+    def _comp_arc_angles(self, left, lens_centre, R_lens, R1, R2, d, n_in, n_out):
+        """Returns the angles of the arc"""
+
+        R = R1 if left else R2
+        lft = 1 if left else -1
+
+        ang = np.arcsin(np.abs(R_lens / R))
+
+        start, end = -ang, ang
+
+        if lft * R >= R_lens:
+            start += np.pi
+            end += np.pi
+
+        return (start, end)
+
+    def _comp_arc_refr_ind(self, left, lens_centre, R_lens, R1, R2, d, n_in, n_out):
+        """Returns refractive indices n_in and n_out"""
+
+        R = R1 if left else R2
+
+        # Convex arc
+        if R >= R_lens:
+            return (n_in, n_out)
+
+        return (n_out, n_in)
+
+    def _create_arc_param(self, left, lens_centre, R_lens, R1, R2, d, n_in, n_out):
+        """Returns a dictionary of params for creating the left arc"""
+
+        param = dict()
+
+        param['centre'] = self._comp_arc_centre(left, lens_centre, R_lens, R1, R2, d, n_in, n_out)
+
+        param['R'] = np.abs(R1 if left else R2)
+
+        param["start"], param['end'] = self._comp_arc_angles(left, lens_centre, R_lens, R1, R2, d, n_in, n_out)
+
+        param['n_in'], param['n_out'] = self._comp_arc_refr_ind(left, lens_centre, R_lens, R1, R2, d, n_in, n_out)
+
+        return param
+            
 
     @property
     def centre(self):
