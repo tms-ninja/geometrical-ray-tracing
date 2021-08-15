@@ -979,18 +979,12 @@ class PyCC_Wrap:
         
         return self._components[key]
     
-    def plot(self, flatten=True, *args, **kwargs):
+    def plot(self, *args, **kwargs):
         """
         Creates an object that can be used to plot the complex component.
 
         Parameters
         ----------
-        flatten : TYPE, optional
-            Flattens the resulting object to return a numpy array with shape 
-            (total_points, 2), where total_points is the total number of points
-            across all sub-components. If False, plot() will return a list of 
-            numpy arrays of points corresponding to each sub-component. The
-            default is True.
         *args : Any
             Additional arguments to pass to sub-component plotting methods.
         **kwargs : Any
@@ -999,27 +993,14 @@ class PyCC_Wrap:
 
         Returns
         -------
-        list or numpy.ndarray
-            If flatten is True, a numpy array with shape (total_points, 2), 
-            otherwise a list of numpy arrays with shape (N, 2).
+        list of numpy.ndarray or list of list
+            A list of either numpy.ndarray or list. If the complex component
+            is itself composed of complex components, plot() will return a 
+            nested list. The leaves will be the points to plot.
 
         """
         
-        points = (c.plot(*args, **kwargs) for c in self._components)
-        
-        if flatten:
-            sol = []
-            
-            for p in points:
-                
-                if type(p) is list:
-                    sol.append(*p)
-                else:
-                    sol.append(p)
-                    
-            return np.vstack(sol)
-        
-        return list(points)
+        return [c.plot(*args, **kwargs) for c in self._components]
 
 
 # Pre defined Complex components
@@ -1128,20 +1109,6 @@ class PyLens(PyCC_Wrap):
         ]
 
         super().__init__(comps)
-
-    def plot(self):
-        """
-        Returns a list of numpy arrays used to plot the lens.
-
-        Returns
-        -------
-        list of numpy.ndarray
-            A list of numpy.ndarray, each of which plots a subcomponent.
-
-        """
-
-        # Return list of sub-comp plots to avoid needing them in the correct order 
-        return super().plot(flatten=False)
 
     @property
     def centre(self):
