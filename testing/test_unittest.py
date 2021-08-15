@@ -35,10 +35,16 @@ class useful_checks:
         Checks the view equals what we expect it to equal
         and changing it elementwise and by copy
         """
+
         vw = getattr(obj, attr)
 
         # Check it is what we initialy expect
         assert_array_equal(getattr(obj, attr), expected)
+
+        # make sure vw and expected aren't the same array if it is, changing
+        # it elementwise will mean setting by copy check will always return
+        # OK
+        exp_cp = expected.copy()
 
         # Change elementwise
         vw[0], vw[1] = new_vw[0], new_vw[1]
@@ -46,9 +52,9 @@ class useful_checks:
         assert_array_equal(getattr(obj, attr), new_vw)
 
         # Change by copy back to what it was
-        setattr(obj, attr, expected)
+        setattr(obj, attr, exp_cp)
 
-        assert_array_equal(getattr(obj, attr), expected)
+        assert_array_equal(getattr(obj, attr), exp_cp)
 
 # Tests for PyRay and PyTrace
 class Test_PyRay(unittest.TestCase, useful_checks):

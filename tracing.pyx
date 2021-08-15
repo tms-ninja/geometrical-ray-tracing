@@ -1130,6 +1130,8 @@ class PyLens(PyCC_Wrap):
         """Setter for centre"""
         diff = new_centre - self.centre
 
+        self._centre += diff
+
         # arcs
         self._left_arc.centre += diff
         self._right_arc.centre += diff
