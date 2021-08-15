@@ -1151,7 +1151,6 @@ class PyLens(PyCC_Wrap):
 
         return d
 
-
     @property
     def centre(self):
         """
@@ -1217,13 +1216,13 @@ class PyLens(PyCC_Wrap):
     @property
     def R2(self):
         """
-        The radius of curvature the left side of the lens. R2 is positive if
-        the left side is convex, negative if it is concave.
+        The radius of curvature the right side of the lens. R2 is positive if
+        the right side is convex, negative if it is concave.
 
         Returns
         -------
         double
-            The radius of curvature the left side of the lens.
+            The radius of curvature the right side of the lens.
 
         """
 
