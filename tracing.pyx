@@ -1297,6 +1297,31 @@ class PyLens(PyCC_Wrap):
         """
         
         return self._n_out
+    @n_out.setter
+    def n_out(self, new_n_out):
+        """Setter for property n_out"""
+
+        self._n_out = new_n_out
+
+        p = self.get_current_params()
+
+        # left & right arcs
+        p['left'] = True
+        ni, no = self._comp_arc_refr_ind(**p)
+
+        self._left_arc.n_in = ni
+        self._left_arc.n_out = no
+
+        p['left'] = False
+        ni, no = self._comp_arc_refr_ind(**p)
+
+        self._right_arc.n_in = ni
+        self._right_arc.n_out = no
+
+        # Components defined anticlockwise, so n2 is outside
+        # top and bottom planes
+        self._bottom_plane.n2 = new_n_out
+        self._top_plane.n2 = new_n_out
 
 
 # class PyBiConvexLens

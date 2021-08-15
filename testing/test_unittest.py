@@ -1365,6 +1365,12 @@ class Test_PyLens(unittest.TestCase, useful_checks):
 
         self.assertEqual(m.n_out, self._n_out)
 
+    def test_PyLens_n_out_set(self):
+        """Tests property n_out setting"""
+        m = self.create_Obj()
+
+        self.check_float_property(m, 'n_out', self._n_out, self._n_out + 0.5)
+
     # TODO: add tracing tests
 
 
