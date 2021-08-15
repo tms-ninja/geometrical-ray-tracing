@@ -1136,7 +1136,21 @@ class PyLens(PyCC_Wrap):
         param['n_in'], param['n_out'] = self._comp_arc_refr_ind(left, lens_centre, R_lens, R1, R2, d, n_in, n_out)
 
         return param
-            
+
+    def get_current_params(self):
+        """Returns a dictionary of the current lens parameters"""
+        d = dict()
+        
+        d['lens_centre'] = self.centre
+        d['R_lens'] = self.R_lens
+        d['R1'] = self.R1
+        d['R2'] = self.R2
+        d['d'] = self.d
+        d['n_in'] = self.n_in
+        d['n_out'] = self.n_out
+
+        return d
+
 
     @property
     def centre(self):
@@ -1244,6 +1258,31 @@ class PyLens(PyCC_Wrap):
         """
 
         return self._n_in
+    @n_in.setter
+    def n_in(self, new_n_in):
+        """Setter for property n_in"""
+
+        self._n_in = new_n_in
+
+        p = self.get_current_params()
+
+        # left & right arcs
+        p['left'] = True
+        ni, no = self._comp_arc_refr_ind(**p)
+
+        self._left_arc.n_in = ni
+        self._left_arc.n_out = no
+
+        p['left'] = False
+        ni, no = self._comp_arc_refr_ind(**p)
+
+        self._right_arc.n_in = ni
+        self._right_arc.n_out = no
+
+        # Components defined anticlockwise, so n1 is inside
+        # top and bottom planes
+        self._bottom_plane.n1 = new_n_in
+        self._top_plane.n1 = new_n_in
 
     @property
     def n_out(self):

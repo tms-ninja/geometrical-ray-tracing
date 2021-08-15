@@ -1352,6 +1352,12 @@ class Test_PyLens(unittest.TestCase, useful_checks):
 
         self.assertEqual(m.n_in, self._n_in)
 
+    def test_PyLens_n_in_set(self):
+        """Tests property n_in setting"""
+        m = self.create_Obj()
+
+        self.check_float_property(m, 'n_in', self._n_in, self._n_in + 0.5)
+
     # Testing property n_out
     def test_PyLens_n_out_get(self):
         """Tests property n_out getting"""
