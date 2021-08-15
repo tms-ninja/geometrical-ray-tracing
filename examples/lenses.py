@@ -34,8 +34,6 @@ class LensCombo(PyCC_Wrap):
 
         super().__init__([PyBiConvexLens(**lens_1_param), PyLens(**lens_2_param)])
 
-    def plot(self):
-        return super().plot(flatten=False)
 
 # This is useful as the plotting routine returns a nested list with the leaves
 # corresponding to the plotting data

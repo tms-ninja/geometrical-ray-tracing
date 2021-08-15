@@ -43,10 +43,12 @@ PyTrace([c], rays, n=4)
 # Plotting
 plt.gca().set_aspect('equal')
 
-m_x, m_y = c.plot().T
-plt.plot(m_x, m_y)
+# Plot components
+for c_plt in c.plot():
+	m_x, m_y = c_plt.T
+	plt.plot(m_x, m_y, color="C0")
 
-
+# Plot rays
 for i, (r, d) in enumerate(zip(rays, unit_vecs)):
 	r_x, r_y = r.plot().T
 	plt.plot(r_x, r_y, color=f"C{i + 1 % 10}")
