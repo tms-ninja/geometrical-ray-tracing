@@ -1275,6 +1275,24 @@ class PyLens(PyCC_Wrap):
         """
 
         return self._R2
+    @R2.setter
+    def R2(self, new_R2):
+
+        if -self.R_lens < new_R2 < self.R_lens:
+            raise ValueError(f"R1 = {new_R2} is invalid")
+
+        # Need to update R1 first as things like centre will also change
+        self._R2 = new_R2
+
+        p = self.get_current_params()
+        p['left'] = False
+
+        r_p = self._create_arc_param(**p)
+
+        # Need to update arc centre, R and start/end
+        self._left_arc.centre = r_p['centre']
+        self._left_arc.R = r_p['R']
+        self._left_arc.update_start_end(r_p['start'], r_p['end'])
 
     @property
     def d(self):

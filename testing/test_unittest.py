@@ -1391,6 +1391,25 @@ class Test_PyLens(unittest.TestCase, useful_checks):
 
         self.assertEqual(m.R2, self._R2)
 
+    def test_PyLens_R2_set(self):
+        """Tests property R2 setting"""
+        m = self.create_Obj()
+
+        self.check_float_property(m, 'R2', self._R2, self._R2 + 0.5)
+
+    def test_PyLens_R2_set_invalid(self):
+        """Tests property R2 can't be set -R_lens < R2 < R_lens"""
+        m = self.create_Obj()
+
+        with self.assertRaises(ValueError):
+            m.R2 = -self._R_lens*0.99
+
+        with self.assertRaises(ValueError):
+            m.R2 = 0.0
+
+        with self.assertRaises(ValueError):
+            m.R2 = self._R_lens*0.99
+
     # Testing property d
     def test_PyLens_d_get(self):
         """Tests property d getting"""
