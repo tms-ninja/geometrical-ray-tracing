@@ -13,7 +13,7 @@ from tracing import PyTrace, PyRay, PyLens, PyBiConvexLens, PyCC_Wrap
 class LensCombo(PyCC_Wrap):
     def __init__(self, centre_1, centre_2) -> None:
         lens_1_param = {
-            'centre': centre_1,
+            'lens_centre': centre_1,
             'R_lens': 2, 
             'R1': 4, 
             'R2': 4, 
@@ -23,7 +23,7 @@ class LensCombo(PyCC_Wrap):
         }
 
         lens_2_param = {
-            'centre': centre_2,
+            'lens_centre': centre_2,
             'R_lens': 2, 
             'R1': -4, 
             'R2': -4, 

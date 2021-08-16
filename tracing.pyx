@@ -704,6 +704,36 @@ cdef class _PySpherical(_PyComponent):
             raise ValueError("end angle must be greater than start angle")
 
         dereference(self.c_sph_ptr).end = end
+
+    def update_start_end(self, double new_start, double new_end):
+        """
+        Updates start and end simultaneously. This is useful as it means you
+        don't have to ensure self.start < self.end while setting each property
+        individually. new_start must be less than new_end.
+
+        Parameters
+        ----------
+        new_start : double
+            The new start angle measured anticlockwise from the x axis.
+        new_end : double
+            The new end angle measured anticlockwise from the x axis.
+
+        Raises
+        ------
+        ValueError
+            Raised if new_end <= new_start.
+
+        Returns
+        -------
+        None.
+
+        """
+
+        if new_end <= new_start:
+            raise ValueError("end angle must be greater than start angle")
+
+        dereference(self.c_sph_ptr).start = new_start
+        dereference(self.c_sph_ptr).end = new_end
         
     def plot(self, n_points=100):
         """
@@ -1008,13 +1038,13 @@ class PyCC_Wrap:
 class PyLens(PyCC_Wrap):
     """A class to represent a lens"""
 
-    def __init__(self, centre, R_lens, R1, R2, d, n_in, n_out=1.0) -> None:
+    def __init__(self, lens_centre, R_lens, R1, R2, d, n_in, n_out=1.0) -> None:
         """
         Creates an instance of PyLens.
 
         Parameters
         ----------
-        centre : numpy.ndarray
+        lens_centre : numpy.ndarray
             A numpy array of shape (2,) that gives the centre of the lens.
         R_lens : double
             The radius of the lens.
@@ -1040,7 +1070,7 @@ class PyLens(PyCC_Wrap):
 
         """
 
-        self._centre = centre
+        self._lens_centre = lens_centre
         self._R_lens = R_lens
         self._R1 = R1
         self._R2 = R2
@@ -1048,49 +1078,23 @@ class PyLens(PyCC_Wrap):
         self._n_in = n_in
         self._n_out = n_out
 
-        if R1 >= R_lens:
-            # Convex
-            # cetres of the arcs used to describe lens
-            left_centre = centre.copy()
-            left_centre[0] += np.sqrt(R1**2 - R_lens**2) - d/2
-            left_ang = np.arcsin(R_lens / R1)
-
-            self._left_arc = PyRefract_Sph(left_centre, R1, np.pi-left_ang, np.pi+left_ang, n_in, n_out)
-
-        elif R1 <= -R_lens:
-            # Concanve
-            left_centre = centre.copy()
-            left_centre[0] -= np.sqrt(R1**2 - R_lens**2) + d/2
-            left_ang = np.arcsin(-R_lens / R1)   
-
-            self._left_arc = PyRefract_Sph(left_centre, -R1, -left_ang, left_ang, n_out, n_in)
-
-        else:
+        # left arc
+        if -R_lens < R1 < R_lens:
             raise ValueError(f"R1 = {R1} is invalid")
 
+        l_p = self._create_arc_param(True, lens_centre, R_lens, R1, R2, d, n_in, n_out)
 
-        if R2 >= R_lens:
-            # Convex
-            # cetres of the arc used to describe lens
-            right_centre = centre.copy()
-            right_centre[0] -= np.sqrt(R2**2 - R_lens**2) - d/2
-            right_ang = np.arcsin(R_lens / R2)
+        self._left_arc = PyRefract_Sph(**l_p)
 
-            self._right_arc = PyRefract_Sph(right_centre, R2, -right_ang, right_ang, n_in, n_out)
-
-        elif R2 <= -R_lens:
-            # Concanve
-            right_centre = centre.copy()
-            right_centre[0] += np.sqrt(R2**2 - R_lens**2) + d/2
-            right_ang = np.arcsin(-R_lens / R2)
-
-            self._right_arc = PyRefract_Sph(right_centre, -R2, np.pi-right_ang, np.pi+right_ang, n_out, n_in)
-
-        else:
+        # Right arc
+        if -R_lens < R2 < R_lens:
             raise ValueError(f"R2 = {R2} is invalid")
 
+        r_p = self._create_arc_param(False, lens_centre, R_lens, R1, R2, d, n_in, n_out)
 
-        c_x, c_y = centre
+        self._right_arc = PyRefract_Sph(**r_p)
+
+        c_x, c_y = lens_centre
 
         # positions of "box"
         top_left = np.array([c_x - d/2, c_y + R_lens])
@@ -1110,10 +1114,77 @@ class PyLens(PyCC_Wrap):
 
         super().__init__(comps)
 
+    def _comp_arc_centre(self, left, lens_centre, R_lens, R1, R2, d, n_in, n_out):
+        """Returns the centre of the arc"""
+        ans = lens_centre.copy()
+
+        R = R1 if left else R2
+        lft = 1 if left else -1
+
+        ans[0] += lft *( np.sign(R) * np.sqrt(R**2 - R_lens**2) - d/2)
+
+        return ans
+
+    def _comp_arc_angles(self, left, lens_centre, R_lens, R1, R2, d, n_in, n_out):
+        """Returns the angles of the arc"""
+
+        R = R1 if left else R2
+        lft = 1 if left else -1
+
+        ang = np.arcsin(np.abs(R_lens / R))
+
+        start, end = -ang, ang
+
+        if lft * R >= R_lens:
+            start += np.pi
+            end += np.pi
+
+        return (start, end)
+
+    def _comp_arc_refr_ind(self, left, lens_centre, R_lens, R1, R2, d, n_in, n_out):
+        """Returns refractive indices n_in and n_out"""
+
+        R = R1 if left else R2
+
+        # Convex arc
+        if R >= R_lens:
+            return (n_in, n_out)
+
+        return (n_out, n_in)
+
+    def _create_arc_param(self, left, lens_centre, R_lens, R1, R2, d, n_in, n_out):
+        """Returns a dictionary of params for creating the left arc"""
+
+        param = dict()
+
+        param['centre'] = self._comp_arc_centre(left, lens_centre, R_lens, R1, R2, d, n_in, n_out)
+
+        param['R'] = np.abs(R1 if left else R2)
+
+        param["start"], param['end'] = self._comp_arc_angles(left, lens_centre, R_lens, R1, R2, d, n_in, n_out)
+
+        param['n_in'], param['n_out'] = self._comp_arc_refr_ind(left, lens_centre, R_lens, R1, R2, d, n_in, n_out)
+
+        return param
+
+    def get_current_params(self):
+        """Returns a dictionary of the current lens parameters"""
+        d = dict()
+        
+        d['lens_centre'] = self.lens_centre
+        d['R_lens'] = self.R_lens
+        d['R1'] = self.R1
+        d['R2'] = self.R2
+        d['d'] = self.d
+        d['n_in'] = self.n_in
+        d['n_out'] = self.n_out
+
+        return d
+
     @property
-    def centre(self):
+    def lens_centre(self):
         """
-        The centre of the lens. Note centre cannot be modified by changing
+        The centre of the lens. Note lens_centre cannot be modified by changing
         the elements of the returned numpy.ndarray. Doing so will corrput te
         PyLens instance.
 
@@ -1124,11 +1195,13 @@ class PyLens(PyCC_Wrap):
 
         """
 
-        return self._centre
-    @centre.setter
-    def centre(self, new_centre):
-        """Setter for centre"""
-        diff = new_centre - self.centre
+        return self._lens_centre
+    @lens_centre.setter
+    def lens_centre(self, new_centre):
+        """Setter for lens_centre"""
+        diff = new_centre - self._lens_centre
+
+        self._lens_centre += diff
 
         # arcs
         self._left_arc.centre += diff
@@ -1169,21 +1242,57 @@ class PyLens(PyCC_Wrap):
         """
 
         return self._R1
+    @R1.setter
+    def R1(self, new_R1):
+
+        if -self.R_lens < new_R1 < self.R_lens:
+            raise ValueError(f"R1 = {new_R1} is invalid")
+
+        # Need to update R1 first as things like centre will also change
+        self._R1 = new_R1
+
+        p = self.get_current_params()
+        p['left'] = True
+
+        l_p = self._create_arc_param(**p)
+
+        # Need to update arc centre, R and start/end
+        self._left_arc.centre = l_p['centre']
+        self._left_arc.R = l_p['R']
+        self._left_arc.update_start_end(l_p['start'], l_p['end'])
 
     @property
     def R2(self):
         """
-        The radius of curvature the left side of the lens. R2 is positive if
-        the left side is convex, negative if it is concave.
+        The radius of curvature the right side of the lens. R2 is positive if
+        the right side is convex, negative if it is concave.
 
         Returns
         -------
         double
-            The radius of curvature the left side of the lens.
+            The radius of curvature the right side of the lens.
 
         """
 
         return self._R2
+    @R2.setter
+    def R2(self, new_R2):
+
+        if -self.R_lens < new_R2 < self.R_lens:
+            raise ValueError(f"R1 = {new_R2} is invalid")
+
+        # Need to update R1 first as things like centre will also change
+        self._R2 = new_R2
+
+        p = self.get_current_params()
+        p['left'] = False
+
+        r_p = self._create_arc_param(**p)
+
+        # Need to update arc centre, R and start/end
+        self._left_arc.centre = r_p['centre']
+        self._left_arc.R = r_p['R']
+        self._left_arc.update_start_end(r_p['start'], r_p['end'])
 
     @property
     def d(self):
@@ -1214,6 +1323,31 @@ class PyLens(PyCC_Wrap):
         """
 
         return self._n_in
+    @n_in.setter
+    def n_in(self, new_n_in):
+        """Setter for property n_in"""
+
+        self._n_in = new_n_in
+
+        p = self.get_current_params()
+
+        # left & right arcs
+        p['left'] = True
+        ni, no = self._comp_arc_refr_ind(**p)
+
+        self._left_arc.n_in = ni
+        self._left_arc.n_out = no
+
+        p['left'] = False
+        ni, no = self._comp_arc_refr_ind(**p)
+
+        self._right_arc.n_in = ni
+        self._right_arc.n_out = no
+
+        # Components defined anticlockwise, so n1 is inside
+        # top and bottom planes
+        self._bottom_plane.n1 = new_n_in
+        self._top_plane.n1 = new_n_in
 
     @property
     def n_out(self):
@@ -1228,6 +1362,31 @@ class PyLens(PyCC_Wrap):
         """
         
         return self._n_out
+    @n_out.setter
+    def n_out(self, new_n_out):
+        """Setter for property n_out"""
+
+        self._n_out = new_n_out
+
+        p = self.get_current_params()
+
+        # left & right arcs
+        p['left'] = True
+        ni, no = self._comp_arc_refr_ind(**p)
+
+        self._left_arc.n_in = ni
+        self._left_arc.n_out = no
+
+        p['left'] = False
+        ni, no = self._comp_arc_refr_ind(**p)
+
+        self._right_arc.n_in = ni
+        self._right_arc.n_out = no
+
+        # Components defined anticlockwise, so n2 is outside
+        # top and bottom planes
+        self._bottom_plane.n2 = new_n_out
+        self._top_plane.n2 = new_n_out
 
 
 # class PyBiConvexLens
@@ -1235,13 +1394,13 @@ class PyLens(PyCC_Wrap):
 class PyBiConvexLens(PyLens):
     """A class to represent a Bi-convex lens"""
 
-    def __init__(self, centre, R_lens, R1, R2, d, n_in, n_out=1.0) -> None:
+    def __init__(self, lens_centre, R_lens, R1, R2, d, n_in, n_out=1.0) -> None:
         """
         Creates an instance of PyBiConvexLens.
 
         Parameters
         ----------
-        centre : numpy.ndarray
+        lens_centre : numpy.ndarray
             A numpy array of shape (2,) that gives the centre of the lens.
         R_lens : double
             The radius of the lens.
@@ -1270,4 +1429,4 @@ class PyBiConvexLens(PyLens):
         assert R1 >= R_lens, f"R1 = {R1} was less than radius of lens R_lens = {R_lens}"
         assert R2 >= R_lens, f"R2 = {R2} was less than radius of lens R_lens = {R_lens}"
 
-        super().__init__(centre, R_lens, R1, R2, d, n_in, n_out)
+        super().__init__(lens_centre, R_lens, R1, R2, d, n_in, n_out)

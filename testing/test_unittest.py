@@ -35,10 +35,16 @@ class useful_checks:
         Checks the view equals what we expect it to equal
         and changing it elementwise and by copy
         """
+
         vw = getattr(obj, attr)
 
         # Check it is what we initialy expect
         assert_array_equal(getattr(obj, attr), expected)
+
+        # make sure vw and expected aren't the same array if it is, changing
+        # it elementwise will mean setting by copy check will always return
+        # OK
+        exp_cp = expected.copy()
 
         # Change elementwise
         vw[0], vw[1] = new_vw[0], new_vw[1]
@@ -46,9 +52,9 @@ class useful_checks:
         assert_array_equal(getattr(obj, attr), new_vw)
 
         # Change by copy back to what it was
-        setattr(obj, attr, expected)
+        setattr(obj, attr, exp_cp)
 
-        assert_array_equal(getattr(obj, attr), expected)
+        assert_array_equal(getattr(obj, attr), exp_cp)
 
 # Tests for PyRay and PyTrace
 class Test_PyRay(unittest.TestCase, useful_checks):
@@ -851,6 +857,23 @@ class Test_PyMirror_Sph(unittest.TestCase, useful_checks):
         with self.assertRaises(ValueError) as context:
             m.end = m.start - 1.0
 
+    # Test update_start_end() method
+    def test_PyMirror_Sph_update_start_end_invalid(self):
+        """Tests the update_start_end() doesn't allow end <= start"""
+        m = self.create_Obj()
+
+        with self.assertRaises(ValueError) as _:
+            m.update_start_end(3.0, 3.0)
+
+        with self.assertRaises(ValueError) as _:
+            m.update_start_end(3.0, 2.0)
+
+    def test_PyMirror_Sph_update_start_end_valid(self):
+        """Tests the update_start_end() allows start < end"""
+        m = self.create_Obj()
+
+        m.update_start_end(2.0, 3.0)
+
     # Test plot() method
     def test_PyMirror_Sph_plot(self):
         """Tests the plot method returns start point followed by end point"""
@@ -1150,6 +1173,23 @@ class Test_PyRefract_Sph(unittest.TestCase, useful_checks):
         with self.assertRaises(ValueError) as context:
             m.n_out = -1.0
 
+    # Test update_start_end() method
+    def test_PyRefract_Sph_update_start_end_invalid(self):
+        """Tests the update_start_end() doesn't allow end <= start"""
+        m = self.create_Obj()
+
+        with self.assertRaises(ValueError) as _:
+            m.update_start_end(3.0, 3.0)
+
+        with self.assertRaises(ValueError) as _:
+            m.update_start_end(3.0, 2.0)
+
+    def test_PyRefract_Sph_update_start_end_valid(self):
+        """Tests the update_start_end() allows start < end"""
+        m = self.create_Obj()
+
+        m.update_start_end(2.0, 3.0)
+
     # Test plot() method
     def test_PyRefract_Sph_plot(self):
         """Tests the plot method returns start point followed by end point"""
@@ -1221,7 +1261,7 @@ class Test_PyRefract_Sph(unittest.TestCase, useful_checks):
 
 class Test_PyLens(unittest.TestCase, useful_checks):
     """Tests for PyLens"""
-    _centre = np.zeros(2)
+    _lens_centre = np.zeros(2)
     _R_lens = 2
     _R1 = 4.0
     _R2 = 6.0
@@ -1232,7 +1272,7 @@ class Test_PyLens(unittest.TestCase, useful_checks):
     def create_Obj(self):
         """Creates an instance of PyLens for testing"""
 
-        return tr.PyLens(self._centre, self._R_lens, self._R1, self._R2, 
+        return tr.PyLens(self._lens_centre, self._R_lens, self._R1, self._R2, 
                         self._d, self._n_in, self._n_out)
 
     # TODO: test __init__()
@@ -1242,29 +1282,29 @@ class Test_PyLens(unittest.TestCase, useful_checks):
         """
 
         # These should be ok
-        c = tr.PyLens(self._centre, self._R_lens, -self._R_lens - 1.0, 
+        c = tr.PyLens(self._lens_centre, self._R_lens, -self._R_lens - 1.0, 
                         self._R2, self._d, self._n_in, self._n_out)
 
-        c = tr.PyLens(self._centre, self._R_lens, -self._R_lens, self._R2, 
+        c = tr.PyLens(self._lens_centre, self._R_lens, -self._R_lens, self._R2, 
                         self._d, self._n_in, self._n_out)
 
-        c = tr.PyLens(self._centre, self._R_lens, self._R_lens, self._R2, 
+        c = tr.PyLens(self._lens_centre, self._R_lens, self._R_lens, self._R2, 
                         self._d, self._n_in, self._n_out)
 
-        c = tr.PyLens(self._centre, self._R_lens, self._R_lens + 1.0, 
+        c = tr.PyLens(self._lens_centre, self._R_lens, self._R_lens + 1.0, 
                         self._R2, self._d, self._n_in, self._n_out)
 
         # These should all fail
         with self.assertRaises(ValueError) as _:
-            c = c = tr.PyLens(self._centre, self._R_lens, -self._R_lens/2, 
+            c = c = tr.PyLens(self._lens_centre, self._R_lens, -self._R_lens/2, 
                         self._R2, self._d, self._n_in, self._n_out)
 
         with self.assertRaises(ValueError) as _:
-            c = c = tr.PyLens(self._centre, self._R_lens, self._R_lens/2, 
+            c = c = tr.PyLens(self._lens_centre, self._R_lens, self._R_lens/2, 
                         self._R2, self._d, self._n_in, self._n_out)
 
         with self.assertRaises(ValueError) as _:
-            c = c = tr.PyLens(self._centre, self._R_lens, 0.0, 
+            c = c = tr.PyLens(self._lens_centre, self._R_lens, 0.0, 
                         self._R2, self._d, self._n_in, self._n_out)
 
     def test_PyLens_init_allowed_R2(self):
@@ -1273,43 +1313,43 @@ class Test_PyLens(unittest.TestCase, useful_checks):
         """
 
         # These should be ok
-        c = tr.PyLens(self._centre, self._R_lens, self._R1, -self._R_lens-1.0,
+        c = tr.PyLens(self._lens_centre, self._R_lens, self._R1, -self._R_lens-1.0,
                          self._d, self._n_in, self._n_out)
 
-        c = tr.PyLens(self._centre, self._R_lens,  self._R1, -self._R_lens,
+        c = tr.PyLens(self._lens_centre, self._R_lens,  self._R1, -self._R_lens,
                         self._d, self._n_in, self._n_out)
 
-        c = tr.PyLens(self._centre, self._R_lens,  self._R1, self._R_lens,
+        c = tr.PyLens(self._lens_centre, self._R_lens,  self._R1, self._R_lens,
                         self._d, self._n_in, self._n_out)
 
-        c = tr.PyLens(self._centre, self._R_lens, self._R1, self._R_lens + 1.0,
+        c = tr.PyLens(self._lens_centre, self._R_lens, self._R1, self._R_lens + 1.0,
                           self._d, self._n_in, self._n_out)
 
         # These should all fail
         with self.assertRaises(ValueError) as _:
-            c = c = tr.PyLens(self._centre, self._R_lens, self._R1,
+            c = c = tr.PyLens(self._lens_centre, self._R_lens, self._R1,
                          -self._R_lens/2,  self._d, self._n_in, self._n_out)
 
         with self.assertRaises(ValueError) as _:
-            c = c = tr.PyLens(self._centre, self._R_lens, self._R1,
+            c = c = tr.PyLens(self._lens_centre, self._R_lens, self._R1,
                         self._R_lens/2,  self._d, self._n_in, self._n_out)
 
         with self.assertRaises(ValueError) as _:
-            c = c = tr.PyLens(self._centre, self._R_lens, self._R1,
+            c = c = tr.PyLens(self._lens_centre, self._R_lens, self._R1,
                         0.0,  self._d, self._n_in, self._n_out)
 
-    # Testing property centre
-    def test_PyLens_centre_get(self):
-        """Tests property centre getting"""
+    # Testing property lens_centre
+    def test_PyLens_lens_centre_get(self):
+        """Tests property lens_centre getting"""
         m = self.create_Obj()
 
-        assert_array_equal(m.centre, self._centre)
+        assert_array_equal(m.lens_centre, self._lens_centre)
 
-    def test_PyLens_centre_set(self):
-        """Tests property centre setting"""
+    def test_PyLens_lens_centre_set(self):
+        """Tests property lens_centre setting"""
         m = self.create_Obj()
 
-        self.check_np_view_shape_2_set(m, 'centre', self._centre, self._centre + 10.0)
+        self.check_np_view_shape_2_set(m, 'lens_centre', self._lens_centre, self._lens_centre + 10.0)
 
     # Testing property R_lens
     def test_PyLens_R_lens_get(self):
@@ -1325,12 +1365,50 @@ class Test_PyLens(unittest.TestCase, useful_checks):
 
         self.assertEqual(m.R1, self._R1)
 
+    def test_PyLens_R1_set(self):
+        """Tests property R1 setting"""
+        m = self.create_Obj()
+
+        self.check_float_property(m, 'R1', self._R1, self._R1 + 0.5)
+
+    def test_PyLens_R1_set_invalid(self):
+        """Tests property R1 can't be set -R_lens < R1 < R_lens"""
+        m = self.create_Obj()
+
+        with self.assertRaises(ValueError):
+            m.R1 = -self._R_lens*0.99
+
+        with self.assertRaises(ValueError):
+            m.R1 = 0.0
+
+        with self.assertRaises(ValueError):
+            m.R1 = self._R_lens*0.99
+
     # Testing property R2
     def test_PyLens_R2_get(self):
         """Tests property R2 getting"""
         m = self.create_Obj()
 
         self.assertEqual(m.R2, self._R2)
+
+    def test_PyLens_R2_set(self):
+        """Tests property R2 setting"""
+        m = self.create_Obj()
+
+        self.check_float_property(m, 'R2', self._R2, self._R2 + 0.5)
+
+    def test_PyLens_R2_set_invalid(self):
+        """Tests property R2 can't be set -R_lens < R2 < R_lens"""
+        m = self.create_Obj()
+
+        with self.assertRaises(ValueError):
+            m.R2 = -self._R_lens*0.99
+
+        with self.assertRaises(ValueError):
+            m.R2 = 0.0
+
+        with self.assertRaises(ValueError):
+            m.R2 = self._R_lens*0.99
 
     # Testing property d
     def test_PyLens_d_get(self):
@@ -1346,12 +1424,24 @@ class Test_PyLens(unittest.TestCase, useful_checks):
 
         self.assertEqual(m.n_in, self._n_in)
 
+    def test_PyLens_n_in_set(self):
+        """Tests property n_in setting"""
+        m = self.create_Obj()
+
+        self.check_float_property(m, 'n_in', self._n_in, self._n_in + 0.5)
+
     # Testing property n_out
     def test_PyLens_n_out_get(self):
         """Tests property n_out getting"""
         m = self.create_Obj()
 
         self.assertEqual(m.n_out, self._n_out)
+
+    def test_PyLens_n_out_set(self):
+        """Tests property n_out setting"""
+        m = self.create_Obj()
+
+        self.check_float_property(m, 'n_out', self._n_out, self._n_out + 0.5)
 
     # TODO: add tracing tests
 
