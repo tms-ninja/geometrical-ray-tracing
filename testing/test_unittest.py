@@ -857,6 +857,23 @@ class Test_PyMirror_Sph(unittest.TestCase, useful_checks):
         with self.assertRaises(ValueError) as context:
             m.end = m.start - 1.0
 
+    # Test update_start_end() method
+    def test_PyMirror_Sph_update_start_end_invalid(self):
+        """Tests the update_start_end() doesn't allow end <= start"""
+        m = self.create_Obj()
+
+        with self.assertRaises(ValueError) as _:
+            m.update_start_end(3.0, 3.0)
+
+        with self.assertRaises(ValueError) as _:
+            m.update_start_end(3.0, 2.0)
+
+    def test_PyMirror_Sph_update_start_end_valid(self):
+        """Tests the update_start_end() allows start < end"""
+        m = self.create_Obj()
+
+        m.update_start_end(2.0, 3.0)
+
     # Test plot() method
     def test_PyMirror_Sph_plot(self):
         """Tests the plot method returns start point followed by end point"""
@@ -1156,6 +1173,23 @@ class Test_PyRefract_Sph(unittest.TestCase, useful_checks):
         with self.assertRaises(ValueError) as context:
             m.n_out = -1.0
 
+    # Test update_start_end() method
+    def test_PyRefract_Sph_update_start_end_invalid(self):
+        """Tests the update_start_end() doesn't allow end <= start"""
+        m = self.create_Obj()
+
+        with self.assertRaises(ValueError) as _:
+            m.update_start_end(3.0, 3.0)
+
+        with self.assertRaises(ValueError) as _:
+            m.update_start_end(3.0, 2.0)
+
+    def test_PyRefract_Sph_update_start_end_valid(self):
+        """Tests the update_start_end() allows start < end"""
+        m = self.create_Obj()
+
+        m.update_start_end(2.0, 3.0)
+
     # Test plot() method
     def test_PyRefract_Sph_plot(self):
         """Tests the plot method returns start point followed by end point"""
@@ -1330,6 +1364,25 @@ class Test_PyLens(unittest.TestCase, useful_checks):
         m = self.create_Obj()
 
         self.assertEqual(m.R1, self._R1)
+
+    def test_PyLens_R1_set(self):
+        """Tests property R1 setting"""
+        m = self.create_Obj()
+
+        self.check_float_property(m, 'R1', self._R1, self._R1 + 0.5)
+
+    def test_PyLens_R1_set_invalid(self):
+        """Tests property R1 can't be set -R_lens < R1 < R_lens"""
+        m = self.create_Obj()
+
+        with self.assertRaises(ValueError):
+            m.R1 = -self._R_lens*0.99
+
+        with self.assertRaises(ValueError):
+            m.R1 = 0.0
+
+        with self.assertRaises(ValueError):
+            m.R1 = self._R_lens*0.99
 
     # Testing property R2
     def test_PyLens_R2_get(self):

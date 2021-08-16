@@ -704,6 +704,36 @@ cdef class _PySpherical(_PyComponent):
             raise ValueError("end angle must be greater than start angle")
 
         dereference(self.c_sph_ptr).end = end
+
+    def update_start_end(self, double new_start, double new_end):
+        """
+        Updates start and end simultaneously. This is useful as it means you
+        don't have to ensure self.start < self.end while setting each property
+        individually. new_start must be less than new_end.
+
+        Parameters
+        ----------
+        new_start : double
+            The new start angle measured anticlockwise from the x axis.
+        new_end : double
+            The new end angle measured anticlockwise from the x axis.
+
+        Raises
+        ------
+        ValueError
+            Raised if new_end <= new_start.
+
+        Returns
+        -------
+        None.
+
+        """
+
+        if new_end <= new_start:
+            raise ValueError("end angle must be greater than start angle")
+
+        dereference(self.c_sph_ptr).start = new_start
+        dereference(self.c_sph_ptr).end = new_end
         
     def plot(self, n_points=100):
         """
@@ -1212,6 +1242,24 @@ class PyLens(PyCC_Wrap):
         """
 
         return self._R1
+    @R1.setter
+    def R1(self, new_R1):
+
+        if -self.R_lens < new_R1 < self.R_lens:
+            raise ValueError(f"R1 = {new_R1} is invalid")
+
+        # Need to update R1 first as things like centre will also change
+        self._R1 = new_R1
+
+        p = self.get_current_params()
+        p['left'] = True
+
+        l_p = self._create_arc_param(**p)
+
+        # Need to update arc centre, R and start/end
+        self._left_arc.centre = l_p['centre']
+        self._left_arc.R = l_p['R']
+        self._left_arc.update_start_end(l_p['start'], l_p['end'])
 
     @property
     def R2(self):
