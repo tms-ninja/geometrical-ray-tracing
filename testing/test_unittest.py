@@ -1227,7 +1227,7 @@ class Test_PyRefract_Sph(unittest.TestCase, useful_checks):
 
 class Test_PyLens(unittest.TestCase, useful_checks):
     """Tests for PyLens"""
-    _centre = np.zeros(2)
+    _lens_centre = np.zeros(2)
     _R_lens = 2
     _R1 = 4.0
     _R2 = 6.0
@@ -1238,7 +1238,7 @@ class Test_PyLens(unittest.TestCase, useful_checks):
     def create_Obj(self):
         """Creates an instance of PyLens for testing"""
 
-        return tr.PyLens(self._centre, self._R_lens, self._R1, self._R2, 
+        return tr.PyLens(self._lens_centre, self._R_lens, self._R1, self._R2, 
                         self._d, self._n_in, self._n_out)
 
     # TODO: test __init__()
@@ -1248,29 +1248,29 @@ class Test_PyLens(unittest.TestCase, useful_checks):
         """
 
         # These should be ok
-        c = tr.PyLens(self._centre, self._R_lens, -self._R_lens - 1.0, 
+        c = tr.PyLens(self._lens_centre, self._R_lens, -self._R_lens - 1.0, 
                         self._R2, self._d, self._n_in, self._n_out)
 
-        c = tr.PyLens(self._centre, self._R_lens, -self._R_lens, self._R2, 
+        c = tr.PyLens(self._lens_centre, self._R_lens, -self._R_lens, self._R2, 
                         self._d, self._n_in, self._n_out)
 
-        c = tr.PyLens(self._centre, self._R_lens, self._R_lens, self._R2, 
+        c = tr.PyLens(self._lens_centre, self._R_lens, self._R_lens, self._R2, 
                         self._d, self._n_in, self._n_out)
 
-        c = tr.PyLens(self._centre, self._R_lens, self._R_lens + 1.0, 
+        c = tr.PyLens(self._lens_centre, self._R_lens, self._R_lens + 1.0, 
                         self._R2, self._d, self._n_in, self._n_out)
 
         # These should all fail
         with self.assertRaises(ValueError) as _:
-            c = c = tr.PyLens(self._centre, self._R_lens, -self._R_lens/2, 
+            c = c = tr.PyLens(self._lens_centre, self._R_lens, -self._R_lens/2, 
                         self._R2, self._d, self._n_in, self._n_out)
 
         with self.assertRaises(ValueError) as _:
-            c = c = tr.PyLens(self._centre, self._R_lens, self._R_lens/2, 
+            c = c = tr.PyLens(self._lens_centre, self._R_lens, self._R_lens/2, 
                         self._R2, self._d, self._n_in, self._n_out)
 
         with self.assertRaises(ValueError) as _:
-            c = c = tr.PyLens(self._centre, self._R_lens, 0.0, 
+            c = c = tr.PyLens(self._lens_centre, self._R_lens, 0.0, 
                         self._R2, self._d, self._n_in, self._n_out)
 
     def test_PyLens_init_allowed_R2(self):
@@ -1279,43 +1279,43 @@ class Test_PyLens(unittest.TestCase, useful_checks):
         """
 
         # These should be ok
-        c = tr.PyLens(self._centre, self._R_lens, self._R1, -self._R_lens-1.0,
+        c = tr.PyLens(self._lens_centre, self._R_lens, self._R1, -self._R_lens-1.0,
                          self._d, self._n_in, self._n_out)
 
-        c = tr.PyLens(self._centre, self._R_lens,  self._R1, -self._R_lens,
+        c = tr.PyLens(self._lens_centre, self._R_lens,  self._R1, -self._R_lens,
                         self._d, self._n_in, self._n_out)
 
-        c = tr.PyLens(self._centre, self._R_lens,  self._R1, self._R_lens,
+        c = tr.PyLens(self._lens_centre, self._R_lens,  self._R1, self._R_lens,
                         self._d, self._n_in, self._n_out)
 
-        c = tr.PyLens(self._centre, self._R_lens, self._R1, self._R_lens + 1.0,
+        c = tr.PyLens(self._lens_centre, self._R_lens, self._R1, self._R_lens + 1.0,
                           self._d, self._n_in, self._n_out)
 
         # These should all fail
         with self.assertRaises(ValueError) as _:
-            c = c = tr.PyLens(self._centre, self._R_lens, self._R1,
+            c = c = tr.PyLens(self._lens_centre, self._R_lens, self._R1,
                          -self._R_lens/2,  self._d, self._n_in, self._n_out)
 
         with self.assertRaises(ValueError) as _:
-            c = c = tr.PyLens(self._centre, self._R_lens, self._R1,
+            c = c = tr.PyLens(self._lens_centre, self._R_lens, self._R1,
                         self._R_lens/2,  self._d, self._n_in, self._n_out)
 
         with self.assertRaises(ValueError) as _:
-            c = c = tr.PyLens(self._centre, self._R_lens, self._R1,
+            c = c = tr.PyLens(self._lens_centre, self._R_lens, self._R1,
                         0.0,  self._d, self._n_in, self._n_out)
 
-    # Testing property centre
-    def test_PyLens_centre_get(self):
-        """Tests property centre getting"""
+    # Testing property lens_centre
+    def test_PyLens_lens_centre_get(self):
+        """Tests property lens_centre getting"""
         m = self.create_Obj()
 
-        assert_array_equal(m.centre, self._centre)
+        assert_array_equal(m.lens_centre, self._lens_centre)
 
-    def test_PyLens_centre_set(self):
-        """Tests property centre setting"""
+    def test_PyLens_lens_centre_set(self):
+        """Tests property lens_centre setting"""
         m = self.create_Obj()
 
-        self.check_np_view_shape_2_set(m, 'centre', self._centre, self._centre + 10.0)
+        self.check_np_view_shape_2_set(m, 'lens_centre', self._lens_centre, self._lens_centre + 10.0)
 
     # Testing property R_lens
     def test_PyLens_R_lens_get(self):

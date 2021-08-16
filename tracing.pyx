@@ -1008,13 +1008,13 @@ class PyCC_Wrap:
 class PyLens(PyCC_Wrap):
     """A class to represent a lens"""
 
-    def __init__(self, centre, R_lens, R1, R2, d, n_in, n_out=1.0) -> None:
+    def __init__(self, lens_centre, R_lens, R1, R2, d, n_in, n_out=1.0) -> None:
         """
         Creates an instance of PyLens.
 
         Parameters
         ----------
-        centre : numpy.ndarray
+        lens_centre : numpy.ndarray
             A numpy array of shape (2,) that gives the centre of the lens.
         R_lens : double
             The radius of the lens.
@@ -1040,7 +1040,7 @@ class PyLens(PyCC_Wrap):
 
         """
 
-        self._centre = centre
+        self._lens_centre = lens_centre
         self._R_lens = R_lens
         self._R1 = R1
         self._R2 = R2
@@ -1052,7 +1052,7 @@ class PyLens(PyCC_Wrap):
         if -R_lens < R1 < R_lens:
             raise ValueError(f"R1 = {R1} is invalid")
 
-        l_p = self._create_arc_param(True, centre, R_lens, R1, R2, d, n_in, n_out)
+        l_p = self._create_arc_param(True, lens_centre, R_lens, R1, R2, d, n_in, n_out)
 
         self._left_arc = PyRefract_Sph(**l_p)
 
@@ -1060,11 +1060,11 @@ class PyLens(PyCC_Wrap):
         if -R_lens < R2 < R_lens:
             raise ValueError(f"R2 = {R2} is invalid")
 
-        r_p = self._create_arc_param(False, centre, R_lens, R1, R2, d, n_in, n_out)
+        r_p = self._create_arc_param(False, lens_centre, R_lens, R1, R2, d, n_in, n_out)
 
         self._right_arc = PyRefract_Sph(**r_p)
 
-        c_x, c_y = centre
+        c_x, c_y = lens_centre
 
         # positions of "box"
         top_left = np.array([c_x - d/2, c_y + R_lens])
@@ -1141,7 +1141,7 @@ class PyLens(PyCC_Wrap):
         """Returns a dictionary of the current lens parameters"""
         d = dict()
         
-        d['lens_centre'] = self.centre
+        d['lens_centre'] = self.lens_centre
         d['R_lens'] = self.R_lens
         d['R1'] = self.R1
         d['R2'] = self.R2
@@ -1152,9 +1152,9 @@ class PyLens(PyCC_Wrap):
         return d
 
     @property
-    def centre(self):
+    def lens_centre(self):
         """
-        The centre of the lens. Note centre cannot be modified by changing
+        The centre of the lens. Note lens_centre cannot be modified by changing
         the elements of the returned numpy.ndarray. Doing so will corrput te
         PyLens instance.
 
@@ -1165,13 +1165,13 @@ class PyLens(PyCC_Wrap):
 
         """
 
-        return self._centre
-    @centre.setter
-    def centre(self, new_centre):
-        """Setter for centre"""
-        diff = new_centre - self.centre
+        return self._lens_centre
+    @lens_centre.setter
+    def lens_centre(self, new_centre):
+        """Setter for lens_centre"""
+        diff = new_centre - self._lens_centre
 
-        self._centre += diff
+        self._lens_centre += diff
 
         # arcs
         self._left_arc.centre += diff
@@ -1328,13 +1328,13 @@ class PyLens(PyCC_Wrap):
 class PyBiConvexLens(PyLens):
     """A class to represent a Bi-convex lens"""
 
-    def __init__(self, centre, R_lens, R1, R2, d, n_in, n_out=1.0) -> None:
+    def __init__(self, lens_centre, R_lens, R1, R2, d, n_in, n_out=1.0) -> None:
         """
         Creates an instance of PyBiConvexLens.
 
         Parameters
         ----------
-        centre : numpy.ndarray
+        lens_centre : numpy.ndarray
             A numpy array of shape (2,) that gives the centre of the lens.
         R_lens : double
             The radius of the lens.
@@ -1363,4 +1363,4 @@ class PyBiConvexLens(PyLens):
         assert R1 >= R_lens, f"R1 = {R1} was less than radius of lens R_lens = {R_lens}"
         assert R2 >= R_lens, f"R2 = {R2} was less than radius of lens R_lens = {R_lens}"
 
-        super().__init__(centre, R_lens, R1, R2, d, n_in, n_out)
+        super().__init__(lens_centre, R_lens, R1, R2, d, n_in, n_out)
