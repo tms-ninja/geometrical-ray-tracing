@@ -19,7 +19,7 @@ def crawl(lst):
 # Setup lens and rays
 
 lens_1_param = {
-            'centre': np.zeros(2),
+            'lens_centre': np.zeros(2),
             'R_lens': 2, 
             'R1': 4, 
             'R2': 4, 
