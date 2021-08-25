@@ -36,7 +36,11 @@ std::tuple<double, double> Spherical::solve(const arr & r, const arr & v) const
 	uvSol[1] = (-v[1] * delta - disc) / R;
 
 
-	std::vector<double> tArr;  // Contains just the t solutions
+	//std::vector<double> tArr;  // Contains just the t solutions which are physical, at most 2
+	double tArr[2];
+	size_t current_tArr_ind{ 0 };
+
+
 	std::vector<std::tuple<double, double>> sol;
 
 	std::vector<double> tpSol;
@@ -72,7 +76,9 @@ std::tuple<double, double> Spherical::solve(const arr & r, const arr & v) const
 						if (is_close(r[0] + v[0] * t, p[0]) && is_close(r[1] + v[1] * t, p[1]))  // Check it is solution for x and y components
 						{
 							sol.push_back({ t, tp });
-							tArr.push_back(t);  // add t value so we can work out next next interacting solution
+							//tArr.push_back(t);  // add t value so we can work out next next interacting solution
+							tArr[current_tArr_ind] = t;
+							current_tArr_ind += 1;
 						}
 					}
 				}
@@ -94,7 +100,10 @@ std::tuple<double, double> Spherical::solve(const arr & r, const arr & v) const
 	default:
 		size_t ind;
 
-		std::tie(ind, std::ignore) = next_component(tArr);
+		//std::tie(ind, std::ignore) = next_component(tArr);
+
+		// We allready know that all elements of tArr are positive and so interactions are in the future
+		ind = tArr[0] < tArr[1] ? 0 : 1;
 
 		return sol[ind];
 	}
