@@ -42,10 +42,6 @@ std::tuple<double, double> Spherical::solve(const arr & r, const arr & v) const
 	std::vector<double> tpSol;
 	tpSol.reserve(4);
 
-	std::vector<double> tSol;
-	tSol.reserve(4);
-
-	std::vector<arr> pos;
 
 	for (double &u : uvSol)
 	{
@@ -60,19 +56,13 @@ std::tuple<double, double> Spherical::solve(const arr & r, const arr & v) const
 				tpSol.push_back(-acos(u));
 			}
 
-			// Compute the positions of intersections and their times
-			for (double &tp : tpSol)
-			{
-				pos.push_back({ centre[0] + R * cos(tp), centre[1] + R * sin(tp) });
-
-				tSol.push_back(compute_t(r, v, pos.back()));
-			}
-				
+			// Check if any of the tp correspond to physical solutions
 			for (std::size_t ind = 0; ind < tpSol.size(); ++ind)
 			{
-				const double  &t{ tSol[ind] };
 				const double &tp{ tpSol[ind] };
-				const arr &p{ pos[ind] };
+
+				const arr p = { centre[0] + R * cos(tp), centre[1] + R * sin(tp) };
+				const double t = compute_t(r, v, p);
 
 				// First check t is in the furture and not where we are starting from
 				if (t > 0.0 && !is_close(t, 0.0))
@@ -89,10 +79,8 @@ std::tuple<double, double> Spherical::solve(const arr & r, const arr & v) const
 							
 			}
 
-			// Tidy up, clear tpSol, tSol, pos
+			// Tidy up, clear tpSol
 			tpSol.clear();
-			tSol.clear();
-			pos.clear();
 		}
 	}
 
