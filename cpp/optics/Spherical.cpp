@@ -30,20 +30,27 @@ std::tuple<double, double> Spherical::solve(const arr & r, const arr & v) const
 
 	disc = sqrt(disc);
 
-	std::vector<double> uvSol;  // u and v solutions
+	double uvSol[2];
 
-	uvSol.push_back((-v[1] * delta + disc) / R);
-	uvSol.push_back((-v[1] * delta - disc) / R);
+	uvSol[0] = (-v[1] * delta + disc) / R;
+	uvSol[1] = (-v[1] * delta - disc) / R;
+
 
 	std::vector<double> tArr;  // Contains just the t solutions
 	std::vector<std::tuple<double, double>> sol;
+
+	std::vector<double> tpSol;
+	tpSol.reserve(4);
+
+	std::vector<double> tSol;
+	tSol.reserve(4);
+
+	std::vector<arr> pos;
 
 	for (double &u : uvSol)
 	{
 		if (u >= -1 && u <= 1)
 		{
-			std::vector<double> tpSol;
-
 			tpSol.push_back(acos(u));
 			tpSol.push_back(2 * M_PI - acos(u));
 
@@ -54,19 +61,11 @@ std::tuple<double, double> Spherical::solve(const arr & r, const arr & v) const
 			}
 
 			// Compute the positions of intersections and their times
-			std::vector<arr> pos;
-			std::vector<double> tSol;
-
 			for (double &tp : tpSol)
 			{
-				arr temp;
+				pos.push_back({ centre[0] + R * cos(tp), centre[1] + R * sin(tp) });
 
-				temp[0] = centre[0] + R * cos(tp);
-				temp[1] = centre[1] + R * sin(tp);
-
-				pos.push_back(temp);
-
-				tSol.push_back(compute_t(r, v, temp));
+				tSol.push_back(compute_t(r, v, pos.back()));
 			}
 				
 			for (std::size_t ind = 0; ind < tpSol.size(); ++ind)
@@ -90,6 +89,10 @@ std::tuple<double, double> Spherical::solve(const arr & r, const arr & v) const
 							
 			}
 
+			// Tidy up, clear tpSol, tSol, pos
+			tpSol.clear();
+			tSol.clear();
+			pos.clear();
 		}
 	}
 
