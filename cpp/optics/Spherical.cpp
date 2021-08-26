@@ -35,10 +35,8 @@ std::tuple<double, double> Spherical::solve(const arr & r, const arr & v) const
 	uvSol[0] = (-v[1] * delta + disc) / R;
 	uvSol[1] = (-v[1] * delta - disc) / R;
 
-	double tArr[2];
-	size_t current_tArr_ind{ 0 };
-
-	std::vector<std::tuple<double, double>> sol;
+	bool found_valid_sol{ false };
+	double best_t, best_tp;
 
 	double tpSol[4];
 	size_t tpSol_MAX{ start < 0.0 ? 4U : 2U };  
@@ -60,20 +58,29 @@ std::tuple<double, double> Spherical::solve(const arr & r, const arr & v) const
 			for (std::size_t ind = 0; ind < tpSol_MAX; ++ind)
 			{
 				const double &tp{ tpSol[ind] };
-
-				const arr p = { centre[0] + R * cos(tp), centre[1] + R * sin(tp) };
-				const double t = compute_t(r, v, p);
-
-				// First check t is in the furture and not where we are starting from
-				if (t > 0.0 && !is_close(t, 0.0))
+				
+				if (tp >= start && tp <= end)  // Check it hits exisitng part of component
 				{
-					if (tp >= start && tp <= end)  // Check it hits exisitng part of component
+					const arr p = { centre[0] + R * cos(tp), centre[1] + R * sin(tp) };
+					const double t = compute_t(r, v, p);
+
+					// Check t is in the furture and not where we are starting from
+					if (t > 0.0 && !is_close(t, 0.0))
 					{
+
 						if (is_close(r[0] + v[0] * t, p[0]) && is_close(r[1] + v[1] * t, p[1]))  // Check it is solution for x and y components
 						{
-							sol.push_back({ t, tp });
-							tArr[current_tArr_ind] = t;
-							current_tArr_ind += 1;
+							if (found_valid_sol && t < best_t)
+							{
+								best_t = t;
+								best_tp = tp;
+							}
+							else
+							{
+								found_valid_sol = true;
+								best_t = t;
+								best_tp = tp;
+							}
 						}
 					}
 				}
@@ -82,21 +89,11 @@ std::tuple<double, double> Spherical::solve(const arr & r, const arr & v) const
 		}
 	}
 
-	// sol now contains 0, 1, or two solutions, need to find one with smallest t
-	switch (sol.size())
-	{
-	case 0:
-		return { -1.0, 0.0 };
-	case 1:
-		return sol[0];
-	default:
-		size_t ind;
+	// return valid solution if we have one
+	if (found_valid_sol)
+		return { best_t, best_tp };
 
-		// We allready know that all elements of tArr are positive and so interactions are in the future
-		ind = tArr[0] < tArr[1] ? 0 : 1;
-
-		return sol[ind];
-	}
+	return { -1.0, 0.0 };
 }
 
 void Spherical::print(std::ostream & os) const
