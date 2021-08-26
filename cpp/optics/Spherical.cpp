@@ -61,7 +61,8 @@ std::tuple<double, double> Spherical::solve(const arr & r, const arr & v) const
 				
 				if (tp >= start && tp <= end)  // Check it hits exisitng part of component
 				{
-					const arr p = { centre[0] + R * cos(tp), centre[1] + R * sin(tp) };
+					// u is equal to cos(tp)
+					const arr p = { centre[0] + R * u, centre[1] + R * sin(tp) };
 					const double t = compute_t(r, v, p);
 
 					// Check t is in the furture and not where we are starting from
