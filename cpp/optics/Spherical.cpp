@@ -76,7 +76,7 @@ std::tuple<double, double> Spherical::solve(const arr & r, const arr & v) const
 								best_t = t;
 								best_tp = tp;
 							}
-							else
+							else if (found_valid_sol == false)
 							{
 								found_valid_sol = true;
 								best_t = t;
