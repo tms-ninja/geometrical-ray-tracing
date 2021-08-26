@@ -57,7 +57,7 @@ std::tuple<double, double> Spherical::solve(const arr & r, const arr & v) const
 			// Check if any of the tp correspond to physical solutions
 			for (std::size_t ind = 0; ind < tpSol_MAX; ++ind)
 			{
-				const double &tp{ tpSol[ind] };
+				const double tp{ tpSol[ind] };
 				
 				if (tp >= start && tp <= end)  // Check it hits exisitng part of component
 				{
@@ -65,27 +65,17 @@ std::tuple<double, double> Spherical::solve(const arr & r, const arr & v) const
 					const arr p = { centre[0] + R * u, centre[1] + R * sin(tp) };
 					const double t = compute_t(r, v, p);
 
-					// Check t is in the furture and not where we are starting from
-					if (t > 0.0 && !is_close(t, 0.0))
+					// Check t is in the future, it's better than the current time and isn't where we are starting from
+					if (t > 0.0 && (!found_valid_sol || t < best_t) && !is_close(t, 0.0))
 					{
-
 						if (is_close(r[0] + v[0] * t, p[0]) && is_close(r[1] + v[1] * t, p[1]))  // Check it is solution for x and y components
 						{
-							if (found_valid_sol && t < best_t)
-							{
-								best_t = t;
-								best_tp = tp;
-							}
-							else if (found_valid_sol == false)
-							{
-								found_valid_sol = true;
-								best_t = t;
-								best_tp = tp;
-							}
+							found_valid_sol = true;
+							best_t = t;
+							best_tp = tp;
 						}
 					}
 				}
-							
 			}
 		}
 	}
