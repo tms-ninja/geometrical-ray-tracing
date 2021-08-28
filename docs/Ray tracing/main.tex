@@ -323,9 +323,10 @@ We define a plane mirror as starting at $\vec{r}_1$ and ending at $\vec{r}_2$. I
     =
     \vec{x}_1 + (\vec{x}_2 - \vec{x}_1) t',
 \end{equation}
-where $0 \le t' \le 1$ for a point to be on the mirror. Once we have determined that a ray will intersect with a plane mirror, we need to determine how the ray will reflect. The basic law is that the angle of incidence is equal to the angle of reflection.
+where $0 \le t' \le 1$ for a point to be on the mirror. Once we have determined that a ray will intersect with a plane mirror, we need to determine how the ray will reflect. We can compute the new starting position for the ray using the standard equation describing the ray as we have $t$. To compute the new direction, we have that the angle of incidence is equal to the angle of reflection.
 
-We can compute the new starting position for the ray using the standard equation describing the ray as we have $t$. To find the new velocity, we compute the angle, $\alpha$, the plane makes with the $x$ axis,
+\subsubsection{Rotation method}
+To find the new velocity, we compute the angle, $\alpha$, the plane makes with the $x$ axis,
 \begin{equation}
     \label{eq:plane_angle}
     \tan \alpha
@@ -333,7 +334,7 @@ We can compute the new starting position for the ray using the standard equation
     \frac{y_2 - y_1}{x_2 - x_1}.
 \end{equation}
 
-Now we must be careful with the cases of $\alpha = \frac{\pi}{2}, \frac{3\pi}{2}$ since the tangent is infinite in these cases. Moreover as tangent is $\pi$ periodic, $\arctan$ will give the correct answer up to $\pm \pi$. Fortunately \texttt{numpy} has the function \texttt{atan2(y, x)} which specifically accounts for these two cases, and also will always return the correct sign. In C++ we will have to be careful here and possibly implement our own function for this purpose.
+Now we must be careful with the cases of $\alpha = \frac{\pi}{2}, \frac{3\pi}{2}$ since the tangent is infinite in these cases. Moreover as tangent is $\pi$ periodic, $\arctan$ will give the correct answer up to $\pm \pi$. Fortunately \texttt{numpy} has the function \texttt{atan2(y, x)} which specifically accounts for these two cases, and also will always return the correct sign. In C++, the \texttt{cmath} header provides this function.
 
 We can now perform the reflection by rotating our coordinates by $\alpha$ to coordinates $(x', y')$. In these coordinates the ray is normal to the plane so the reflection is then simply a case of negating the $y'$ component. The standard rotation matrix to rotate a point anticlockwise from $(x, y)$ to $x', y')$ by $\theta$ is,
 \begin{equation}
@@ -352,8 +353,24 @@ However, this rotates a point anticlockwise, we want to rotate our coordinates, 
         -\sin \theta & \cos \theta
     \end{pmatrix}.
 \end{equation}
-
 Once we've negated the $y'$ component, we can then rotate back using $R(-\theta)$ to get the new direction of the ray.
+
+The disadvantage of this method is performance. It involves call to trigonometric functions which are slow, especially \texttt{atan2(y, x)}. Fortunately we can avoid this.
+
+\subsubsection{Vector method}
+We don't really need to rotate the plane each time we perform a reflection. All we really want to do is reflect the component of $\vec{v}$. Define $\vec{\hat{D}}$ as the unit vector pointing along the plane from its start point to its end point,
+\begin{equation}
+    \vec{\hat{D}}
+    =
+    \frac{\vec{x}_2 - \vec{x}_1}{|\vec{x}_2 - \vec{x}_1|}.
+\end{equation}
+The normalisation of $\vec{\hat{D}}$ does involve square rooting, but it only needs to be computed once.
+The component of $\vec{v}$ perpendicular plane is $\vec{v} - (\vec{v} \cdot \vec{\hat{D}}) \vec{\hat{D}}$ and so the reflections ca be performed as,
+\begin{equation}
+    \vec{v}
+    \rightarrow
+    (\vec{v} \cdot \vec{\hat{D}}) \vec{\hat{D}} - \vec{v}.
+\end{equation}
 
 \subsection{Spherical mirror}
 To reflect at a spherical surface, we follow a broadly similar method to that of a planar surface. First we determine the $t, t'$ values where the ray intersects the surface. The intersection location is given by,
