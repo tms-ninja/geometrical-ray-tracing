@@ -17,71 +17,47 @@ double Spherical::test_hit(Ray* ry) const
 std::tuple<double, double> Spherical::solve(const arr & r, const arr & v) const
 {
 	double dx{ r[0] - centre[0] }, dy{ r[1] - centre[1] };
-	double delta{ dy*v[0] - dx * v[1] };
+	double gamma{ dx*v[0] + dy * v[1] };
+	double disc;  // discriminant
 
-	// Discriminant of quadratic
-	double disc;
-
-	disc = delta * delta * (v[1] * v[1] - 1) + (v[0] * R)*(v[0] * R);
-
-	// Check if there are any solutions
+	disc = gamma * gamma + R * R - dx * dx - dy * dy;
+	
+	// No intersections
 	if (disc < 0.0)
 		return { -1.0, 0.0 };
 
-	disc = sqrt(disc);
+	double t_vals[2];
 
-	double uvSol[2];
+	t_vals[0] = -gamma + sqrt(disc);
+	t_vals[1] = -gamma - sqrt(disc);
 
-	uvSol[0] = (-v[1] * delta + disc) / R;
-	uvSol[1] = (-v[1] * delta - disc) / R;
-
-	bool found_valid_sol{ false };
+	bool found_sol{ false };
 	double best_t, best_tp;
+	arr pos;
 
-	double tpSol[4];
-	size_t tpSol_MAX{ start < 0.0 ? 4U : 2U };  
-
-	for (double &u : uvSol)
+	for (double t : t_vals)
 	{
-		if (u >= -1 && u <= 1)
+		// Check t is in the future, it's better than the current time and isn't where we are starting from
+		if (t > 0.0 && (!found_sol || t < best_t) && !is_close(t, 0.0))
 		{
-			tpSol[0] = acos(u);
-			tpSol[1] = 2 * M_PI - acos(u);
+			pos = { r[0] + v[0] * t, r[1] + v[1] * t };
 
-			if (start < 0)
+			double tp{ atan2(pos[1] - centre[1], pos[0] - centre[0]) };
+
+			// atan2() returns in range -pi to pi
+			if (tp < 0.0 && start >= 0.0)
+				tp += 2 * M_PI;
+
+			if (start <= tp && tp <= end)  // Check it hits exisitng part of component
 			{
-				tpSol[2] = 2 * M_PI - acos(u);
-				tpSol[3] = -acos(u);
-			}
-
-			// Check if any of the tp correspond to physical solutions
-			for (std::size_t ind = 0; ind < tpSol_MAX; ++ind)
-			{
-				const double tp{ tpSol[ind] };
-				
-				if (tp >= start && tp <= end)  // Check it hits exisitng part of component
-				{
-					// u is equal to cos(tp)
-					const arr p = { centre[0] + R * u, centre[1] + R * sin(tp) };
-					const double t = compute_t(r, v, p);
-
-					// Check t is in the future, it's better than the current time and isn't where we are starting from
-					if (t > 0.0 && (!found_valid_sol || t < best_t) && !is_close(t, 0.0))
-					{
-						if (is_close(r[0] + v[0] * t, p[0]) && is_close(r[1] + v[1] * t, p[1]))  // Check it is solution for x and y components
-						{
-							found_valid_sol = true;
-							best_t = t;
-							best_tp = tp;
-						}
-					}
-				}
+				found_sol = true;
+				best_t = t;
+				best_tp = tp;
 			}
 		}
 	}
 
-	// return valid solution if we have one
-	if (found_valid_sol)
+	if (found_sol)
 		return { best_t, best_tp };
 
 	return { -1.0, 0.0 };
