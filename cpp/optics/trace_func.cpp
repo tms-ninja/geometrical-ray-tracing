@@ -8,6 +8,9 @@ void trace_ray(const T &c, Ray* ry, int n, bool fill_up)
 
 	t.resize(c.size());
 
+	if (fill_up)
+		ry->pos.reserve(ry->pos.size() + n);
+
 	for (int i = 0; i < n; ++i)
 	{
 		// Check for all interactions
