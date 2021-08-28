@@ -4,6 +4,11 @@ Plane::Plane(arr start, arr end)
 {
 	Plane::start = start;
 	Plane::end = end;
+
+	// Compute unit vector pointing from start to end
+	double mag{ hypot(end[0] - start[0], end[1] - start[1]) };
+
+	Plane::D = { (end[0] - start[0]) / mag, (end[1] - start[1]) / mag };
 }
 
 double Plane::test_hit(Ray* ry) const

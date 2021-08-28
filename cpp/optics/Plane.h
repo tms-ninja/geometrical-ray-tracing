@@ -8,6 +8,7 @@ class Plane :
 public:
 	arr start;  // Start and end positions of plane
 	arr end;
+	arr D;      // Unit vector pointing from start to end
 
 	Plane(arr start, arr end);
 
