@@ -200,81 +200,73 @@ This gives us two simultaneous equations, namely,
 \end{align}
 Letting $\Delta x = x_0 - x_l$, $\Delta y = y_0 - y_l$ we get,
 \begin{align}
+\label{eq:sph_simulataneous_1}
     \Delta x + v_x t &= R\cos t' \\
+\label{eq:sph_simulataneous_2}
     \Delta y + v_y t &= R\sin t'.
 \end{align}
-Eliminating $t$ and substituting $\tan \theta = v_y/v_x$ produces,
+
+We can solve for either $t$ or $t'$. Originally we solved for $t'$, but it is more efficient to solve for $t$ instead.
+
+\subsubsection{Solving for $t$}
+We can eliminate $t'$ by squaring Eqs.~\ref{eq:sph_simulataneous_1} \& \ref{eq:sph_simulataneous_2}, and utilising $\sin^2 \theta + \cos^2 \theta = 1$. This produces the quadratic,
+\begin{align}
+    0
+    &=
+    (v_x^2 + v_y^2)t^2
+    +
+    2(v_x \Delta x + v_y \Delta y)t
+    +
+    \Delta x^2 + \Delta y^2 - R^2, \\
+    &=
+    t^2
+    +
+    2 \gamma t
+    +
+    \Delta x^2 + \Delta y^2 - R^2,
+\end{align}
+where we have uses the fact $\vec{v}$ is normalised and defined $\gamma = v_x \Delta x + v_y \Delta y$. The solutions for $t$ can be found as,
 \begin{equation}
-    \Delta y - \Delta x \tan \theta + R \tan \theta \cos t'
+    t
     =
-    R\sin t'.
+    -\gamma
+    \pm
+    \sqrt{\gamma^2 + R^2 - \Delta x^2 - \Delta y^2}.
 \end{equation}
-Defining $\gamma = \Delta y - \Delta x \tan \theta$ and $u = \cos t'$ produces,
+We can the compute the position of intersection, if there is one, and then use \texttt{atan2()} to compute $t'$. Trigonometric functions are only called when the ray has intersections in the future ($t>0$). By comparison, $\arccos$ is called for all possible intersections when solving for $t'$. $\sin$ may also be called there could be spurious $t'$ solutions that don't lie along the ray's path, at least using the method above. This leads to solving for $t$ being a more efficient method.
+
+\subsubsection{Solving for $t'$}
+This section is kept for reference with earlier versions of the code. Eliminating $t$ from Eqs.~\ref{eq:sph_simulataneous_1} \& \ref{eq:sph_simulataneous_2} produces,
 \begin{equation}
-    \left(
-        \gamma + R u\tan \theta
+    v_y \Delta x - v_x \Delta y
+    =
+    R v_y \cos t'
+    -
+    R v_x \sin t'.
+\end{equation}
+Defining $\delta= v_x \Delta y - v_y \Delta x$, we can eliminate $\sin t'$,
+\begin{align}
+    -\left(
+        \delta + R v_y \cos t'
     \right)^2
-    =
-    R^2 \left(
-        1-u^2
-    \right).
-\end{equation}
-The $a, b, c$ components of this quadratic are,
+    &=
+    R^2 v_x^2 \sin^2 t' \\
+    &=
+    R^2 v_x^2 (1 - \cos^2 t').
+\end{align}
+This is a quadratic in $\cos t'$ with coefficients,
 \begin{align}
     a
     &=
-    R^2 \left( 1 + \tan^2 \theta \right), \\
+    R^2 \left( v_x^2 + v_y^2 \right), \\
     b
     &=
-    2 R\gamma \tan \theta, \\
+    2 R v_y \delta, \\
     c
     &=
-    \gamma^2 - R^2.
+    \delta^2 - R^2 v_x^2,
 \end{align}
-The solution we have is,
-\begin{equation}
-    u = \cos t'
-    =
-    \frac{-2R\gamma \tan \theta 
-    \pm
-    \sqrt{
-    4R^2 \gamma^2 \tan^2 \theta
-    -
-    4
-    R^2 \left( 1 + \tan^2 \theta \right)
-    \left(
-        \gamma^2 - R^2
-    \right)
-    }}{2R^2 \left( 1 + \tan^2 \theta \right)}.
-\end{equation}
-This will actually generate four solutions; two due to the $\pm$ and a further two since if $t'$ is a solution, then so is $2\pi - t'$. We will need to work out how to determine to correct solution for the intersection. Now we need to be careful in case $v_x$ is small, as in this case $\tan \theta \rightarrow \infty$. Substituting back in $\tan \theta$ and multiplying top and bottom by $v_x^2$ produces,
-\begin{align}
-    \cos t'
-    &=
-    \frac{-2R\gamma v_x v_y
-    \pm
-    \sqrt{
-    4R^2 \gamma^2 v_x^2 v_y^2
-    -
-    4
-    R^2 \left( v_x^4 + v_x^2 v_y^2 \right)
-    \left(
-        \gamma^2 - R^2
-    \right)
-    }}{2R^2 \left( v_x^2 + v_y^2 \right)}, \\
-    &=
-    \frac{-\gamma v_x v_y
-    \pm
-    v_x
-    \sqrt{
-     \gamma^2 v_y^2
-    -
-    \left(
-        \gamma^2 - R^2
-    \right)
-    }}{R},
-\end{align}
-where the second line follows from $v_x^2 + v_y^2 = 1$ since $\vec{v}$ is normalised. $\gamma$ also has a dependence on $\tan \theta$, so we need to be careful again:
+and solutions,
 \begin{equation}
     \cos t'
     =
@@ -295,15 +287,13 @@ where the second line follows from $v_x^2 + v_y^2 = 1$ since $\vec{v}$ is normal
         }
     \right),
 \end{equation}
-where $\delta = \left( \Delta y v_x - \Delta x v_y \right)$. This form should be numerically stable with no problems when $v_x$ is small. We shall denoted the two solutions to $\cos t'$ as $u$ and $v$.
-
-Now we must work out which of the four possible solutions is the one we are after. The solution can be determined by testing each possible solution in the following way,
-\begin{enumerate}
-    \item First if $u$ ($v$) are in the range $-1 \le u \le 1$ ($-1 \le v \le 1$)
-    \item Then determine which, (if any) $t'$ are in the necessary range for the surface, $\theta_i \le t' \le \theta_f$
+This will generate four solutions; two due to the $\pm$ and a further two since if $t'$ is a solution, then so is $2\pi - t'$. We will need to determine to correct solution for the intersection. The solution we are after, if one exists must satisfy the following conditions:
+\begin{itemize}
+    \item $\cos t'$ must be in the range $-1 \le \cos t' \le 1$, otherwise the ray never intersects the surface
+    \item $t'$ are in the necessary range for the surface, $\theta_i \le t' \le \theta_f$
     \item Determine which solutions are true solutions and lie along the light ray's path
-    \item Finally if there are two solutions left, choose the solution with the smaller $t$ parameter
-\end{enumerate}
+    \item If there are two solutions left, choose the solution with the smaller but non-negative $t$ parameter
+\end{itemize}
 
 \section{Components}
 We would like to provide implementations for the following components:
