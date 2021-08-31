@@ -414,18 +414,15 @@ where both angles are measured from the normal of the surface. $n_i$ and $n_f$ a
     =
     \frac{n_i \sin \theta_i}{n_f} > 1.
 \end{equation}
-The value of $\theta_i$ for which $\sin{\theta_f} = 1$ is known as the critical angle. It is therefore,
+The value of $\theta_i$ for which $\sin{\theta_f} = 1$ is known as the critical angle. It is,
 \begin{equation}
     \theta_c
     =
     \arcsin{\frac{n_f}{n_i}}.
 \end{equation}
-So once we compute the angle of incidence we ought to compute the critical angle to check if we will actually have total internal reflection.
-
-We will also need some way of describing the refractive index on each side. We can construct a vector normal to the surface that points in a consistent direction.
 
 \subsection{Refraction at a planar surface}
-Once again we want to rotate our system so that it is convenient. We will rotate our coordinates round by $\alpha$ (angle of the plane) so that normal lies along the y-axis. We then have,
+We define the refractive indices as $n_1$ and $n_2$, with $n_1$ on the side $\vec{\hat{n}}$ points towards. In our old method, we rotated our system as it was convenient, though slower. We rotate our coordinates round by $\alpha$ (the angle of the plane) so that the normal lies along the y-axis. We then have,
 \begin{equation}
     \theta_i 
     =
@@ -447,12 +444,10 @@ where $\theta'$ is the angle of $\vec{v}'$, that is $\vec v$ in the rotated coor
     \right)
     } \uvecj'.
 \end{equation}
-Finally we then just have to rotate back to our original coordinates. 
-
-If total internal reflection is determined to happen, then we simply need to reflect the ray at the point of intersection.
+Finally we then just have to rotate back to our original coordinates. If total internal reflection is determined to happen, then we simply need to reflect the ray at the point of intersection.
 
 \subsubsection{New method}
-The old method calls trigonometric functions including \texttt{sin()}, \texttt{cos()} and \texttt{atan2()}. If we were working in three dimensions we could write,
+The old method calls trigonometric functions including \texttt{sin()} and \texttt{atan2()}. If we were working in three dimensions we could write,
 \begin{equation}
 \label{eq:refraction_cross_prod}
     n_\mrm{i} \vec{\hat n} \times \vec{v}_\mrm{i} = n_\mrm{f} \vec{\hat n} \times \vec{v}_\mrm{f},
@@ -478,13 +473,13 @@ which have the solutions,
     v_\mrm{fy} &= n_x \gamma \pm n_y \sqrt{1-\gamma^2}.
 \end{align}
 
-Now consider when the discriminant $1 - \gamma^2$ is less than zero. occurs for $\gamma > 1$ and $\gamma < -1$. Taking the magnitude of Eq.~\ref{eq:refraction_cross_prod}, $\gamma$ can be written in terms of the angle the incident ray makes to the normal of the plane as $\gamma = \frac{n_\mrm{i}}{n_\mrm{f}} \sin \theta$. We therefore do not have a real solution for $\vec{v}_\mrm{f}$ when,
+Now consider when the discriminant $1 - \gamma^2$ is less than zero. This occurs for $\gamma > 1$ and $\gamma < -1$. Taking the magnitude of Eq.~\ref{eq:refraction_cross_prod}, $\gamma$ can be written in terms of the angle the incident ray makes to the normal of the plane as $\gamma = \frac{n_\mrm{i}}{n_\mrm{f}} \sin \theta$. We therefore do not have a real solution for $\vec{v}_\mrm{f}$ when,
 \begin{align}
     \sin \theta > \frac{n_\mrm{f}}{n_\mrm{i}} \quad \mathrm{or} \quad \sin \theta < -\frac{n_\mrm{f}}{n_\mrm{i}}.
 \end{align}
 This corresponds to total internal reflection occurring. Therefore if the discriminant $1 - \gamma^2 < 0$, we should perform reflection instead of refraction.
 
-Now we determine how to assign $n_\mrm{i}$ and $n_\mrm{f}$ from the $n_1$ and $n_2$ parameters of the plane. The definition of $\vec{\hat{n}}$ in Eq.~\ref{eq:normal_vec_def} means $\vec{\hat{n}}$ points to the `left' of the plane when viewed from its start point towards its end. Therefore if $\vec{v_\mrm{i}} \cdot \vec{\hat{n}} > 0$ the ray originates on the `right' of the plane Therefore we have
+Now we determine how to assign $n_\mrm{i}$ and $n_\mrm{f}$ from the $n_1$ and $n_2$ parameters of the plane. The definition of $\vec{\hat{n}}$ in Eq.~\ref{eq:normal_vec_def} means $\vec{\hat{n}}$ points to the `left' of the plane when viewed from its start point towards its end. We can determine which side the ray originates on by considering $\vec{v_\mrm{i}} \cdot \vec{\hat{n}}$,
 \begin{align}
     \vec{v_\mrm{i}} \cdot \vec{\hat{n}} 
     &>
@@ -532,14 +527,26 @@ Choosing mixed solutions is only correctly normalised if the second term is zero
 
 $4 n_x n_y \gamma \sqrt{1-\gamma^2}$ is also zero when $\gamma=0$. Remembering $\gamma = \frac{n_\mrm{i}}{n_\mrm{f}} |\vec{\hat{n}} \times \vec{v}_\mrm{i}|$, $\gamma=0$ implies the ray travels perpendicular to the plane initially and so we must have $\vec{v}_\mrm{f} = \pm \vec{\hat{n}}$. Hence the solution we seek involves either both positive or both negative.
 
-To distinguish which of the solutions is the one we are after, we note the sign of $\vec{v} \cdot \vec{\hat{D}}$ and $\vec{v} \cdot \vec{\hat{n}}$ must be unchanged after refraction.
+This leaves us with two possible solutions. To distinguish which of the solutions is the one we are after, we note the sign of $\vec{v} \cdot \vec{\hat{D}}$ and $\vec{v} \cdot \vec{\hat{n}}$ must be unchanged after refraction.
 
 \subsection{Refraction at a spherical surface}
-At a spherical surface we already have a method for determining where a ray intersects the surface. The angle we must rotate through is given again by Eq.~\ref{eq:alpha_sph},
+At a spherical surface we already have a method for determining where a ray intersects the surface.
+\subsubsection{Old method}
+The angle we must rotate through is given again by Eq.~\ref{eq:alpha_sph},
 \begin{equation}
     \alpha = t' - \frac{\pi}{2}.
 \end{equation}
-Other than the different equation for computing $\alpha$, the method should be very similar to that of a plane.
+Other than the different equation for computing $\alpha$, the method is very similar to that of a plane.
+
+\subsubsection{New method}
+The new method is very similar to that of a plane, but the definitions of $\vec{\hat{n}}$ and $\vec{\hat{D}}$ are different. We take $\vec{\hat{n}}$ to be the `radial' unit vector of the circle. There is no need to call any trigonometric functions as we know the point of intersection, the circle's centre and radius. In order to be consistent with Eq.~\ref{eq:normal_vec_def}, $\vec{\hat{D}}$ must be,
+\begin{equation}
+    \vec{\hat{D}}
+    =
+    n_y \uveci
+    -
+    n_x \uvecj.
+\end{equation}
 
 \section{Screen}
 We also include a component intended to represent a screen. When a ray hits a screen, we stop tracing it any further. We will implement only a planar screen named \texttt{Screen\_Plane}.
