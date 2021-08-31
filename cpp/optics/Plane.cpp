@@ -13,7 +13,7 @@ Plane::Plane(arr start, arr end)
 
 double Plane::test_hit(Ray* ry) const
 {
-	double t{}, tp{};
+	double t, tp;
 
 	std::tie(t, tp) = solve(ry->pos.back(), ry->v);
 
@@ -31,12 +31,10 @@ void Plane::print(std::ostream & os) const
 
 std::tuple<double, double> Plane::solve(const arr &r, const arr &v) const
 {
-	const std::tuple<double, double> retError = { -1.0, 0.0 };  // If there 
-
 	double bottom{ v[0] * (start[1] - end[1]) + v[1] * (end[0] - start[0]) };  // denominator of t expression
 
-	if (is_close(bottom, 0))  // Check lines aren't parallel
-		return retError;
+	if (is_close(bottom, 0.0))  // Check lines aren't parallel
+		return { -1.0, 0.0 };
 
 	double t{ r[0] * (end[1] - start[1]) - start[0] * end[1] + end[0] * start[1] + r[1] * (start[0] - end[0]) };
 
