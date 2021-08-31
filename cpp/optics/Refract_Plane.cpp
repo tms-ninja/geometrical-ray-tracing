@@ -1,18 +1,17 @@
 #include "Refract_Plane.h"
 
 Refract_Plane::Refract_Plane(arr start, arr end, double n1, double n2)
-	:	Plane(start, end), n1(n1), n2(n2)
+	: Plane(start, end), n1(n1), n2(n2)
 {
 }
 
 void Refract_Plane::hit(Ray* ry, int n) const
 {
 	arr newPos;
-	arr newV;
-
-	double t{}, tp{};
 	arr &r = ry->pos.back();
 	arr &v = ry->v;
+
+	double t, tp;
 
 	std::tie(t, tp) = solve(r, v);
 
@@ -20,54 +19,59 @@ void Refract_Plane::hit(Ray* ry, int n) const
 	for (int i = 0; i < 2; ++i)
 		newPos[i] = (r[i] + v[i] * t);
 
-	// Compute new direction, first compute the angle of the plane
-	double angle{ atan2(end[1] - start[1], end[0] - start[0]) };
+	ry->pos.push_back(newPos);
 
-	newV = rotate(v, angle);
+	// Now compute new direction, first determine order of refractive indices
+	double ni, nf;
+	arr n_vec = { -D[1], D[0] };  // normal vector
 
-	// angle of incidence
-	double thetaI{ M_PI_2 - atan2(newV[1], newV[0]) };
+	double vi_dot_n{ v[0] * n_vec[0] + v[1] * n_vec[1] };
 
-	// Now we need to work out the initial and final refractive indices
-	arr startRot{ rotate(newPos, angle) };
-	arr rRot{ rotate(r, angle) };
-	bool above{ false };
-	double ni, nf;  // initial and final refractive indices
-
-	if (rRot[1] >= startRot[1])
-		above = true;
-
-	if (above)
-	{
-		ni = n1;
-		nf = n2;
-	}
-	else
+	if (vi_dot_n > 0.0)
 	{
 		ni = n2;
 		nf = n1;
 	}
-	
-	// Value of sin(thetaF) from Snell's law
-	double s_thetaF{ ni*sin(thetaI) / nf };
-
-	if (abs(s_thetaF) > 1)  // Check for total internal reflection
-	{
-		newV[1] = -newV[1];
-	}
 	else
 	{
-		double thetaF{ asin(s_thetaF) };
-
-		newV[0] = sin(thetaF);
-
-		if (above)
-			newV[1] = -cos(thetaF);
-		else
-			newV[1] = cos(thetaF);
+		ni = n1;
+		nf = n2;
 	}
 
-	ry->pos.push_back(newPos);
-	ry->v = rotate(newV, -angle);
+	double gamma{ (n_vec[0] * v[1] - n_vec[1] * v[0])*ni / nf };
+	double disc{ 1 - gamma * gamma };
+
+	// If discriminant is less than zero, we have reflection instead of refraction
+	if (disc < 0.0)
+	{
+		v[0] -= 2 * vi_dot_n*n_vec[0];
+		v[1] -= 2 * vi_dot_n*n_vec[1];
+
+		return;
+	}
+
+	// we are performing refraction
+	disc = sqrt(disc);
+
+	// Either side of +/- of resulting speeds
+	double disc_term[2];
+
+	disc_term[0] = n_vec[0] * disc;
+	disc_term[1] = n_vec[1] * disc;
+
+	double vi_dot_D{ v[0] * D[0] + v[1] * D[1] };
+
+	v[0] = -n_vec[1] * gamma + disc_term[0];
+	v[1] = n_vec[0] * gamma + disc_term[1];
+
+	double vf_dot_n{ v[0] * n_vec[0] + v[1] * n_vec[1] };
+	double vf_dot_D{ v[0] * D[0] + v[1] * D[1] };
+
+
+	if (signbit(vi_dot_n) != signbit(vf_dot_n) || signbit(vi_dot_D) != signbit(vf_dot_D))
+	{
+		v[0] -= 2 * disc_term[0];
+		v[1] -= 2 * disc_term[1];
+	}
 }
 
