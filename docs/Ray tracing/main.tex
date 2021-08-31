@@ -34,6 +34,9 @@
 % differential operator
 \newcommand{\diff}{\textnormal{d}}
 
+% remove math formatting
+\newcommand{\mrm}[1]{\mathrm{#1}}
+
 
 \title{Ray tracing}
 \author{Tom Spencer}
@@ -183,6 +186,21 @@ We can derive where the ray interests as obeying,
     \frac{x_{0} \left(- y_{1} + y_{2}\right) - x_{1} y_{2} + x_{2} y_{1} + y_{0} \left(x_{1} - x_{2}\right)}{v_{x} \left(y_{1} - y_{2}\right) + v_{y} \left(- x_{1} + x_{2}\right)}
 \end{align}
 Remember we require both a unique solution for $t$ to exist and $0 \le t' \le 1$ for it to intersect the plane. We have to check the denominator is not zero in both cases.
+
+Furthermore, we define two unit vectors. We define $\vec{\hat{D}}$ as a unit vector pointing along the plane from its start point to its end point,
+\begin{equation}
+    \vec{\hat{D}}
+    =
+    \frac{\vec{r}_2 - \vec{r}_1}{|\vec{r}_2 - \vec{r}_1|}.
+\end{equation}
+From this we define the normal unit vector $\vec{\hat n}$ as,
+\begin{equation}
+\label{eq:normal_vec_def}
+    \vec{\hat n}
+    =
+    - D_y \uveci + D_x \uvecj,
+\end{equation}
+where $D_x$ and $D_y$ are the x and y components of $\vec{\hat {D}}$ respectively.
 
 \subsection{Ray intersection with a spherical surface}
 We consider a circle with centre $(x_l, y_l)$ and radius $R$. In general, only a portion of its surface is modelled with $\theta_i \le t' \le \theta_f$. Here $t'$ is a parameter in the range $0 \le t' < 2\pi$ that takes the place of the polar angle. Its surface can be described by,
@@ -432,6 +450,89 @@ where $\theta'$ is the angle of $\vec{v}'$, that is $\vec v$ in the rotated coor
 Finally we then just have to rotate back to our original coordinates. 
 
 If total internal reflection is determined to happen, then we simply need to reflect the ray at the point of intersection.
+
+\subsubsection{New method}
+The old method calls trigonometric functions including \texttt{sin()}, \texttt{cos()} and \texttt{atan2()}. If we were working in three dimensions we could write,
+\begin{equation}
+\label{eq:refraction_cross_prod}
+    n_\mrm{i} \vec{\hat n} \times \vec{v}_\mrm{i} = n_\mrm{f} \vec{\hat n} \times \vec{v}_\mrm{f},
+\end{equation}
+which produces Snell's law when we take it's magnitude. Working in the xy plane, Eq.~\ref{eq:refraction_cross_prod} produces,
+\begin{equation}
+    n_\mrm{i} (n_x v_\mrm{iy} - n_y v_\mrm{ix})
+    =
+    n_\mrm{f} (n_x v_\mrm{fy} - n_y v_\mrm{fx}).
+\end{equation}
+Imposing the condition $|\vec{v}_\mrm{f}| = 1$ and defining $\gamma = \frac{n_\mrm{i}}{n_\mrm{f}} (n_x v_\mrm{iy} - n_y v_\mrm{ix})$ produces the simultaneous equations,
+\begin{align}
+    n_x v_\mrm{fy} - n_y v_\mrm{fx}
+    &=
+    \gamma, \\
+    v_\mrm{fx}^2 + v_\mrm{fy}^2 = 1,
+\end{align}
+which have the solutions,
+\begin{align}
+\label{eq:refr_v_x}
+    v_\mrm{fx} &= -n_y \gamma \pm n_x \sqrt{1-\gamma^2}, \\
+\label{eq:refr_v_y}
+    v_\mrm{fy} &= n_x \gamma \pm n_y \sqrt{1-\gamma^2}.
+\end{align}
+
+Now consider when the discriminant $1 - \gamma^2$ is less than zero. occurs for $\gamma > 1$ and $\gamma < -1$. Taking the magnitude of Eq.~\ref{eq:refraction_cross_prod}, $\gamma$ can be written in terms of the angle the incident ray makes to the normal of the plane as $\gamma = \frac{n_\mrm{i}}{n_\mrm{f}} \sin \theta$. We therefore do not have a real solution for $\vec{v}_\mrm{f}$ when,
+\begin{align}
+    \sin \theta > \frac{n_\mrm{f}}{n_\mrm{i}} \quad \mathrm{or} \quad \sin \theta < -\frac{n_\mrm{f}}{n_\mrm{i}}.
+\end{align}
+This corresponds to total internal reflection occurring. Therefore if the discriminant $1 - \gamma^2 < 0$, we should perform reflection instead of refraction.
+
+Now we determine how to assign $n_\mrm{i}$ and $n_\mrm{f}$ from the $n_1$ and $n_2$ parameters of the plane. The definition of $\vec{\hat{n}}$ in Eq.~\ref{eq:normal_vec_def} means $\vec{\hat{n}}$ points to the `left' of the plane when viewed from its start point towards its end. Therefore if $\vec{v_\mrm{i}} \cdot \vec{\hat{n}} > 0$ the ray originates on the `right' of the plane Therefore we have
+\begin{align}
+    \vec{v_\mrm{i}} \cdot \vec{\hat{n}} 
+    &>
+    0
+    \implies
+    n_\mrm{i} = n_2, n_\mrm{f} = n_1, \\
+    \vec{v_\mrm{i}} \cdot \vec{\hat{n}} 
+    &<
+    0
+    \implies
+    n_\mrm{i} = n_1, n_\mrm{f} = n_2.
+\end{align}
+This leaves the case of $\vec{v_\mrm{i}} \cdot \vec{\hat{n}} = 0$ where the ray travels along the plane. This should be considered in future.
+
+We must still determine which of the possible solutions in Eqs.~\ref{eq:refr_v_x} \& \ref{eq:refr_v_y} are physical. We start by checking $\vec{v}_\mrm{f}$ is normalised. Taking the same sign produces,
+\begin{align}
+    |\vec{v}_\mrm{f}|^2
+    &=
+    (-n_y \gamma \pm n_x \sqrt{1-\gamma^2})^2
+    +
+    (n_x \gamma \pm n_y \sqrt{1-\gamma^2})^2, \\
+    &=
+    (n_x^2 + n_y^2)\gamma^2 + (n_x^2 + n_y^2)(1-\gamma^2), \\
+    &=
+    n_x^2 + n_y^2, \\
+    &= 1.
+\end{align}
+Therefore choosing both positive or both negative will always be correctly normalised. If we choose mixed signs, the result is,
+\begin{align}
+    |\vec{v}_\mrm{f}|^2
+    &=
+    (-n_y \gamma \mp n_x \sqrt{1-\gamma^2})^2
+    +
+    (n_x \gamma \pm n_y \sqrt{1-\gamma^2})^2, \\
+    &=
+    (n_x^2 + n_y^2)\gamma^2 + (n_x^2 + n_y^2)(1-\gamma^2)
+    \pm
+    4 n_x n_y \gamma \sqrt{1-\gamma^2}, \\
+    &=
+    1
+    \pm
+    4 n_x n_y \gamma \sqrt{1-\gamma^2}.
+\end{align}
+Choosing mixed solutions is only correctly normalised if the second term is zero. It is zero if $n_x=0$, or $n_y=0$ or $\gamma=1$. These three cases cause the second term in Eqs.~\ref{eq:refr_v_x} \& \ref{eq:refr_v_y} to be zero meaning the mixed sign solutions reduce to the same sign solutions. We do not need to consider these cases any further.
+
+$4 n_x n_y \gamma \sqrt{1-\gamma^2}$ is also zero when $\gamma=0$. Remembering $\gamma = \frac{n_\mrm{i}}{n_\mrm{f}} |\vec{\hat{n}} \times \vec{v}_\mrm{i}|$, $\gamma=0$ implies the ray travels perpendicular to the plane initially and so we must have $\vec{v}_\mrm{f} = \pm \vec{\hat{n}}$. Hence the solution we seek involves either both positive or both negative.
+
+To distinguish which of the solutions is the one we are after, we note the sign of $\vec{v} \cdot \vec{\hat{D}}$ and $\vec{v} \cdot \vec{\hat{n}}$ must be unchanged after refraction.
 
 \subsection{Refraction at a spherical surface}
 At a spherical surface we already have a method for determining where a ray intersects the surface. The angle we must rotate through is given again by Eq.~\ref{eq:alpha_sph},
