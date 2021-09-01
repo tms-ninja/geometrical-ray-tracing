@@ -3,11 +3,37 @@
 Spherical::Spherical(arr centre, double R, double start, double end)
 	: centre(centre), R(R), start(start), end(end)
 {
+	//start_p = { centre[0] + R * cos(start), centre[1] + R * sin(start) };
+	end_p = { centre[0] + R * cos(end), centre[1] + R * sin(end) };
+
+	end_p = rotate(end_p, start);
 }
 
 double Spherical::test_hit(Ray* ry) const
 {
 	return solve(ry->pos.back(), ry->v);
+}
+
+bool Spherical::in_range(arr & p) const
+{
+	// Determines if the point p satisfies start <= atan2(p) <= end
+	arr temp{ p[0] - centre[0], p[1] - centre[1] };
+
+	arr p_rot{ rotate(temp, start) };
+
+	// end point is above rotated y axis
+	if (end_p[1] >= 0.0)
+	{
+		return  p_rot[1] >= 0.0 && end_p[0] <= p_rot[0];
+	}
+	
+	// now know y of end point < 0.0
+	// check if rotated p is above rotated y axis, all good
+	if (p_rot[1] >= 0.0)
+		return true;
+	
+	// both below rotated y axis
+	return p_rot[0] <= end_p[0];
 }
 
 double Spherical::solve(const arr & r, const arr & v) const
@@ -38,13 +64,8 @@ double Spherical::solve(const arr & r, const arr & v) const
 		{
 			pos = { r[0] + v[0] * t, r[1] + v[1] * t };
 
-			double tp{ atan2(pos[1] - centre[1], pos[0] - centre[0]) };
-
-			// atan2() returns in range -pi to pi
-			if (tp < 0.0 && start >= 0.0)
-				tp += 2 * M_PI;
-
-			if (start <= tp && tp <= end)  // Check it hits exisitng part of component
+			// Avoid call to atan2() as we don't need tp, just if it's in range
+			if (in_range(pos))
 			{
 				found_sol = true;
 				best_t = t;
