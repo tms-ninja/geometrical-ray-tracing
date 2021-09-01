@@ -10,9 +10,9 @@ void Refract_Sph::hit(Ray* ry, int n) const
 	arr &r{ ry->pos.back() };
 	arr &v{ ry->v };
 
-	double t, tp;
+	double t;
 
-	std::tie(t, tp) = solve(r, v);
+	t = solve(r, v);
 
 	arr newPos;
 

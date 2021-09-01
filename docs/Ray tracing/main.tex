@@ -253,6 +253,51 @@ where we have uses the fact $\vec{v}$ is normalised and defined $\gamma = v_x \D
 \end{equation}
 We can the compute the position of intersection, if there is one, and then use \texttt{atan2()} to compute $t'$. Trigonometric functions are only called when the ray has intersections in the future ($t>0$). By comparison, $\arccos$ is called for all possible intersections when solving for $t'$. $\sin$ may also be called there could be spurious $t'$ solutions that don't lie along the ray's path, at least using the method above. This leads to solving for $t$ being a more efficient method.
 
+If we do not need the value of $t'$, we can avoid the call to \texttt{atan2()} and improve performance further. The new (non-rotation) methods for performing rotation and refraction do not require $t'$, allowing for a reasonable improvement. First consider the start and end points of the arc,
+\begin{align}
+    r_\mrm{start} = R \cos \theta_i \uveci + R \sin \theta_i \, \uvecj,
+    &&
+    r_\mrm{end} = R \cos \theta_f \uveci + R \sin \theta_f \uvecj.
+\end{align}
+We can then rotate our coordinate system clockwise by $\theta_i$, with coordinates ($x'$, $y'$). We can test if the intersection point, $\vec{P}$, lies on the arc by comparing its components in this coordinate system to that of $\vec{r}_\mrm{end}$. There are two cases as illustrated in Fig.~\ref{fig:avoind_atan2}.
+
+In the first case, we have $r'_{\mrm{end},y} \geq 0$. If $P_y \geq 0$ and $P_x \geq r'_{\mrm{end},x}$ then the ray does intersect the arc, otherwise it does not.
+
+In the second case, we have $r'_{\mrm{end},y} < 0$. $P_y \geq 0$ is sufficient to know the ray does intersect the arc. If $P_y < 0$, we must have 
+$P_x \leq r'_{\mrm{end},x}$ for intersection.
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \begin{tikzpicture}
+            \draw (0, 0) circle (3);
+            \draw (-2.4, 1.8) -- (0, 0) -- (3, 0);
+            
+            % centre of circle
+            \filldraw[black] (0, 0) circle (2pt);
+            \filldraw[black] (3, 0) circle (2pt) node[anchor=west] {Start};
+            \filldraw[black] (-2.4, 1.8) circle (2pt) node[anchor=east] {End};
+        \end{tikzpicture}
+     \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \begin{tikzpicture}
+            \draw (0, 0) circle (3);
+            \draw (-2.4, -1.8) -- (0, 0) -- (3, 0);
+            
+            % centre of circle
+            \filldraw[black] (0, 0) circle (2pt);
+            \filldraw[black] (3, 0) circle (2pt) node[anchor=west] {Start};
+            \filldraw[black] (-2.4, -1.8) circle (2pt) node[anchor=east] {End};
+        \end{tikzpicture}
+     \end{subfigure}
+    \caption{The two cases to consider when testing if a point is between $\theta_i$ and $\theta_f$. }
+    \label{fig:avoind_atan2}
+\end{figure}
+
+
 \subsubsection{Solving for $t'$}
 This section is kept for reference with earlier versions of the code. Eliminating $t$ from Eqs.~\ref{eq:sph_simulataneous_1} \& \ref{eq:sph_simulataneous_2} produces,
 \begin{equation}
@@ -327,11 +372,11 @@ We will first provide four basic components from which most other components we 
 \subsection{Plane mirrors}
 We define a plane mirror as starting at $\vec{r}_1$ and ending at $\vec{r}_2$. It is reflecting on both sides and is described by,
 \begin{equation}
-    \vec{x}_\mathrm{m}(t')
+    \vec{r}_\mathrm{m}(t')
     =
-    \vec{x}_1 + (\vec{x}_2 - \vec{x}_1) t',
+    \vec{r}_1 + (\vec{r}_2 - \vec{r}_1) t',
 \end{equation}
-where $0 \le t' \le 1$ for a point to be on the mirror. Once we have determined that a ray will intersect with a plane mirror, we need to determine how the ray will reflect. We can compute the new starting position for the ray using the standard equation describing the ray as we have $t$. To compute the new direction, we have that the angle of incidence is equal to the angle of reflection.
+where $0 \le t' \le 1$ for a point to be on the mirror. Once we have determined that a ray will intersect with a plane mirror, we need to determine how the ray will reflect. We can compute the new starting position for the ray using the standard equation describing the ray as we have $t$. To compute the new direction, we have that the angle of incidence is equal to the angle of reflection. We have two methods: the rotation method and vector method. Originally the code used the rotation method and its details are kept for reference. The vector method is now used as it is faster.
 
 \subsubsection{Rotation method}
 To find the new velocity, we compute the angle, $\alpha$, the plane makes with the $x$ axis,
@@ -342,7 +387,7 @@ To find the new velocity, we compute the angle, $\alpha$, the plane makes with t
     \frac{y_2 - y_1}{x_2 - x_1}.
 \end{equation}
 
-Now we must be careful with the cases of $\alpha = \frac{\pi}{2}, \frac{3\pi}{2}$ since the tangent is infinite in these cases. Moreover as tangent is $\pi$ periodic, $\arctan$ will give the correct answer up to $\pm \pi$. Fortunately \texttt{numpy} has the function \texttt{atan2(y, x)} which specifically accounts for these two cases, and also will always return the correct sign. In C++, the \texttt{cmath} header provides this function.
+Now we must be careful with the cases of $\alpha = \frac{\pi}{2}, \frac{3\pi}{2}$ since the tangent is infinite in these cases. Moreover as tangent is $\pi$ periodic, $\arctan$ will give the correct answer up to $\pm \pi$. Fortunately \texttt{numpy} has the function \texttt{arctan2(y, x)} which specifically accounts for these two cases, and also will always return the correct sign. In C++, the \texttt{cmath} header provides \texttt{atan2()}.
 
 We can now perform the reflection by rotating our coordinates by $\alpha$ to coordinates $(x', y')$. In these coordinates the ray is normal to the plane so the reflection is then simply a case of negating the $y'$ component. The standard rotation matrix to rotate a point anticlockwise from $(x, y)$ to $x', y')$ by $\theta$ is,
 \begin{equation}
@@ -366,22 +411,32 @@ Once we've negated the $y'$ component, we can then rotate back using $R(-\theta)
 The disadvantage of this method is performance. It involves call to trigonometric functions which are slow, especially \texttt{atan2(y, x)}. Fortunately we can avoid this.
 
 \subsubsection{Vector method}
-We don't really need to rotate the plane each time we perform a reflection. All we really want to do is reflect the component of $\vec{v}$. Define $\vec{\hat{D}}$ as the unit vector pointing along the plane from its start point to its end point,
-\begin{equation}
-    \vec{\hat{D}}
-    =
-    \frac{\vec{x}_2 - \vec{x}_1}{|\vec{x}_2 - \vec{x}_1|}.
-\end{equation}
-The normalisation of $\vec{\hat{D}}$ does involve square rooting, but it only needs to be computed once.
-The component of $\vec{v}$ perpendicular plane is $\vec{v} - (\vec{v} \cdot \vec{\hat{D}}) \vec{\hat{D}}$ and so the reflections ca be performed as,
+We don't really need to rotate the plane each time we perform a reflection. All we really want to do is reflect the component of $\vec{v}$. We can make use of $\vec{\hat{D}}$, the normal vector that points along the plane. The normalisation of $\vec{\hat{D}}$ does involve square rooting, but it only needs to be computed once. The component of $\vec{v}$ perpendicular plane is $\vec{v} - (\vec{v} \cdot \vec{\hat{D}}) \vec{\hat{D}}$ and so the reflections ca be performed as,
 \begin{equation}
     \vec{v}
     \rightarrow
     (\vec{v} \cdot \vec{\hat{D}}) \vec{\hat{D}} - \vec{v}.
 \end{equation}
+We could use $\vec{\hat{n}}$ instead and derive a similar formula.
+
+A disadvantage of this method is $|\vec{v}|$ drifts from 1 over time. As all the maths assumes $|\vec{v}|=1$, this quickly becomes catastrophic after as little as 15-20 interactions. This is easily resolved by re-normalising $\vec{v}$ after each interaction. Since we expect $|v-1| << 1$, we can avoid calls to \texttt{hypot()} by using a Taylor expansion. Denoting $S=v_x^2 + v_y^2$, expanding around $S=1$ produces,
+\begin{equation}
+    \frac{1}{\sqrt S}
+    =
+    1
+    -\frac{1}{2}(S-1)
+    +
+    \mathcal{O} \left(
+    (S-1)^2
+    \right).
+\end{equation}
+Working to $\mathcal{O} \left(S-1\right)$ should be sufficient.
 
 \subsection{Spherical mirror}
-To reflect at a spherical surface, we follow a broadly similar method to that of a planar surface. First we determine the $t, t'$ values where the ray intersects the surface. The intersection location is given by,
+To reflect at a spherical surface, we follow a broadly similar method to that of a planar surface. 
+
+\subsubsection{Old method}
+First we determine the $t, t'$ values where the ray intersects the surface. The intersection location is given by,
 \begin{align}
     x
     &=
@@ -401,6 +456,14 @@ We must then determine the angle $\alpha$ as before. We can easily compute $\alp
 
 After that it is identical to the plane mirror. We use Eq.~\ref{eq:rotation_matrix} to rotate the axis by $\alpha$, negate the $y'$ component, and finally rotate back to get the new direction.
 
+\subsubsection{New method}
+The new method applies a similar method to the vector method for a plane. We use the normal vector of the circle to write the reflections as,
+\begin{equation}
+    \vec{v}_f 
+    =
+    \vec{v}_i - 2 (\vec{v}_i \cdot \vec{\hat{n}}) \vec{\hat{n}}.
+\end{equation}
+
 \section{Refracting basic components}
 Refraction is based on Snell's law, that the angle of incidence, $\theta_i$, and the angle of refraction, $\theta_f$, obey,
 \begin{equation}
@@ -414,18 +477,15 @@ where both angles are measured from the normal of the surface. $n_i$ and $n_f$ a
     =
     \frac{n_i \sin \theta_i}{n_f} > 1.
 \end{equation}
-The value of $\theta_i$ for which $\sin{\theta_f} = 1$ is known as the critical angle. It is therefore,
+The value of $\theta_i$ for which $\sin{\theta_f} = 1$ is known as the critical angle. It is,
 \begin{equation}
     \theta_c
     =
     \arcsin{\frac{n_f}{n_i}}.
 \end{equation}
-So once we compute the angle of incidence we ought to compute the critical angle to check if we will actually have total internal reflection.
-
-We will also need some way of describing the refractive index on each side. We can construct a vector normal to the surface that points in a consistent direction.
 
 \subsection{Refraction at a planar surface}
-Once again we want to rotate our system so that it is convenient. We will rotate our coordinates round by $\alpha$ (angle of the plane) so that normal lies along the y-axis. We then have,
+We define the refractive indices as $n_1$ and $n_2$, with $n_1$ on the side $\vec{\hat{n}}$ points towards. In our old method, we rotated our system as it was convenient, though slower. We rotate our coordinates round by $\alpha$ (the angle of the plane) so that the normal lies along the y-axis. We then have,
 \begin{equation}
     \theta_i 
     =
@@ -447,12 +507,10 @@ where $\theta'$ is the angle of $\vec{v}'$, that is $\vec v$ in the rotated coor
     \right)
     } \uvecj'.
 \end{equation}
-Finally we then just have to rotate back to our original coordinates. 
-
-If total internal reflection is determined to happen, then we simply need to reflect the ray at the point of intersection.
+Finally we then just have to rotate back to our original coordinates. If total internal reflection is determined to happen, then we simply need to reflect the ray at the point of intersection.
 
 \subsubsection{New method}
-The old method calls trigonometric functions including \texttt{sin()}, \texttt{cos()} and \texttt{atan2()}. If we were working in three dimensions we could write,
+The old method calls trigonometric functions including \texttt{sin()} and \texttt{atan2()}. If we were working in three dimensions we could write,
 \begin{equation}
 \label{eq:refraction_cross_prod}
     n_\mrm{i} \vec{\hat n} \times \vec{v}_\mrm{i} = n_\mrm{f} \vec{\hat n} \times \vec{v}_\mrm{f},
@@ -478,13 +536,13 @@ which have the solutions,
     v_\mrm{fy} &= n_x \gamma \pm n_y \sqrt{1-\gamma^2}.
 \end{align}
 
-Now consider when the discriminant $1 - \gamma^2$ is less than zero. occurs for $\gamma > 1$ and $\gamma < -1$. Taking the magnitude of Eq.~\ref{eq:refraction_cross_prod}, $\gamma$ can be written in terms of the angle the incident ray makes to the normal of the plane as $\gamma = \frac{n_\mrm{i}}{n_\mrm{f}} \sin \theta$. We therefore do not have a real solution for $\vec{v}_\mrm{f}$ when,
+Now consider when the discriminant $1 - \gamma^2$ is less than zero. This occurs for $\gamma > 1$ and $\gamma < -1$. Taking the magnitude of Eq.~\ref{eq:refraction_cross_prod}, $\gamma$ can be written in terms of the angle the incident ray makes to the normal of the plane as $\gamma = \frac{n_\mrm{i}}{n_\mrm{f}} \sin \theta$. We therefore do not have a real solution for $\vec{v}_\mrm{f}$ when,
 \begin{align}
     \sin \theta > \frac{n_\mrm{f}}{n_\mrm{i}} \quad \mathrm{or} \quad \sin \theta < -\frac{n_\mrm{f}}{n_\mrm{i}}.
 \end{align}
 This corresponds to total internal reflection occurring. Therefore if the discriminant $1 - \gamma^2 < 0$, we should perform reflection instead of refraction.
 
-Now we determine how to assign $n_\mrm{i}$ and $n_\mrm{f}$ from the $n_1$ and $n_2$ parameters of the plane. The definition of $\vec{\hat{n}}$ in Eq.~\ref{eq:normal_vec_def} means $\vec{\hat{n}}$ points to the `left' of the plane when viewed from its start point towards its end. Therefore if $\vec{v_\mrm{i}} \cdot \vec{\hat{n}} > 0$ the ray originates on the `right' of the plane Therefore we have
+Now we determine how to assign $n_\mrm{i}$ and $n_\mrm{f}$ from the $n_1$ and $n_2$ parameters of the plane. The definition of $\vec{\hat{n}}$ in Eq.~\ref{eq:normal_vec_def} means $\vec{\hat{n}}$ points to the `left' of the plane when viewed from its start point towards its end. We can determine which side the ray originates on by considering $\vec{v_\mrm{i}} \cdot \vec{\hat{n}}$,
 \begin{align}
     \vec{v_\mrm{i}} \cdot \vec{\hat{n}} 
     &>
@@ -532,14 +590,26 @@ Choosing mixed solutions is only correctly normalised if the second term is zero
 
 $4 n_x n_y \gamma \sqrt{1-\gamma^2}$ is also zero when $\gamma=0$. Remembering $\gamma = \frac{n_\mrm{i}}{n_\mrm{f}} |\vec{\hat{n}} \times \vec{v}_\mrm{i}|$, $\gamma=0$ implies the ray travels perpendicular to the plane initially and so we must have $\vec{v}_\mrm{f} = \pm \vec{\hat{n}}$. Hence the solution we seek involves either both positive or both negative.
 
-To distinguish which of the solutions is the one we are after, we note the sign of $\vec{v} \cdot \vec{\hat{D}}$ and $\vec{v} \cdot \vec{\hat{n}}$ must be unchanged after refraction.
+This leaves us with two possible solutions. To distinguish which of the solutions is the one we are after, we note the sign of $\vec{v} \cdot \vec{\hat{D}}$ and $\vec{v} \cdot \vec{\hat{n}}$ must be unchanged after refraction.
 
 \subsection{Refraction at a spherical surface}
-At a spherical surface we already have a method for determining where a ray intersects the surface. The angle we must rotate through is given again by Eq.~\ref{eq:alpha_sph},
+At a spherical surface we already have a method for determining where a ray intersects the surface.
+\subsubsection{Old method}
+The angle we must rotate through is given again by Eq.~\ref{eq:alpha_sph},
 \begin{equation}
     \alpha = t' - \frac{\pi}{2}.
 \end{equation}
-Other than the different equation for computing $\alpha$, the method should be very similar to that of a plane.
+Other than the different equation for computing $\alpha$, the method is very similar to that of a plane.
+
+\subsubsection{New method}
+The new method is very similar to that of a plane, but the definitions of $\vec{\hat{n}}$ and $\vec{\hat{D}}$ are different. We take $\vec{\hat{n}}$ to be the `radial' unit vector of the circle. There is no need to call any trigonometric functions as we know the point of intersection, the circle's centre and radius. In order to be consistent with Eq.~\ref{eq:normal_vec_def}, $\vec{\hat{D}}$ must be,
+\begin{equation}
+    \vec{\hat{D}}
+    =
+    n_y \uveci
+    -
+    n_x \uvecj.
+\end{equation}
 
 \section{Screen}
 We also include a component intended to represent a screen. When a ray hits a screen, we stop tracing it any further. We will implement only a planar screen named \texttt{Screen\_Plane}.

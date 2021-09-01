@@ -1,7 +1,7 @@
 #include "Mirror_Sph.h"
 
 Mirror_Sph::Mirror_Sph(arr centre, double R, double start, double end)
-	:	Spherical(centre, R, start, end)
+	: Spherical(centre, R, start, end)
 {
 }
 
@@ -10,9 +10,9 @@ void Mirror_Sph::hit(Ray* ry, int n) const
 	arr &r{ ry->pos.back() };
 	arr &v{ ry->v };
 
-	double t, tp;
+	double t;
 
-	std::tie(t, tp) = solve(r, v);
+	t = solve(r, v);
 
 	arr newPos;
 
@@ -23,15 +23,11 @@ void Mirror_Sph::hit(Ray* ry, int n) const
 	ry->pos.push_back(newPos);
 
 	// Compute new direction
-	double angle{ tp - M_PI_2 };
+	arr n_vec = { (newPos[0] - centre[0]) / R, (newPos[1] - centre[1]) / R };
 
-	double c_theta{ cos(angle) }, s_theta{ sin(angle) };
+	double v_dot_n{ v[0] * n_vec[0] + v[1] * n_vec[1] };
 
-	double new_v_x{ c_theta*v[0] + s_theta*v[1] };
-	double new_v_y{ -s_theta*v[0] + c_theta*v[1] };
+	for (int i = 0; i < 2; ++i)
+		v[i] -= 2 * v_dot_n * n_vec[i];
 
-	new_v_y = -new_v_y;
-
-	v[0] = c_theta * new_v_x - s_theta * new_v_y;
-	v[1] = s_theta * new_v_x + c_theta * new_v_y;
 }

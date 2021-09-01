@@ -676,13 +676,13 @@ cdef class _PySpherical(_PyComponent):
 
         """
         
-        return dereference(self.c_sph_ptr).start
+        return dereference(self.c_sph_ptr).get_start()
     @start.setter
     def start(self, double start):
         if start >= self.end:
             raise ValueError("start angle must be less than end angle")
 
-        dereference(self.c_sph_ptr).start = start
+        dereference(self.c_sph_ptr).set_start(start)
         
     @property
     def end(self):
@@ -697,13 +697,13 @@ cdef class _PySpherical(_PyComponent):
 
         """
         
-        return dereference(self.c_sph_ptr).end
+        return dereference(self.c_sph_ptr).get_end()
     @end.setter
     def end(self, double end):
         if end <= self.start:
             raise ValueError("end angle must be greater than start angle")
 
-        dereference(self.c_sph_ptr).end = end
+        dereference(self.c_sph_ptr).set_end(end)
 
     def update_start_end(self, double new_start, double new_end):
         """
@@ -732,8 +732,8 @@ cdef class _PySpherical(_PyComponent):
         if new_end <= new_start:
             raise ValueError("end angle must be greater than start angle")
 
-        dereference(self.c_sph_ptr).start = new_start
-        dereference(self.c_sph_ptr).end = new_end
+        dereference(self.c_sph_ptr).set_start(new_start)
+        dereference(self.c_sph_ptr).set_end(new_end)
         
     def plot(self, n_points=100):
         """
