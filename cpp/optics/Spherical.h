@@ -7,7 +7,9 @@ class Spherical :
 {
 public:
 	arr centre;
-	arr start_p, end_p;
+	arr end_p;
+
+	double cos_start, sin_start;
 	double R, start, end;
 
 	Spherical(arr centre, double R, double start = 0.0, double end = 0.0);

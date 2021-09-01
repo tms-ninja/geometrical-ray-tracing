@@ -3,9 +3,10 @@
 Spherical::Spherical(arr centre, double R, double start, double end)
 	: centre(centre), R(R), start(start), end(end)
 {
-	//start_p = { centre[0] + R * cos(start), centre[1] + R * sin(start) };
-	end_p = { centre[0] + R * cos(end), centre[1] + R * sin(end) };
+	cos_start = cos(start);
+	sin_start = sin(start);
 
+	end_p = { centre[0] + R * cos(end), centre[1] + R * sin(end) };
 	end_p = rotate(end_p, start);
 }
 
@@ -19,19 +20,23 @@ bool Spherical::in_range(arr & p) const
 	// Determines if the point p satisfies start <= atan2(p) <= end
 	arr temp{ p[0] - centre[0], p[1] - centre[1] };
 
-	arr p_rot{ rotate(temp, start) };
+	arr p_rot;
+
+	p_rot[0] = cos_start * temp[0] + sin_start * temp[1];
+	p_rot[1] = -sin_start * temp[0] + cos_start * temp[1];
+
 
 	// end point is above rotated y axis
 	if (end_p[1] >= 0.0)
 	{
 		return  p_rot[1] >= 0.0 && end_p[0] <= p_rot[0];
 	}
-	
+
 	// now know y of end point < 0.0
 	// check if rotated p is above rotated y axis, all good
 	if (p_rot[1] >= 0.0)
 		return true;
-	
+
 	// both below rotated y axis
 	return p_rot[0] <= end_p[0];
 }
@@ -43,7 +48,7 @@ double Spherical::solve(const arr & r, const arr & v) const
 	double disc;  // discriminant
 
 	disc = gamma * gamma + R * R - dx * dx - dy * dy;
-	
+
 	// No intersections
 	if (disc < 0.0)
 		return -1.0;
@@ -76,14 +81,14 @@ double Spherical::solve(const arr & r, const arr & v) const
 	if (found_sol)
 		return best_t;
 
-	return -1.0 ;
+	return -1.0;
 }
 
 void Spherical::print(std::ostream & os) const
 {
 	int N{ 100 };
 
-	for (int i = 0; i < N-1; ++i)  // x values
+	for (int i = 0; i < N - 1; ++i)  // x values
 	{
 		double tp;  // Compute t' 
 
