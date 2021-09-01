@@ -14,7 +14,7 @@ public:
 	virtual double test_hit(Ray* ry) const override;
 
 	// helper functions
-	std::tuple<double, double> solve(const arr &r, const arr &v) const;
+	double solve(const arr &r, const arr &v) const;
 
 	virtual void print(std::ostream& os) const;
 };

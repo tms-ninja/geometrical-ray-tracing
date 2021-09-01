@@ -7,14 +7,10 @@ Spherical::Spherical(arr centre, double R, double start, double end)
 
 double Spherical::test_hit(Ray* ry) const
 {
-	double t, tp;
-
-	std::tie(t, tp) = solve(ry->pos.back(), ry->v);
-
-	return t;
+	return solve(ry->pos.back(), ry->v);
 }
 
-std::tuple<double, double> Spherical::solve(const arr & r, const arr & v) const
+double Spherical::solve(const arr & r, const arr & v) const
 {
 	double dx{ r[0] - centre[0] }, dy{ r[1] - centre[1] };
 	double gamma{ dx*v[0] + dy * v[1] };
@@ -24,7 +20,7 @@ std::tuple<double, double> Spherical::solve(const arr & r, const arr & v) const
 	
 	// No intersections
 	if (disc < 0.0)
-		return { -1.0, 0.0 };
+		return -1.0;
 
 	double t_vals[2];
 
@@ -32,7 +28,7 @@ std::tuple<double, double> Spherical::solve(const arr & r, const arr & v) const
 	t_vals[1] = -gamma - sqrt(disc);
 
 	bool found_sol{ false };
-	double best_t, best_tp;
+	double best_t;
 	arr pos;
 
 	for (double t : t_vals)
@@ -52,15 +48,14 @@ std::tuple<double, double> Spherical::solve(const arr & r, const arr & v) const
 			{
 				found_sol = true;
 				best_t = t;
-				best_tp = tp;
 			}
 		}
 	}
 
 	if (found_sol)
-		return { best_t, best_tp };
+		return best_t;
 
-	return { -1.0, 0.0 };
+	return -1.0 ;
 }
 
 void Spherical::print(std::ostream & os) const
