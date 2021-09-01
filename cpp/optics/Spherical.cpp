@@ -6,7 +6,7 @@ Spherical::Spherical(arr centre, double R, double start, double end)
 	cos_start = cos(start);
 	sin_start = sin(start);
 
-	end_p = { centre[0] + R * cos(end), centre[1] + R * sin(end) };
+	end_p = { R * cos(end), R * sin(end) };
 	end_p = rotate(end_p, start);
 }
 
@@ -82,6 +82,35 @@ double Spherical::solve(const arr & r, const arr & v) const
 		return best_t;
 
 	return -1.0;
+}
+
+double Spherical::get_start()
+{
+	return start;
+}
+
+void Spherical::set_start(double new_start)
+{
+	start = new_start;
+
+	cos_start = cos(start);
+	sin_start = sin(start);
+
+	end_p = { R * cos(end), R * sin(end) };
+	end_p = rotate(end_p, start);
+}
+
+double Spherical::get_end()
+{
+	return end;
+}
+
+void Spherical::set_end(double new_end)
+{
+	end = new_end;
+
+	end_p = { R * cos(end), R * sin(end) };
+	end_p = rotate(end_p, start);
 }
 
 void Spherical::print(std::ostream & os) const

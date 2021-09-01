@@ -95,7 +95,11 @@ cdef extern from "Spherical.cpp":
 cdef extern from "Spherical.h":
     cdef cppclass Spherical(Component):
         arr centre
-        double R, start, end
+        double R
+        double get_start()
+        void set_start(double)
+        double get_end()
+        void set_end(double)
         double test_hit(Ray*)
         
 
