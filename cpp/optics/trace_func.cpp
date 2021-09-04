@@ -8,8 +8,25 @@ void trace_ray(const T &c, Ray* ry, int n, bool fill_up)
 
 	t.resize(c.size());
 
+	if (fill_up)
+		ry->pos.reserve(ry->pos.size() + n);
+
+	double v_mag_sq, x, fact;
+
 	for (int i = 0; i < n; ++i)
 	{
+		v_mag_sq = ry->v[0] * ry->v[0] + ry->v[1] * ry->v[1];
+
+		// Ensure v remains normalised, using Taylor expansion for 1/sqrt(sum)
+		x = v_mag_sq - 1.0;
+
+		fact = 1.0 - x / 2.0;//  +3.0*x*x / 8.0;
+
+		ry->v[0] *= fact;
+		ry->v[1] *= fact;
+
+		// Now do tracing
+
 		// Check for all interactions
 		for (std::size_t cInd = 0; cInd < c.size(); ++cInd)
 			t[cInd] = c[cInd]->test_hit(ry);
@@ -41,7 +58,7 @@ void trace_ray(const T &c, Ray* ry, int n, bool fill_up)
 			}
 			else if (ry->continue_tracing)  // only add another if continue tracing
 				ry->pos.push_back(end);  // show result of last interaction
-			
+
 			return;  // Exit the function as we have nothing else to do
 		}
 	}

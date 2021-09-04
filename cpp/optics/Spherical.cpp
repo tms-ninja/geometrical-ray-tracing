@@ -3,117 +3,121 @@
 Spherical::Spherical(arr centre, double R, double start, double end)
 	: centre(centre), R(R), start(start), end(end)
 {
+	cos_start = cos(start);
+	sin_start = sin(start);
+
+	end_p = { R * cos(end), R * sin(end) };
+	end_p = rotate(end_p, start);
 }
 
 double Spherical::test_hit(Ray* ry) const
 {
-	double t, tp;
-
-	std::tie(t, tp) = solve(ry->pos.back(), ry->v);
-
-	return t;
+	return solve(ry->pos.back(), ry->v);
 }
 
-std::tuple<double, double> Spherical::solve(const arr & r, const arr & v) const
+bool Spherical::in_range(arr & p) const
+{
+	// Determines if the point p satisfies start <= atan2(p) <= end
+	arr temp{ p[0] - centre[0], p[1] - centre[1] };
+
+	arr p_rot;
+
+	p_rot[0] = cos_start * temp[0] + sin_start * temp[1];
+	p_rot[1] = -sin_start * temp[0] + cos_start * temp[1];
+
+
+	// end point is above rotated y axis
+	if (end_p[1] >= 0.0)
+	{
+		return  p_rot[1] >= 0.0 && end_p[0] <= p_rot[0];
+	}
+
+	// now know y of end point < 0.0
+	// check if rotated p is above rotated y axis, all good
+	if (p_rot[1] >= 0.0)
+		return true;
+
+	// both below rotated y axis
+	return p_rot[0] <= end_p[0];
+}
+
+double Spherical::solve(const arr & r, const arr & v) const
 {
 	double dx{ r[0] - centre[0] }, dy{ r[1] - centre[1] };
-	double delta{ dy*v[0] - dx * v[1] };
+	double gamma{ dx*v[0] + dy * v[1] };
+	double disc;  // discriminant
 
-	// Discriminant of quadratic
-	double disc;
+	disc = gamma * gamma + R * R - dx * dx - dy * dy;
 
-	disc = delta * delta * (v[1] * v[1] - 1) + (v[0] * R)*(v[0] * R);
-
-	// Check if there are any solutions
+	// No intersections
 	if (disc < 0.0)
-		return { -1.0, 0.0 };
+		return -1.0;
 
-	disc = sqrt(disc);
+	double t_vals[2];
 
-	std::vector<double> uvSol;  // u and v solutions
+	t_vals[0] = -gamma + sqrt(disc);
+	t_vals[1] = -gamma - sqrt(disc);
 
-	uvSol.push_back((-v[1] * delta + disc) / R);
-	uvSol.push_back((-v[1] * delta - disc) / R);
+	bool found_sol{ false };
+	double best_t;
+	arr pos;
 
-	std::vector<double> tArr;  // Contains just the t solutions
-	std::vector<std::tuple<double, double>> sol;
-
-	for (double &u : uvSol)
+	for (double t : t_vals)
 	{
-		if (u >= -1 && u <= 1)
+		// Check t is in the future, it's better than the current time and isn't where we are starting from
+		if (t > 0.0 && (!found_sol || t < best_t) && !is_close(t, 0.0))
 		{
-			std::vector<double> tpSol;
+			pos = { r[0] + v[0] * t, r[1] + v[1] * t };
 
-			tpSol.push_back(acos(u));
-			tpSol.push_back(2 * M_PI - acos(u));
-
-			if (start < 0)
+			// Avoid call to atan2() as we don't need tp, just if it's in range
+			if (in_range(pos))
 			{
-				tpSol.push_back(2 * M_PI - acos(u));
-				tpSol.push_back(-acos(u));
+				found_sol = true;
+				best_t = t;
 			}
-
-			// Compute the positions of intersections and their times
-			std::vector<arr> pos;
-			std::vector<double> tSol;
-
-			for (double &tp : tpSol)
-			{
-				arr temp;
-
-				temp[0] = centre[0] + R * cos(tp);
-				temp[1] = centre[1] + R * sin(tp);
-
-				pos.push_back(temp);
-
-				tSol.push_back(compute_t(r, v, temp));
-			}
-				
-			for (std::size_t ind = 0; ind < tpSol.size(); ++ind)
-			{
-				const double  &t{ tSol[ind] };
-				const double &tp{ tpSol[ind] };
-				const arr &p{ pos[ind] };
-
-				// First check t is in the furture and not where we are starting from
-				if (t > 0.0 && !is_close(t, 0.0))
-				{
-					if (tp >= start && tp <= end)  // Check it hits exisitng part of component
-					{
-						if (is_close(r[0] + v[0] * t, p[0]) && is_close(r[1] + v[1] * t, p[1]))  // Check it is solution for x and y components
-						{
-							sol.push_back({ t, tp });
-							tArr.push_back(t);  // add t value so we can work out next next interacting solution
-						}
-					}
-				}
-							
-			}
-
 		}
 	}
 
-	// sol now contains 0, 1, or two solutions, need to find one with smallest t
-	switch (sol.size())
-	{
-	case 0:
-		return { -1.0, 0.0 };
-	case 1:
-		return sol[0];
-	default:
-		size_t ind;
+	if (found_sol)
+		return best_t;
 
-		std::tie(ind, std::ignore) = next_component(tArr);
+	return -1.0;
+}
 
-		return sol[ind];
-	}
+double Spherical::get_start()
+{
+	return start;
+}
+
+void Spherical::set_start(double new_start)
+{
+	start = new_start;
+
+	cos_start = cos(start);
+	sin_start = sin(start);
+
+	end_p = { R * cos(end), R * sin(end) };
+	end_p = rotate(end_p, start);
+}
+
+double Spherical::get_end()
+{
+	return end;
+}
+
+void Spherical::set_end(double new_end)
+{
+	end = new_end;
+
+	end_p = { R * cos(end), R * sin(end) };
+	end_p = rotate(end_p, start);
 }
 
 void Spherical::print(std::ostream & os) const
 {
 	int N{ 100 };
 
-	for (int i = 0; i < N-1; ++i)  // x values
+	for (int i = 0; i < N - 1; ++i)  // x values
 	{
 		double tp;  // Compute t' 
 

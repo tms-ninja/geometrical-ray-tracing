@@ -8,9 +8,8 @@ Mirror_Plane::Mirror_Plane(arr start, arr end)
 void Mirror_Plane::hit(Ray* ry, int n) const
 {
 	arr newPos;
-	arr newV;
 
-	double t{}, tp{};
+	double t, tp;
 	arr &r = ry->pos.back();
 	arr &v = ry->v;
 
@@ -20,14 +19,11 @@ void Mirror_Plane::hit(Ray* ry, int n) const
 	for (int i = 0; i < 2; ++i)
 		newPos[i] = (r[i] + v[i] * t);
 
-	// Compute new direction, first compute the angle of the plane
-	double angle{ atan2(end[1] - start[1], end[0] - start[0]) };
-
-	newV = rotate(v, angle);
-	newV[1] = -newV[1];
-	newV = rotate(newV, -angle);
-
-	// Finally update
 	ry->pos.push_back(newPos);
-	ry->v = newV;
+
+	// Compute new direction
+	double v_dot_D{ v[0] * D[0] + v[1] * D[1] };
+
+	for (int i = 0; i < 2; ++i)
+		v[i] = 2*v_dot_D*D[i] - v[i];
 }
