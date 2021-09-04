@@ -4,9 +4,12 @@
 #define _USE_MATH_DEFINES  // Need for definition of M_PI
 #include <cmath>
 #include <array>
+#include <limits>
 #include <memory>
 #include <utility>
 #include <vector>
+
+constexpr double infinity = std::numeric_limits<double>::infinity();
 
 class Component;  // Forward declare the Component class
 class Ray;

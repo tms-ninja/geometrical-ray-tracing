@@ -4,7 +4,7 @@
 template <typename T>
 void trace_ray(const T &c, Ray* ry, int n, bool fill_up)
 {
-	std::vector<double> t;  // Holds t values for each component, -1.0 if no interaction
+	std::vector<double> t;  // Holds t values for each component, infinity if no interaction
 
 	t.resize(c.size());
 

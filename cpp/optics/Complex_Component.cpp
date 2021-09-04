@@ -12,7 +12,7 @@ double Complex_Component::test_hit(Ray* ry) const
 
 	std::tie(ind, found) = next_component(t);
 
-	return found ? t[ind] : -1.0;
+	return found ? t[ind] : infinity;
 }
 
 void Complex_Component::hit(Ray* ry, int n) const

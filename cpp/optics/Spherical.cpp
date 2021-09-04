@@ -51,7 +51,7 @@ double Spherical::solve(const arr & r, const arr & v) const
 
 	// No intersections
 	if (disc < 0.0)
-		return -1.0;
+		return infinity;
 
 	double t_vals[2];
 
@@ -81,7 +81,7 @@ double Spherical::solve(const arr & r, const arr & v) const
 	if (found_sol)
 		return best_t;
 
-	return -1.0;
+	return infinity;
 }
 
 double Spherical::get_start()
