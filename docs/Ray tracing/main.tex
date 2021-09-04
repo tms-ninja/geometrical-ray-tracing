@@ -200,10 +200,68 @@ From this we define the normal unit vector $\vec{\hat n}$ as,
     =
     - D_y \uveci + D_x \uvecj,
 \end{equation}
-where $D_x$ and $D_y$ are the x and y components of $\vec{\hat {D}}$ respectively.
+where $D_x$ and $D_y$ are the x and y components of $\vec{\hat {D}}$ respectively. These are shown in Fig.~\ref{fig:plane_structure}.
+\begin{figure}
+    \centering
+    \begin{tikzpicture}
+        \draw (0, 0) -- (6, 3);
+        \filldraw[black] (0, 0) circle (2pt) node[anchor=north] {start};
+        \filldraw[black] (6, 3) circle (2pt) node[anchor=north] {end};
+        
+        \draw[thick, ->] (0.5, 0.5) -- (2, 1.25 ) node[anchor=south] {$\vec{\hat{D}}$};
+        \draw[thick, ->] (0.5, 0.5) -- (-0.25, 2) node[anchor=south] {$\vec{\hat{n}}$};
+    \end{tikzpicture}
+    \caption{Structure of a plane, along with the unit vectors $\vec{\hat{D}}$ and $\vec{\hat{n}}$.}
+    \label{fig:plane_structure}
+\end{figure}
 
-\subsection{Ray intersection with a spherical surface}
-We consider a circle with centre $(x_l, y_l)$ and radius $R$. In general, only a portion of its surface is modelled with $\theta_i \le t' \le \theta_f$. Here $t'$ is a parameter in the range $0 \le t' < 2\pi$ that takes the place of the polar angle. Its surface can be described by,
+\subsection{Ray intersection with a circular surface}
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}        
+    \centering
+        \begin{tikzpicture}
+        
+        \draw[black] (2.598, 1.5) arc (30:180:3);
+        \draw[black, dashed] (-3, 0) arc (180:390:3);
+        \draw[black] (-3, 0) -- (-1.5, 0) node[below] {$R$} -- (0, 0) -- (2.598, 1.5);
+        \draw (0, 0) -- (3, 0);
+        
+        \draw (1, 0) arc (0:30:1) node[pos=0.5, right] {$\theta_i$};
+        \draw (0.5, 0) arc (0:180:0.5) node[pos=0.5,above] {$\theta_f$};
+        
+        \filldraw[black] (0,0) circle (2pt) node[anchor=north] {$(x_l, y_l)$};
+    
+        \end{tikzpicture}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}   
+    \centering
+    \begin{tikzpicture}
+        
+        \draw[black] (2.598, 1.5) arc (30:180:3);
+        \draw[black, dashed] (-3, 0) arc (180:390:3);
+        
+        \draw[black, thick, ->] (-4, 0.75) -- (-3.549, 1.0);
+        
+        \draw[black, thick] (-3.549, 1.0) -- (-2.598, 1.5);
+        
+        \draw (0.5, 0) arc (0:150:0.5) node[pos=0.5, above] {$t'$};
+        \draw[black] (-2.598, 1.5) -- (0, 0) -- (3, 0);
+        
+        \draw[thick, ->] (-2.598, 1.5) -- (-1.848, 2.79 ) node[anchor=south] {$\vec{\hat{D}}$};
+        \draw[thick, ->] (-2.598, 1.5) -- (-3.897, 2.25) node[anchor=south] {$\vec{\hat{n}}$};
+        
+        \filldraw[black] (0,0) circle (2pt);
+    
+        \end{tikzpicture}
+    \end{subfigure}
+    \caption{Structure of a circular arc, along with the unit vectors $\vec{\hat{D}}$ and $\vec{\hat{n}}$ as defined for a circular arc.}
+    \label{fig:spherical_structure}
+\end{figure}
+
+We consider a circle with centre $(x_l, y_l)$ and radius $R$ as shown in Fig.~\ref{fig:spherical_structure}. In general, only a portion of its surface is modelled with $\theta_i \le t' \le \theta_f$. Here $t'$ is a parameter in the range $0 \le t' < 2\pi$ that takes the place of the polar angle. Its surface can be described by,
 \begin{equation}
     \vec{r}_\mathrm{s}(t')
     =
@@ -211,7 +269,16 @@ We consider a circle with centre $(x_l, y_l)$ and radius $R$. In general, only a
     +
     (y_l + R\sin t') \uvecj.
 \end{equation}
-This gives us two simultaneous equations, namely,
+We define a normal unit vector $\vec{\hat{n}}$ that points radially outwards. We define the unit vector $\vec{\hat{D}}$ to be orthogonal to $\vec{\hat{n}}$, in a manner consistent with that of a plane and Eq.~\ref{eq:normal_vec_def}, namely,
+\begin{equation}
+    \vec{\hat{D}}
+    =
+    n_y \uveci
+    -
+    n_x \uvecj.
+\end{equation}
+
+When determining if a ray intersects an arc, we have the simultaneous equations,
 \begin{align}
     x_0 + v_x t &= x_l + R\cos t' \\
     y_0 + v_y t &= y_l + R\sin t'.
@@ -602,14 +669,7 @@ The angle we must rotate through is given again by Eq.~\ref{eq:alpha_sph},
 Other than the different equation for computing $\alpha$, the method is very similar to that of a plane.
 
 \subsubsection{New method}
-The new method is very similar to that of a plane, but the definitions of $\vec{\hat{n}}$ and $\vec{\hat{D}}$ are different. We take $\vec{\hat{n}}$ to be the `radial' unit vector of the circle. There is no need to call any trigonometric functions as we know the point of intersection, the circle's centre and radius. In order to be consistent with Eq.~\ref{eq:normal_vec_def}, $\vec{\hat{D}}$ must be,
-\begin{equation}
-    \vec{\hat{D}}
-    =
-    n_y \uveci
-    -
-    n_x \uvecj.
-\end{equation}
+The new method is very similar to that of a plane, but the definitions of $\vec{\hat{n}}$ and $\vec{\hat{D}}$ are different.
 
 \section{Screen}
 We also include a component intended to represent a screen. When a ray hits a screen, we stop tracing it any further. We will implement only a planar screen named \texttt{Screen\_Plane}.
