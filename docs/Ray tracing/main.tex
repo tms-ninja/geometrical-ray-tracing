@@ -169,24 +169,13 @@ where $\vec{v}$ is a unit vector indicating the direction of travel. $t$ is a ti
 We first determine expressions for computing where a ray interested with either a planar or spherical surface, since all components possess a combination of planar and spherical surfaces.
 
 \subsection{Ray intersection with a planar surface}
-We define a plane as starting at $\vec{r}_1$ and ending at $\vec{r}_2$. It is reflecting on both sides and is described by,
+We define a plane as starting at $\vec{r}_1$ and ending at $\vec{r}_2$. It is described by,
 \begin{equation}
     \vec{r}_\mathrm{m}(t')
     =
     \vec{r}_1 + (\vec{r}_2 - \vec{r}_1) t',
 \end{equation}
-where $0 \le t' \le 1$ for a point to be on the mirror.
-
-We can derive where the ray interests as obeying,
-\begin{align}
-    t'
-    &=
-    \frac{v_y(x_1 - x_0) - v_x(y_1 - y_0)}{v_x(y_2 - y_1) - v_y(x_2 - x_1)}, &
-    t
-    &=
-    \frac{x_{0} \left(- y_{1} + y_{2}\right) - x_{1} y_{2} + x_{2} y_{1} + y_{0} \left(x_{1} - x_{2}\right)}{v_{x} \left(y_{1} - y_{2}\right) + v_{y} \left(- x_{1} + x_{2}\right)}
-\end{align}
-Remember we require both a unique solution for $t$ to exist and $0 \le t' \le 1$ for it to intersect the plane. We have to check the denominator is not zero in both cases.
+where $0 \le t' \le 1$ for a point to be on the mirror. 
 
 Furthermore, we define two unit vectors. We define $\vec{\hat{D}}$ as a unit vector pointing along the plane from its start point to its end point,
 \begin{equation}
@@ -215,6 +204,19 @@ where $D_x$ and $D_y$ are the x and y components of $\vec{\hat {D}}$ respectivel
     \caption{Structure of a plane, along with the unit vectors $\vec{\hat{D}}$ and $\vec{\hat{n}}$.}
     \label{fig:plane_structure}
 \end{figure}
+
+We can derive where a ray intersects as obeying,
+\begin{align}
+    t'
+    &=
+    \frac{v_y(x_1 - x_0) - v_x(y_1 - y_0)}{v_x(y_2 - y_1) - v_y(x_2 - x_1)}, &
+    t
+    &=
+    \frac{x_{0} \left(- y_{1} + y_{2}\right) - x_{1} y_{2} + x_{2} y_{1} + y_{0} \left(x_{1} - x_{2}\right)}{v_{x} \left(y_{1} - y_{2}\right) + v_{y} \left(- x_{1} + x_{2}\right)}
+\end{align}
+Remember we require both a unique solution for $t$ to exist and $0 \le t' \le 1$ for it to intersect the plane. We have to check the denominator is not zero in both cases.
+
+
 
 \subsection{Ray intersection with a circular surface}
 
