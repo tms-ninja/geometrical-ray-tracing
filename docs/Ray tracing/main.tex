@@ -260,11 +260,11 @@ Remember we require both a unique solution for $t$ to exist and $0 \le t' \le 1$
     
         \end{tikzpicture}
     \end{subfigure}
-    \caption{Structure of a circular arc, along with the unit vectors $\vec{\hat{D}}$ and $\vec{\hat{n}}$ as defined for a circular arc.}
+    \caption{Structure of a circular arc, along with the unit vectors $\vec{\hat{D}}$ and $\vec{\hat{n}}$ as defined for a circular arc for a given ray intersection.}
     \label{fig:spherical_structure}
 \end{figure}
 
-We consider a circle with centre $(x_l, y_l)$ and radius $R$ as shown in Fig.~\ref{fig:spherical_structure}. In general, only a portion of its surface is modelled with $\theta_i \le t' \le \theta_f$. Here $t'$ is a parameter in the range $0 \le t' < 2\pi$ that takes the place of the polar angle. Its surface can be described by,
+We consider a circle with centre $(x_l, y_l)$ and radius $R$ as shown in Fig.~\ref{fig:spherical_structure}. In general, only a portion of its surface is modelled with $\theta_i \le t' \le \theta_f$. Here $t'$ is a parameter in that takes the place of the polar angle. Its surface can be described by,
 \begin{equation}
     \vec{r}_\mathrm{s}(t')
     =
@@ -321,7 +321,7 @@ where we have uses the fact $\vec{v}$ is normalised and defined $\gamma = v_x \D
     \pm
     \sqrt{\gamma^2 + R^2 - \Delta x^2 - \Delta y^2}.
 \end{equation}
-We can the compute the position of intersection, if there is one, and then use \texttt{atan2()} to compute $t'$. Trigonometric functions are only called when the ray has intersections in the future ($t>0$). By comparison, $\arccos$ is called for all possible intersections when solving for $t'$. $\sin$ may also be called there could be spurious $t'$ solutions that don't lie along the ray's path, at least using the method above. This leads to solving for $t$ being a more efficient method.
+We can the compute the position of intersection, if there is one, and then use \texttt{atan2()} to compute $t'$. Trigonometric functions are only called when the ray has intersections in the future ($t>0$). By comparison, $\arccos$ is called for all possible intersections when solving for $t'$. $\sin$ may also be called there could be spurious $t'$ solutions that don't lie along the ray's path, at least using the method below. This leads to solving for $t$ being a more efficient method.
 
 If we do not need the value of $t'$, we can avoid the call to \texttt{atan2()} and improve performance further. The new (non-rotation) methods for performing rotation and refraction do not require $t'$, allowing for a reasonable improvement. First consider the start and end points of the arc,
 \begin{align}
