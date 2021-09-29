@@ -8,6 +8,8 @@
 \usepackage{subcaption}
 \usepackage{tikz}
 
+\def\bibsection{\section*{References}} 
+
 \usepackage{listings}  % For nicely displaying Python code
 \usepackage{xcolor}
 \definecolor{keywords}{RGB}{255,0,90}
@@ -577,11 +579,11 @@ where $\theta'$ is the angle of $\vec{v}'$, that is $\vec v$ in the rotated coor
         \frac{\pi}{2} - \theta_f
     \right)
     } \uvecj'.
-\end{equation}
+\end{equation}*
 Finally we then just have to rotate back to our original coordinates. If total internal reflection is determined to happen, then we simply need to reflect the ray at the point of intersection.
 
 \subsubsection{New method}
-The old method calls trigonometric functions including \texttt{sin()} and \texttt{atan2()}. If we were working in three dimensions we could write,
+The old method calls trigonometric functions including \texttt{sin()} and \texttt{atan2()}. If we were working in three dimensions we could write \cite{Hecht-Optics},
 \begin{equation}
 \label{eq:refraction_cross_prod}
     n_\mrm{i} \vec{\hat n} \times \vec{v}_\mrm{i} = n_\mrm{f} \vec{\hat n} \times \vec{v}_\mrm{f},
@@ -775,5 +777,9 @@ class Prism(PyCC_Wrap):
         super().__init__(comps)  
 \end{lstlisting}
 Like other components, \texttt{PyCC\_Wrap} provides a \texttt{Plot()} method useful for plotting the component.
+
+% Bibliography
+\bibliographystyle{ieeetr}
+\bibliography{bibo}
 
 \end{document}
