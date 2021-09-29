@@ -62,14 +62,14 @@ Aiming to make a program for tracing light rays through various optical componen
 It allows me to explore various object orientated programming concepts in C++ such as polymorphism and virtual functions.
 
 \section{Program implementation}
-We define a base component class called \texttt{component} from which each type of component derives. E.g. we have derived classes including \texttt{mirror} and \texttt{lens}. The base class declares the methods \texttt{hit\_test()} which tests if a light ray interacts with the component and \texttt{hit()}, which performs the interaction. In Python we also have a \texttt{plot()} method that plots the component to the current plot.
+We define a base class called \texttt{component} from which each type of component derives. E.g. we have derived classes including \texttt{mirror} and \texttt{lens}. The base class declares the methods \texttt{test\_hit()} which tests if a light ray interacts with the component and \texttt{hit()}, which performs the interaction. In Python we also have a \texttt{plot()} method that plots the component to the current plot.
 
 All components present in an optical system are simply stored in a Python list.
 
 \subsection{C++ complications}
 In C++ there isn't a simple way of storing all our components in a list like container such as \texttt{std::vector} as all elements must be of the same type. Without cheating and using something like \texttt{boost::any}, this can be overcome by making use of polymorphism.
 
-Any sort of component (such as a mirror or lens) is described by a class (\texttt{Mirror} and \texttt{Lens}) that derives from a \texttt{Component} base class. The \texttt{Component} class defines the \texttt{hit\_test()} and \texttt{hit()} methods as virtual functions. These are then overridden in the derived classes.
+Any sort of component (such as a mirror or lens) is described by a class (\texttt{Mirror} and \texttt{Lens}) that derives from a \texttt{Component} base class. The \texttt{Component} class defines the \texttt{test\_hit()} and \texttt{hit()} methods as virtual functions. These are then overridden in the derived classes.
 
 C++ allows us to create a pointer \texttt{ptr} of type \texttt{\textsuperscript{*}Component} to a derived class such as \texttt{Mirror}. Suppose \texttt{ptr} points at an instance of \texttt{Mirror}. Since \texttt{hit()} is a virtual finction, when we call it using \texttt{ptr->hit()}, the \texttt{hit()} method in the \texttt{Mirror} class is called. This is because the \texttt{hit()} defined in \texttt{Mirror} is `more derived' than the \texttt{hit()} in \texttt{Component} and when a virtual function is called, the implementation that is executed corresponds to the `most derived.' Equivalently if \texttt{ptr} was pointing at an instance of \texttt{Lens}, it would call the \texttt{hit()} method defined in \texttt{Lens}.
 
@@ -78,12 +78,12 @@ We then store all the components in a \texttt{std::vector} of type \texttt{\text
 \subsection{Memory structures}
 We know now how to store and describe the system of optical components we wish to trace the rays through. Now we need to work out how to structure the rays themselves.
 
-In Python, we used a 3 dimensional \texttt{numpy} array, with the first index identifying the ray, the second the interaction point and the third discriminating x and y coordinate. \texttt{numpy} allows us to easily slice the array to extract specific components. In C++, it doesn't seem we can do this. There would seem to be two options:
+In the original pure Python implementation, we used a 3 dimensional \texttt{numpy} array, with the first index identifying the ray, the second the interaction point and the third discriminating x and y coordinate. \texttt{numpy} allows us to easily slice the array to extract specific components. In C++, it doesn't seem we can do this. There would seem to be two options:
 \begin{itemize}
     \item Create a class to define a 3d array
     \begin{itemize}
         \item Has the advantage memory is all in one place
-        \item Can directly interact with a numpy array when using python
+        \item Can directly interact with a \texttt{numpy} array when using python
     \end{itemize}
     \item Create a \texttt{Ray} class that contains vectors of x and y coordinates
     \begin{itemize}
@@ -91,30 +91,30 @@ In Python, we used a 3 dimensional \texttt{numpy} array, with the first index id
         \item Would need to copy everything into a \texttt{numpy} array if we wanted to do that
     \end{itemize}
 \end{itemize}
-I think it would be easier to create a \texttt{Ray} class to keep track of everything and then wrap it in \texttt{Cython}. Could always add a function to convert it to a \texttt{numpy} array and we're never going to be dealing with large numbers of rays, so memory probably isn't an issue. It also means I just need to pass a reference to the ray to any function and the function can work out get whatever it wants.
+It would be easier to create a \texttt{Ray} class to keep track of everything and then wrap it in \texttt{Cython}. We can always add a function to convert it to a \texttt{numpy} array and we're never going to be dealing with large numbers of rays, so memory probably isn't an issue. It also means we just need to pass a reference to the ray to any function and the function can work out get whatever it wants.
 
-I think the best way forward is to create a \texttt{Ray} class, with member variables describing the current direction of the ray as a \texttt{std::array<double, 2>} and the interaction points as a \linebreak {\texttt{std::vector<std::array<double, 2>>}}. This has the benefit that a single mathematical vector is described as a \texttt{std::array<double, 2>}, and this can easily be passed to functions. Also the position data of a single ray is contiguous. All the rays are then stored in a vector.
+We can create a \texttt{Ray} class, with member variables describing the current direction of the ray as a \texttt{std::array<double, 2>} and the interaction points as a \linebreak {\texttt{std::vector<std::array<double, 2>>}}. This has the benefit that a single mathematical vector is described as a \texttt{std::array<double, 2>}, and this can easily be passed to functions. Also the position data of a single ray is contiguous. All the rays are then stored in a vector.
 
 When initialising the \texttt{Ray} class, we should reserve the memory required for the vector, depending on how many tracings we want to do. When we compute the new position, we can then just \texttt{push\_back} the answer into the vector.
 
 \subsection{Final}
 Each ray is described by an instance of a \texttt{Ray} class. This includes:
 \begin{itemize}
-    \item A \texttt{std::array} used to describe the direction of the ray
-    \item A vector of \texttt{std::array} used to describe the initial and interaction points of the ray
+    \item A \texttt{std::array<double, 2>} used to describe the direction of the ray
+    \item A vector of \texttt{std::array<double, 2>} used to describe the initial and interaction points of the ray
 \end{itemize}
 
 Each component ultimately derives from the \texttt{Component} class. This declares:
 \begin{itemize}
-    \item A \texttt{test\_hit()} method that tests whether a ray interacts with the component. Takes a reference to a instance of \texttt{Ray} as an argument. Returns -1.0 if the ray does not interact, otherwise the time to interaction
-    \item A \texttt{hit()} method that performs the interaction. Takes a reference to a instance of \texttt{Ray} and maximum number of interactions to perform as arguments. Doesn't return anything, modifies the existing \texttt{Ray} instance.
+    \item A \texttt{test\_hit()} method that tests whether a ray interacts with the component. Takes a reference to a instance of \texttt{Ray} as an argument. Returns positive infinity if the ray does not interact, otherwise the time to interaction
+    \item A \texttt{hit()} method that performs the interaction. Takes a pointer to a instance of \texttt{Ray} and maximum number of interactions to perform as arguments. Doesn't return anything, modifies the existing \texttt{Ray} instance.
     \item Several helper functions for performing common tasks:
     \begin{itemize}
         \item Rotate function. Takes a \texttt{std::array<double, 2>} and rotates it by $-\theta$. Equivalent to rotating to a coordinate system rotated by $\theta$
         \item A method \texttt{compute\_t()} which returns the time for a ray to reach a certain position. Assumes the position does lie along the ray's path. Uses the larger of $v_x$ or $v_y$ in magnitude so it so numerically stable.
     \end{itemize}
 \end{itemize}
-From this three helper classes are derived. These aren't meant to be initialised directly, but help in the construction of classes that are. They are:
+From this three helper classes are derived. These aren't meant to be initialised directly and are still abstract classes, but help in the construction of classes that are. They are:
 \begin{itemize}
     \item \texttt{Plane}
     \begin{itemize}
@@ -133,28 +133,29 @@ From this three helper classes are derived. These aren't meant to be initialised
     \item \texttt{Complex\_Component}
     \begin{itemize}
         \item Describes a complex component composed of several other components
-        \item Declares a vector of type \texttt{std::unique\_ptr<Component>} to store the sub-components of this component
+        \item Declares a vector of type \texttt{std::shared\_ptr<Component>} to store the sub-components of this component. We use \texttt{std::shared\_ptr<Component>} as Cython wrappers also need to hold onto a pointer
         \item Implements both the \texttt{test\_hit()} and \texttt{hit()} method:
         \begin{itemize}
-            \item For \texttt{test\_hit()}, we simply need to iterate over all the sub-components, return -1.0 if there are no interactions, otherwise the smallest positive time
+            \item For \texttt{test\_hit()}, we simply need to iterate over all the sub-components, return positive infinity if there are no interactions, otherwise the smallest positive time
             \item For \texttt{hit()}, we wish to trace a ray through these sub-components with a maximum number of interactions
             \item This is the same as the original problem, so we can just call the \texttt{trace\_ray()} function that will do this for us
         \end{itemize}
     \end{itemize}
 \end{itemize}
-From these there are four basic components implemented:
+From these there are five basic components implemented:
 \begin{itemize}
     \item \texttt{Mirror} - plane mirror
     \item \texttt{Mirror\_Sph} - spherical mirror
     \item \texttt{Refract\_Plane} - refraction at a planar boundary
     \item \texttt{Refract\_Sph} - refraction at a spherical boundary
+    \item \texttt{Screen\_Plane} - a planar, absorbing screen
 \end{itemize}
 
-Once these basic components have been implemented, complex components such as prisms or lenses should be exceedingly easy to implement. All that would need to be implemented would be a constructor that constructs the sub-components and adds them to the vector of sub-components.
+Once these basic components have been implemented, complex components such as prisms or lenses should be straightforward to implement. All that would need to be implemented would be a constructor that constructs the sub-components and adds them to the vector of sub-components.
 
 To perform the tracing, there are two relevant functions:
 \begin{itemize}
-    \item \texttt{trace\_ray()} traces a single ray through a number of components, up to a maximum number of iteration, $n$. Takes a reference to a \texttt{Ray} instance, vector of \texttt{std::unique\_ptr<Component>} and maximum number of iterations as arguments. Works directly on the ray instance
+    \item \texttt{trace\_ray()} traces a single ray through a number of components, up to a maximum number of iteration, $n$. Takes a reference to a \texttt{Ray} instance, vector of \texttt{std::shared\_ptr<Component>} and maximum number of iterations as arguments. Works directly on the ray instance
     \item \texttt{trace()} takes a vector of rays and traces them through the components given using \texttt{trace\_ray()}
 \end{itemize}
 
