@@ -29,3 +29,8 @@ arr rotate(const arr &r, const double theta)
 
 	return { top, bottom };
 }
+
+bool is_close(double v1, double v2, double atol)
+{
+	return (abs(v1 - v2) < atol);
+}

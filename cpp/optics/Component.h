@@ -26,10 +26,5 @@ public:
 	// Assumes intersection
 	double compute_t(const arr &r, const arr &v, const arr &pos) const;
 
-	// Absolute comparison between v1 and v2
-	bool is_close(double v1, double v2, double atol = 1e-8) const
-	{
-		return (abs(v1 - v2) < atol);
-	}
 };
 
