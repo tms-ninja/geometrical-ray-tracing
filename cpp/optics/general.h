@@ -43,3 +43,8 @@ void save_rays(std::vector<Ray> &rays, std::string path);
 
 // Save components to file
 void save_components(comp_list &comps, std::string path);
+
+// Helper functions
+
+// Rotates the coordinates by alpha (rotates axis, not point)
+arr rotate(const arr &r, const double theta);

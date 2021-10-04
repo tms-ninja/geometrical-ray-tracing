@@ -20,10 +20,7 @@ public:
 	friend std::ostream& operator<< (std::ostream& os, const Component& b);
 	virtual void print(std::ostream& os) const = 0;
 
-	// Helper functions
-
-	// Rotates the coordinates by alpha (rotates axis, not point)
-	arr rotate(const arr &r, const double theta) const;
+	
 
 	// Computes time for a ray starting at r and travelling in the direction v to reach pos
 	// Assumes intersection

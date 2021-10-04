@@ -21,3 +21,11 @@ std::pair<size_t, bool> next_component(const std::vector<double> &t)
 
 	return { 0, false };
 }
+
+arr rotate(const arr &r, const double theta)
+{
+	double top{ cos(theta)*r[0] + sin(theta)*r[1] };
+	double bottom{ -sin(theta)*r[0] + cos(theta)*r[1] };
+
+	return { top, bottom };
+}
