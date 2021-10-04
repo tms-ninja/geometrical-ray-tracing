@@ -20,11 +20,5 @@ public:
 	friend std::ostream& operator<< (std::ostream& os, const Component& b);
 	virtual void print(std::ostream& os) const = 0;
 
-	
-
-	// Computes time for a ray starting at r and travelling in the direction v to reach pos
-	// Assumes intersection
-	double compute_t(const arr &r, const arr &v, const arr &pos) const;
-
 };
 
