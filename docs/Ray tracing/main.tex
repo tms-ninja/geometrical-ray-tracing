@@ -8,6 +8,8 @@
 \usepackage{subcaption}
 \usepackage{tikz}
 
+\def\bibsection{\section*{References}} 
+
 \usepackage{listings}  % For nicely displaying Python code
 \usepackage{xcolor}
 \definecolor{keywords}{RGB}{255,0,90}
@@ -62,14 +64,14 @@ Aiming to make a program for tracing light rays through various optical componen
 It allows me to explore various object orientated programming concepts in C++ such as polymorphism and virtual functions.
 
 \section{Program implementation}
-We define a base component class called \texttt{component} from which each type of component derives. E.g. we have derived classes including \texttt{mirror} and \texttt{lens}. The base class declares the methods \texttt{hit\_test()} which tests if a light ray interacts with the component and \texttt{hit()}, which performs the interaction. In Python we also have a \texttt{plot()} method that plots the component to the current plot.
+We define a base class called \texttt{component} from which each type of component derives. E.g. we have derived classes including \texttt{mirror} and \texttt{lens}. The base class declares the methods \texttt{test\_hit()} which tests if a light ray interacts with the component and \texttt{hit()}, which performs the interaction. In Python we also have a \texttt{plot()} method that plots the component to the current plot.
 
 All components present in an optical system are simply stored in a Python list.
 
 \subsection{C++ complications}
 In C++ there isn't a simple way of storing all our components in a list like container such as \texttt{std::vector} as all elements must be of the same type. Without cheating and using something like \texttt{boost::any}, this can be overcome by making use of polymorphism.
 
-Any sort of component (such as a mirror or lens) is described by a class (\texttt{Mirror} and \texttt{Lens}) that derives from a \texttt{Component} base class. The \texttt{Component} class defines the \texttt{hit\_test()} and \texttt{hit()} methods as virtual functions. These are then overridden in the derived classes.
+Any sort of component (such as a mirror or lens) is described by a class (\texttt{Mirror} and \texttt{Lens}) that derives from a \texttt{Component} base class. The \texttt{Component} class defines the \texttt{test\_hit()} and \texttt{hit()} methods as virtual functions. These are then overridden in the derived classes.
 
 C++ allows us to create a pointer \texttt{ptr} of type \texttt{\textsuperscript{*}Component} to a derived class such as \texttt{Mirror}. Suppose \texttt{ptr} points at an instance of \texttt{Mirror}. Since \texttt{hit()} is a virtual finction, when we call it using \texttt{ptr->hit()}, the \texttt{hit()} method in the \texttt{Mirror} class is called. This is because the \texttt{hit()} defined in \texttt{Mirror} is `more derived' than the \texttt{hit()} in \texttt{Component} and when a virtual function is called, the implementation that is executed corresponds to the `most derived.' Equivalently if \texttt{ptr} was pointing at an instance of \texttt{Lens}, it would call the \texttt{hit()} method defined in \texttt{Lens}.
 
@@ -78,12 +80,12 @@ We then store all the components in a \texttt{std::vector} of type \texttt{\text
 \subsection{Memory structures}
 We know now how to store and describe the system of optical components we wish to trace the rays through. Now we need to work out how to structure the rays themselves.
 
-In Python, we used a 3 dimensional \texttt{numpy} array, with the first index identifying the ray, the second the interaction point and the third discriminating x and y coordinate. \texttt{numpy} allows us to easily slice the array to extract specific components. In C++, it doesn't seem we can do this. There would seem to be two options:
+In the original pure Python implementation, we used a 3 dimensional \texttt{numpy} array, with the first index identifying the ray, the second the interaction point and the third discriminating x and y coordinate. \texttt{numpy} allows us to easily slice the array to extract specific components. In C++, it doesn't seem we can do this. There would seem to be two options:
 \begin{itemize}
     \item Create a class to define a 3d array
     \begin{itemize}
         \item Has the advantage memory is all in one place
-        \item Can directly interact with a numpy array when using python
+        \item Can directly interact with a \texttt{numpy} array when using python
     \end{itemize}
     \item Create a \texttt{Ray} class that contains vectors of x and y coordinates
     \begin{itemize}
@@ -91,30 +93,30 @@ In Python, we used a 3 dimensional \texttt{numpy} array, with the first index id
         \item Would need to copy everything into a \texttt{numpy} array if we wanted to do that
     \end{itemize}
 \end{itemize}
-I think it would be easier to create a \texttt{Ray} class to keep track of everything and then wrap it in \texttt{Cython}. Could always add a function to convert it to a \texttt{numpy} array and we're never going to be dealing with large numbers of rays, so memory probably isn't an issue. It also means I just need to pass a reference to the ray to any function and the function can work out get whatever it wants.
+It would be easier to create a \texttt{Ray} class to keep track of everything and then wrap it in \texttt{Cython}. We can always add a function to convert it to a \texttt{numpy} array and we're never going to be dealing with large numbers of rays, so memory probably isn't an issue. It also means we just need to pass a reference to the ray to any function and the function can work out get whatever it wants.
 
-I think the best way forward is to create a \texttt{Ray} class, with member variables describing the current direction of the ray as a \texttt{std::array<double, 2>} and the interaction points as a \linebreak {\texttt{std::vector<std::array<double, 2>>}}. This has the benefit that a single mathematical vector is described as a \texttt{std::array<double, 2>}, and this can easily be passed to functions. Also the position data of a single ray is contiguous. All the rays are then stored in a vector.
+We can create a \texttt{Ray} class, with member variables describing the current direction of the ray as a \texttt{std::array<double, 2>} and the interaction points as a \linebreak {\texttt{std::vector<std::array<double, 2>>}}. This has the benefit that a single mathematical vector is described as a \texttt{std::array<double, 2>}, and this can easily be passed to functions. Also the position data of a single ray is contiguous. All the rays are then stored in a vector.
 
 When initialising the \texttt{Ray} class, we should reserve the memory required for the vector, depending on how many tracings we want to do. When we compute the new position, we can then just \texttt{push\_back} the answer into the vector.
 
 \subsection{Final}
 Each ray is described by an instance of a \texttt{Ray} class. This includes:
 \begin{itemize}
-    \item A \texttt{std::array} used to describe the direction of the ray
-    \item A vector of \texttt{std::array} used to describe the initial and interaction points of the ray
+    \item A \texttt{std::array<double, 2>} used to describe the direction of the ray
+    \item A vector of \texttt{std::array<double, 2>} used to describe the initial and interaction points of the ray
 \end{itemize}
 
 Each component ultimately derives from the \texttt{Component} class. This declares:
 \begin{itemize}
-    \item A \texttt{test\_hit()} method that tests whether a ray interacts with the component. Takes a reference to a instance of \texttt{Ray} as an argument. Returns -1.0 if the ray does not interact, otherwise the time to interaction
-    \item A \texttt{hit()} method that performs the interaction. Takes a reference to a instance of \texttt{Ray} and maximum number of interactions to perform as arguments. Doesn't return anything, modifies the existing \texttt{Ray} instance.
+    \item A \texttt{test\_hit()} method that tests whether a ray interacts with the component. Takes a reference to a instance of \texttt{Ray} as an argument. Returns positive infinity if the ray does not interact, otherwise the time to interaction
+    \item A \texttt{hit()} method that performs the interaction. Takes a pointer to a instance of \texttt{Ray} and maximum number of interactions to perform as arguments. Doesn't return anything, modifies the existing \texttt{Ray} instance.
     \item Several helper functions for performing common tasks:
     \begin{itemize}
         \item Rotate function. Takes a \texttt{std::array<double, 2>} and rotates it by $-\theta$. Equivalent to rotating to a coordinate system rotated by $\theta$
         \item A method \texttt{compute\_t()} which returns the time for a ray to reach a certain position. Assumes the position does lie along the ray's path. Uses the larger of $v_x$ or $v_y$ in magnitude so it so numerically stable.
     \end{itemize}
 \end{itemize}
-From this three helper classes are derived. These aren't meant to be initialised directly, but help in the construction of classes that are. They are:
+From this three helper classes are derived. These aren't meant to be initialised directly and are still abstract classes, but help in the construction of classes that are. They are:
 \begin{itemize}
     \item \texttt{Plane}
     \begin{itemize}
@@ -133,28 +135,29 @@ From this three helper classes are derived. These aren't meant to be initialised
     \item \texttt{Complex\_Component}
     \begin{itemize}
         \item Describes a complex component composed of several other components
-        \item Declares a vector of type \texttt{std::unique\_ptr<Component>} to store the sub-components of this component
+        \item Declares a vector of type \texttt{std::shared\_ptr<Component>} to store the sub-components of this component. We use \texttt{std::shared\_ptr<Component>} as Cython wrappers also need to hold onto a pointer
         \item Implements both the \texttt{test\_hit()} and \texttt{hit()} method:
         \begin{itemize}
-            \item For \texttt{test\_hit()}, we simply need to iterate over all the sub-components, return -1.0 if there are no interactions, otherwise the smallest positive time
+            \item For \texttt{test\_hit()}, we simply need to iterate over all the sub-components, return positive infinity if there are no interactions, otherwise the smallest positive time
             \item For \texttt{hit()}, we wish to trace a ray through these sub-components with a maximum number of interactions
             \item This is the same as the original problem, so we can just call the \texttt{trace\_ray()} function that will do this for us
         \end{itemize}
     \end{itemize}
 \end{itemize}
-From these there are four basic components implemented:
+From these there are five basic components implemented:
 \begin{itemize}
     \item \texttt{Mirror} - plane mirror
     \item \texttt{Mirror\_Sph} - spherical mirror
     \item \texttt{Refract\_Plane} - refraction at a planar boundary
     \item \texttt{Refract\_Sph} - refraction at a spherical boundary
+    \item \texttt{Screen\_Plane} - a planar, absorbing screen
 \end{itemize}
 
-Once these basic components have been implemented, complex components such as prisms or lenses should be exceedingly easy to implement. All that would need to be implemented would be a constructor that constructs the sub-components and adds them to the vector of sub-components.
+Once these basic components have been implemented, complex components such as prisms or lenses should be straightforward to implement. All that would need to be implemented would be a constructor that constructs the sub-components and adds them to the vector of sub-components.
 
 To perform the tracing, there are two relevant functions:
 \begin{itemize}
-    \item \texttt{trace\_ray()} traces a single ray through a number of components, up to a maximum number of iteration, $n$. Takes a reference to a \texttt{Ray} instance, vector of \texttt{std::unique\_ptr<Component>} and maximum number of iterations as arguments. Works directly on the ray instance
+    \item \texttt{trace\_ray()} traces a single ray through a number of components, up to a maximum number of iteration, $n$. Takes a reference to a \texttt{Ray} instance, vector of \texttt{std::shared\_ptr<Component>} and maximum number of iterations as arguments. Works directly on the ray instance
     \item \texttt{trace()} takes a vector of rays and traces them through the components given using \texttt{trace\_ray()}
 \end{itemize}
 
@@ -168,24 +171,13 @@ where $\vec{v}$ is a unit vector indicating the direction of travel. $t$ is a ti
 We first determine expressions for computing where a ray interested with either a planar or spherical surface, since all components possess a combination of planar and spherical surfaces.
 
 \subsection{Ray intersection with a planar surface}
-We define a plane as starting at $\vec{r}_1$ and ending at $\vec{r}_2$. It is reflecting on both sides and is described by,
+We define a plane as starting at $\vec{r}_1$ and ending at $\vec{r}_2$. It is described by,
 \begin{equation}
     \vec{r}_\mathrm{m}(t')
     =
     \vec{r}_1 + (\vec{r}_2 - \vec{r}_1) t',
 \end{equation}
-where $0 \le t' \le 1$ for a point to be on the mirror.
-
-We can derive where the ray interests as obeying,
-\begin{align}
-    t'
-    &=
-    \frac{v_y(x_1 - x_0) - v_x(y_1 - y_0)}{v_x(y_2 - y_1) - v_y(x_2 - x_1)}, &
-    t
-    &=
-    \frac{x_{0} \left(- y_{1} + y_{2}\right) - x_{1} y_{2} + x_{2} y_{1} + y_{0} \left(x_{1} - x_{2}\right)}{v_{x} \left(y_{1} - y_{2}\right) + v_{y} \left(- x_{1} + x_{2}\right)}
-\end{align}
-Remember we require both a unique solution for $t$ to exist and $0 \le t' \le 1$ for it to intersect the plane. We have to check the denominator is not zero in both cases.
+where $0 \le t' \le 1$ for a point to be on the mirror. 
 
 Furthermore, we define two unit vectors. We define $\vec{\hat{D}}$ as a unit vector pointing along the plane from its start point to its end point,
 \begin{equation}
@@ -214,6 +206,19 @@ where $D_x$ and $D_y$ are the x and y components of $\vec{\hat {D}}$ respectivel
     \caption{Structure of a plane, along with the unit vectors $\vec{\hat{D}}$ and $\vec{\hat{n}}$.}
     \label{fig:plane_structure}
 \end{figure}
+
+We can derive where a ray intersects as obeying,
+\begin{align}
+    t'
+    &=
+    \frac{v_y(x_1 - x_0) - v_x(y_1 - y_0)}{v_x(y_2 - y_1) - v_y(x_2 - x_1)}, &
+    t
+    &=
+    \frac{x_{0} \left(- y_{1} + y_{2}\right) - x_{1} y_{2} + x_{2} y_{1} + y_{0} \left(x_{1} - x_{2}\right)}{v_{x} \left(y_{1} - y_{2}\right) + v_{y} \left(- x_{1} + x_{2}\right)}
+\end{align}
+Remember we require both a unique solution for $t$ to exist and $0 \le t' \le 1$ for it to intersect the plane. We have to check the denominator is not zero in both cases.
+
+
 
 \subsection{Ray intersection with a circular surface}
 
@@ -257,11 +262,11 @@ where $D_x$ and $D_y$ are the x and y components of $\vec{\hat {D}}$ respectivel
     
         \end{tikzpicture}
     \end{subfigure}
-    \caption{Structure of a circular arc, along with the unit vectors $\vec{\hat{D}}$ and $\vec{\hat{n}}$ as defined for a circular arc.}
+    \caption{Structure of a circular arc, along with the unit vectors $\vec{\hat{D}}$ and $\vec{\hat{n}}$ as defined for a circular arc for a given ray intersection.}
     \label{fig:spherical_structure}
 \end{figure}
 
-We consider a circle with centre $(x_l, y_l)$ and radius $R$ as shown in Fig.~\ref{fig:spherical_structure}. In general, only a portion of its surface is modelled with $\theta_i \le t' \le \theta_f$. Here $t'$ is a parameter in the range $0 \le t' < 2\pi$ that takes the place of the polar angle. Its surface can be described by,
+We consider a circle with centre $(x_l, y_l)$ and radius $R$ as shown in Fig.~\ref{fig:spherical_structure}. In general, only a portion of its surface is modelled with $\theta_i \le t' \le \theta_f$. Here $t'$ is a parameter in that takes the place of the polar angle. Its surface can be described by,
 \begin{equation}
     \vec{r}_\mathrm{s}(t')
     =
@@ -318,7 +323,7 @@ where we have uses the fact $\vec{v}$ is normalised and defined $\gamma = v_x \D
     \pm
     \sqrt{\gamma^2 + R^2 - \Delta x^2 - \Delta y^2}.
 \end{equation}
-We can the compute the position of intersection, if there is one, and then use \texttt{atan2()} to compute $t'$. Trigonometric functions are only called when the ray has intersections in the future ($t>0$). By comparison, $\arccos$ is called for all possible intersections when solving for $t'$. $\sin$ may also be called there could be spurious $t'$ solutions that don't lie along the ray's path, at least using the method above. This leads to solving for $t$ being a more efficient method.
+We can the compute the position of intersection, if there is one, and then use \texttt{atan2()} to compute $t'$. Trigonometric functions are only called when the ray has intersections in the future ($t>0$). By comparison, $\arccos$ is called for all possible intersections when solving for $t'$. $\sin$ may also be called there could be spurious $t'$ solutions that don't lie along the ray's path, at least using the method below. This leads to solving for $t$ being a more efficient method.
 
 If we do not need the value of $t'$, we can avoid the call to \texttt{atan2()} and improve performance further. The new (non-rotation) methods for performing rotation and refraction do not require $t'$, allowing for a reasonable improvement. First consider the start and end points of the arc,
 \begin{align}
@@ -426,14 +431,15 @@ This will generate four solutions; two due to the $\pm$ and a further two since 
 \end{itemize}
 
 \section{Components}
-We would like to provide implementations for the following components:
+Ultimately, we would like to provide implementations for the following components:
 \begin{itemize}
     \item Mirrors, plane and spherical
+    \item Refraction components, plane and spherical
     \item Lenses
     \item Prisms
     \item Absorbing screen
 \end{itemize}
-We will first provide four basic components from which most other components we might be interested in can be described. These will be two that perform reflection/refraction at a planar surface and two that do the same but at a spherical (circular) surface.
+We will first provide five basic components from which most other components we might be interested in can be described. These will be two that perform reflection/refraction at a planar surface and two that do the same but at a spherical (circular) surface.
 
 \section{Reflecting basic components}
 \subsection{Plane mirrors}
@@ -573,11 +579,11 @@ where $\theta'$ is the angle of $\vec{v}'$, that is $\vec v$ in the rotated coor
         \frac{\pi}{2} - \theta_f
     \right)
     } \uvecj'.
-\end{equation}
+\end{equation}*
 Finally we then just have to rotate back to our original coordinates. If total internal reflection is determined to happen, then we simply need to reflect the ray at the point of intersection.
 
 \subsubsection{New method}
-The old method calls trigonometric functions including \texttt{sin()} and \texttt{atan2()}. If we were working in three dimensions we could write,
+The old method calls trigonometric functions including \texttt{sin()} and \texttt{atan2()}. If we were working in three dimensions we could write \cite{Hecht-Optics},
 \begin{equation}
 \label{eq:refraction_cross_prod}
     n_\mrm{i} \vec{\hat n} \times \vec{v}_\mrm{i} = n_\mrm{f} \vec{\hat n} \times \vec{v}_\mrm{f},
@@ -771,5 +777,9 @@ class Prism(PyCC_Wrap):
         super().__init__(comps)  
 \end{lstlisting}
 Like other components, \texttt{PyCC\_Wrap} provides a \texttt{Plot()} method useful for plotting the component.
+
+% Bibliography
+\bibliographystyle{ieeetr}
+\bibliography{bibo}
 
 \end{document}
