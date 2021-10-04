@@ -8,5 +8,7 @@ public:
 	Mirror_Sph(arr centre, double R, double start, double end);
 
 	virtual void hit(Ray* ry, int n = 1) const override;
+
+	virtual Mirror_Sph* clone() const override;
 };
 

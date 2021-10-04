@@ -16,6 +16,9 @@ public:
 	virtual double test_hit(Ray* ry) const = 0;
 	virtual void hit(Ray* ry, int n = 1) const = 0;
 
+	// CLone method that returns a copy of the component
+	virtual Component* clone() const = 0;
+
 	// Printing
 	friend std::ostream& operator<< (std::ostream& os, const Component& b);
 	virtual void print(std::ostream& os) const = 0;

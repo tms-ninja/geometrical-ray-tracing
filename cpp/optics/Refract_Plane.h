@@ -10,5 +10,7 @@ public:
 
 	// Hit function
 	virtual void hit(Ray* ry, int n) const override;
+
+	virtual Refract_Plane* clone() const override;
 };
 

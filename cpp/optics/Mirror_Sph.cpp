@@ -31,3 +31,8 @@ void Mirror_Sph::hit(Ray* ry, int n) const
 		v[i] -= 2 * v_dot_n * n_vec[i];
 
 }
+
+Mirror_Sph * Mirror_Sph::clone() const
+{
+	return new Mirror_Sph{ *this };
+}

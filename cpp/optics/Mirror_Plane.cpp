@@ -27,3 +27,8 @@ void Mirror_Plane::hit(Ray* ry, int n) const
 	for (int i = 0; i < 2; ++i)
 		v[i] = 2*v_dot_D*D[i] - v[i];
 }
+
+Mirror_Plane* Mirror_Plane::clone() const
+{
+	return new Mirror_Plane{ *this };
+}

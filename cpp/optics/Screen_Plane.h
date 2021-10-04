@@ -9,5 +9,7 @@ public:
 	
 	// Hit function
 	virtual void hit(Ray* ry, int n) const override;
+
+	virtual Screen_Plane* clone() const override;
 };
 

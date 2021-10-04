@@ -75,3 +75,8 @@ void Refract_Plane::hit(Ray* ry, int n) const
 	}
 }
 
+Refract_Plane * Refract_Plane::clone() const
+{
+	return new Refract_Plane{ *this };
+}
+

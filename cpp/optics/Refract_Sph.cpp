@@ -80,3 +80,8 @@ void Refract_Sph::hit(Ray* ry, int n) const
 
 
 }
+
+Refract_Sph * Refract_Sph::clone() const
+{
+	return new Refract_Sph{ *this };
+}

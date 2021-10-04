@@ -23,3 +23,8 @@ void Screen_Plane::hit(Ray* ry, int n) const
 	ry->pos.push_back(newPos);
 	ry->continue_tracing = false;
 }
+
+Screen_Plane * Screen_Plane::clone() const
+{
+	return new Screen_Plane{ *this };
+}
