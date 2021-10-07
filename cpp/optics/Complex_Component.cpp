@@ -22,19 +22,13 @@ void swap(Complex_Component & c1, Complex_Component & c2)
 	std::swap(c1.comps, c2.comps);
 }
 
-double Complex_Component::test_hit(Ray* ry) const
+double Complex_Component::test_hit(const Ray* ry) const
 {
-	std::vector<double> t;  // Vector to store hitting times
+	double t;
 
-	for (auto &c : comps)
-		t.push_back(c->test_hit(ry));
+	std::tie(std::ignore, t) = next_component(comps, ry);
 
-	size_t ind;
-	bool found;
-
-	std::tie(ind, found) = next_component(t);
-
-	return found ? t[ind] : infinity;
+	return t;
 }
 
 void Complex_Component::hit(Ray* ry, int n) const

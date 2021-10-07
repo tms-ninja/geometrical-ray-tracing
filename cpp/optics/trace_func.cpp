@@ -1,13 +1,32 @@
 #include "trace_func.h"
 
+
+// Determines which component, if any, is the next one to interact
+template<typename T>
+std::pair<size_t, double> next_component(const T & c, const Ray * ry)
+{
+	double current_t;
+	double best_t{ infinity };
+	size_t best_ind{ 0 };
+
+	for (std::size_t ind = 0; ind < c.size(); ++ind)
+	{
+		current_t = c[ind]->test_hit(ry);
+
+		if (current_t < best_t)
+		{
+			best_t = current_t;
+			best_ind = ind;
+		}
+	}
+
+	return { best_ind, best_t };
+}
+
 // Traces an individual ray for n interactions
 template <typename T>
 void trace_ray(const T &c, Ray* ry, int n, bool fill_up)
 {
-	std::vector<double> t;  // Holds t values for each component, infinity if no interaction
-
-	t.resize(c.size());
-
 	if (fill_up)
 		ry->pos.reserve(ry->pos.size() + n);
 
@@ -17,14 +36,13 @@ void trace_ray(const T &c, Ray* ry, int n, bool fill_up)
 		renorm_unit_vec(ry->v);
 
 		// Now do tracing
-		// Check for all interactions
-		for (std::size_t cInd = 0; cInd < c.size(); ++cInd)
-			t[cInd] = c[cInd]->test_hit(ry);
-
+		// Determine which, if any is the next component
 		size_t next_ind;
+		double t;
 		bool found;
 
-		std::tie(next_ind, found) = next_component(t);
+		std::tie(next_ind, t) = next_component(c, ry);
+		found = t != infinity;
 
 		if (found) // work out next interaction
 		{

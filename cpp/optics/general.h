@@ -18,9 +18,12 @@ class Ray;
 using arr = std::array<double, 2>;
 using comp_list = std::vector<std::shared_ptr<Component>>;
 
-std::pair<size_t, bool> next_component(const std::vector<double> &t);
-
 // Forward declarations for tracing functions
+
+// Determines the nect index in c of the next component the ray hits and the time it hits
+// Returns time of infinity if no component is next to interact
+template <typename T>
+std::pair<size_t, double> next_component(const T &c, const Ray* r);
 
 // Traces an individual ray for n interactions
 template <typename T>

@@ -13,7 +13,7 @@ public:
 	Plane(arr start, arr end);
 
 	// function for testing for hits
-	virtual double test_hit(Ray* ry) const override;
+	virtual double test_hit(const Ray* ry) const override;
 
 	// Printing
 	virtual void print(std::ostream& os) const override;

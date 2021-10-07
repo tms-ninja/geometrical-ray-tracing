@@ -11,7 +11,7 @@ Plane::Plane(arr start, arr end)
 	Plane::D = { (end[0] - start[0]) / mag, (end[1] - start[1]) / mag };
 }
 
-double Plane::test_hit(Ray* ry) const
+double Plane::test_hit(const Ray* ry) const
 {
 	double t, tp;
 
