@@ -34,3 +34,18 @@ bool is_close(double v1, double v2, double atol)
 {
 	return (abs(v1 - v2) < atol);
 }
+
+void renorm_unit_vec(arr & v)
+{
+	double v_mag_sq, x, fact;
+
+	v_mag_sq = v[0] * v[0] + v[1] * v[1];
+
+	// using Taylor expansion for 1/sqrt(x) around x=1
+	x = v_mag_sq - 1.0;
+
+	fact = 1.0 - x / 2.0;//  +3.0*x*x / 8.0;
+
+	v[0] *= fact;
+	v[1] *= fact;
+}

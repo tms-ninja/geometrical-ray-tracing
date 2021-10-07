@@ -51,3 +51,7 @@ arr rotate(const arr &r, const double theta);
 
 // Absolute comparison between v1 and v2
 bool is_close(double v1, double v2, double atol = 1e-8);
+
+// Renormalises vector whose magnitude is close to 1 using first order Taylor series
+// for 1/sqrt(abs(vec))
+void renorm_unit_vec(arr &v);
