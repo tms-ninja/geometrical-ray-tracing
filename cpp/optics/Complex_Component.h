@@ -29,7 +29,7 @@ public:
 
 
 	// Hit methods
-	virtual double test_hit(Ray* ry) const override;
+	virtual double test_hit(const Ray* ry) const override;
 	virtual void hit(Ray* ry, int n = 1) const override;
 
 	virtual Complex_Component* clone() const override;

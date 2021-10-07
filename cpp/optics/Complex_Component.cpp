@@ -22,7 +22,7 @@ void swap(Complex_Component & c1, Complex_Component & c2)
 	std::swap(c1.comps, c2.comps);
 }
 
-double Complex_Component::test_hit(Ray* ry) const
+double Complex_Component::test_hit(const Ray* ry) const
 {
 	double t;
 

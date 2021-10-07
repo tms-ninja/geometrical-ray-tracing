@@ -17,7 +17,7 @@ public:
 
 	Spherical(arr centre, double R, double start = 0.0, double end = 0.0);
 
-	virtual double test_hit(Ray* ry) const override;
+	virtual double test_hit(const Ray* ry) const override;
 
 	// helper functions
 	bool in_range(arr& p) const;

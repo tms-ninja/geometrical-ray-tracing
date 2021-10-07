@@ -13,7 +13,7 @@ public:
 	
 	// Methods for testing whether a ray hits the component and performing the hit
 	// Pure virtual functions as class shouldn't be initiated
-	virtual double test_hit(Ray* ry) const = 0;
+	virtual double test_hit(const Ray* ry) const = 0;
 	virtual void hit(Ray* ry, int n = 1) const = 0;
 
 	// CLone method that returns a copy of the component

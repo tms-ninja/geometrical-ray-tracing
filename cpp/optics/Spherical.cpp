@@ -10,7 +10,7 @@ Spherical::Spherical(arr centre, double R, double start, double end)
 	end_p = rotate(end_p, start);
 }
 
-double Spherical::test_hit(Ray* ry) const
+double Spherical::test_hit(const Ray* ry) const
 {
 	return solve(ry->pos.back(), ry->v);
 }

@@ -3,7 +3,7 @@
 
 // Determines which component, if any, is the next one to interact
 template<typename T>
-std::pair<size_t, double> next_component(const T & c, Ray * ry)
+std::pair<size_t, double> next_component(const T & c, const Ray * ry)
 {
 	double current_t;
 	double best_t{ infinity };
