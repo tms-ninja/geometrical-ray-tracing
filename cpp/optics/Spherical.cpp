@@ -1,7 +1,7 @@
 #include "Spherical.h"
 
 Spherical::Spherical(arr centre, double R, double start, double end)
-	: centre(centre), R(R), start(start), end(end)
+	: start(start), end(end), centre(centre), R(R)
 {
 	cos_start = cos(start);
 	sin_start = sin(start);
