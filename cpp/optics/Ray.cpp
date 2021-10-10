@@ -21,3 +21,17 @@ std::ostream & operator<<(std::ostream & os, const Ray & ry)
 
 	return os;
 }
+
+void Ray::reset(const arr& new_v)
+{
+	v = new_v;
+	pos.resize(1);
+}
+
+void Ray::reset(const arr& new_v, const arr& new_start)
+{
+	v = new_v;
+
+	pos.resize(1);
+	pos[0] = new_start;
+}

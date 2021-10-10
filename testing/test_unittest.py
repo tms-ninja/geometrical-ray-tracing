@@ -147,6 +147,41 @@ class Test_PyRay(unittest.TestCase, useful_checks):
 
         assert_allclose(r.plot(), expected_ans)
 
+    # Testing method reset()
+    def test_PyRay_reset_v(self):
+        """Test pyRay.reset(new_v) method"""
+        pos, v = np.zeros(2), np.array([1.0, 0.0])
+
+        r = tr.PyRay(pos, v)
+
+        # Trace the ray so its pos has more than one element
+        tr.PyTrace([], [r], n=3, fill_up=True)
+
+        new_v = np.array([0.0, -1.0])
+        r.reset(new_v)
+
+        assert_array_equal(r.pos.shape, (1, 2))
+        assert_array_equal(r.pos[0], pos)
+        assert_array_equal(r.v, new_v)
+
+    def test_PyRay_reset_v_pos(self):
+        """Test PyRay.reset(new_v, new_pos) method"""
+        pos, v = np.zeros(2), np.array([1.0, 0.0])
+
+        r = tr.PyRay(pos, v)
+
+        # Trace the ray so its pos has more than one element
+        tr.PyTrace([], [r], n=3, fill_up=True)
+
+        new_pos = np.array([2.0, 3.0])
+        new_v = np.array([0.0, -1.0])
+        r.reset(new_v, new_pos)
+
+        assert_array_equal(r.pos.shape, (1, 2))
+        assert_array_equal(r.pos[0], new_pos)
+        assert_array_equal(r.v, new_v)
+
+
 
 class Test_PyTrace(unittest.TestCase, useful_checks):
     """Tests for the tracing function PyTrace"""

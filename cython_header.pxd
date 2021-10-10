@@ -26,6 +26,9 @@ cdef extern from "Ray.h":
         vector[arr] pos
         arr v
 
+        void reset(arr)
+        void reset(arr, arr)
+
 cdef extern from "general.cpp":
     pass
 
