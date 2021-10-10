@@ -257,6 +257,44 @@ cdef class PyRay:
         
         return self.pos
 
+    def reset(self, double[:] new_v not None, double[:] new_p = None):
+        """
+        Resets the PyRay instance to the start position and is direction to
+        that of new_v. new_v is assumed to be normalised.
+
+        Parameters
+        ----------
+        new_v : numpy.ndarray
+            The new 2d direction of the ray. Should be a normalised numpy array
+            with shape (2,).
+        new_p : numpy.ndarray, optional
+            Initial 2d position of the ray. If not specified, the original 
+            initial position will be used. Should be a numpy array with shape
+            (2,).
+
+        Returns
+        -------
+        None. 
+        
+        """
+
+        if tuple(new_v.shape) != _arr_shape:
+            raise wrong_np_shape_except("new_v", new_v)
+
+        cdef arr n_v = make_arr_from_numpy(new_v)
+        cdef arr n_p
+
+        if new_p is None:
+            dereference(self.c_data).reset(n_v)
+        else:
+            if tuple(new_p.shape) != _arr_shape:
+                raise wrong_np_shape_except("new_p", new_p)
+
+            n_p = make_arr_from_numpy(new_p)
+
+            dereference(self.c_data).reset(n_v, n_p)
+
+
 # class _PyComponent
     
 cdef class _PyComponent:
