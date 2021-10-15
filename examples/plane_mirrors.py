@@ -1,3 +1,4 @@
+# Models rays bouncing inside a mirrored polygon
 import numpy as np
 import matplotlib.pyplot as plt
 
