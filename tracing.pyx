@@ -75,14 +75,13 @@ def PyTrace(list components, list rays, int n, bool fill_up=True):
         The rays to be traced.
     n : int
         The number of iterations (i.e. interactions) to be performed.
-        Interactions count as interactions with top level components in 
-        components only. I.e. interactions with complex components count as
-        only one interaction even though a ray may interact with several of 
-        their sub components.
+        Interactions count as interactions with leaf level components in only. 
+        E.g. if a ray interacts with two sub-components of a complex
+        component, this accounts for two of the n interactions.
     fill_up : bool, optional
         If is detected a ray will not interact with any more components before 
         n iterations are reached, PyTrace will fill the ray's position up with 
-        the final position so it contains n points. The default is True.
+        the final position so it has added n points. The default is True.
 
     Raises
     ------
