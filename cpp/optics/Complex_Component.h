@@ -3,6 +3,7 @@
 #pragma once
 #include "Component.h"
 #include "general.h"
+#include <tuple>
 #include <utility>
 #include <vector>
 
