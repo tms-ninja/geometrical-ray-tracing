@@ -6,6 +6,7 @@
 #include "Ray.h"
 #include <fstream>
 #include <string>
+#include <tuple>
 
 // Determines the nect index in c of the next component the ray hits and the time it hits
 // Returns time of infinity if no component is next to interact
