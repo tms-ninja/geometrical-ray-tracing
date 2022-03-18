@@ -6,7 +6,10 @@ Complex_Component::Complex_Component(const Complex_Component &c)
 
 	for (auto& ptr : c.comps)
 	{
-		this->comps.emplace_back(ptr->clone());
+		// Ensure the raw pointer returned by ptr->clone() is wrapped up
+		// in a smart pointer so if push_back() throws, the memory isn't
+		// leaked
+		this->comps.push_back(std::shared_ptr<Component>(ptr->clone()));
 	}
 }
 
