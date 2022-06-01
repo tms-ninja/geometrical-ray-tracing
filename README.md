@@ -1,5 +1,5 @@
-# ray-tracing-cython
- Cython interface to ray-tracing. It performs 2d geometrical ray tracing through a system of optical components such as mirrors and lenses. It contains five basic components, namely:
+# geometrical-ray-tracing
+ Python program that performs 2d geometrical ray tracing through a system of optical components such as mirrors and lenses. It contains five basic components, namely:
  - Plane mirror
  - Planar boundary at which refraction occurs
  - A planar screen that absorbs rays
