@@ -36,7 +36,6 @@ double Spherical::test_hit(const Ray* ry) const
 
 bool Spherical::in_range(arr & p) const
 {
-	// Determines if the point p satisfies start <= atan2(p) <= end
 	arr temp{ p[0] - centre[0], p[1] - centre[1] };
 
 	arr p_rot;

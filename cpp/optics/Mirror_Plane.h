@@ -17,6 +17,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
+// Describes a plane mirror
+//
 #pragma once
 #include "Plane.h"
 class Mirror_Plane :

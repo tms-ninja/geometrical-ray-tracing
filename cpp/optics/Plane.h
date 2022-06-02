@@ -17,6 +17,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
+// Abstract class that describes a planar surface
+//
 #pragma once
 #include "Component.h"
 #include <tuple>

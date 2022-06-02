@@ -17,7 +17,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-// Ray tracing program written to learn about polymorphism in C++
+// Contains functions for testing performance of different components
+// Not used for tracing 
 //
 #define _USE_MATH_DEFINES  // Need for definition of M_PI
 #include <cmath>
@@ -210,8 +211,6 @@ void test_concentric_Mirror_Sph()
 
 	std::cout << rays[0];
 }
-
-
 
 int main()
 {

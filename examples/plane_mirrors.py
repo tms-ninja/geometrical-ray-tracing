@@ -17,12 +17,13 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-# Models rays bouncing inside a mirrored polygon
+# Models a ray bouncing inside a mirrored polygon
 import numpy as np
 import matplotlib.pyplot as plt
 
 from tracing import PyTrace, PyRay, PyMirror_Plane
 
+# Number of sides of polygon
 N = 5
 comps = []
 

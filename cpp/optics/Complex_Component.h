@@ -17,8 +17,9 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-// Class to describe component composed of multiple sub-components
+// Class to describe an optical component composed of multiple sub-components
 // E.g. triangluar prism can be described as three planar boundaries where refraction occurs
+//
 #pragma once
 #include "Component.h"
 #include "general.h"
@@ -30,6 +31,7 @@ class Complex_Component :
 	public Component
 {
 public:
+	// Sub-components the Complex_Component is composed from
 	comp_list comps;
 
 	Complex_Component() = default;

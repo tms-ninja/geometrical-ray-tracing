@@ -17,7 +17,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-# Simple example to show a ray interacting with a mirror
+# Simple example to show a ray interacting with a plane mirror
 
 import numpy as np
 import matplotlib.pyplot as plt

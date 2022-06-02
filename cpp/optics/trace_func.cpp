@@ -20,7 +20,6 @@
 #include "trace_func.h"
 
 
-// Determines which component, if any, is the next one to interact
 template<typename T>
 std::pair<size_t, double> next_component(const T & c, const Ray * ry)
 {
@@ -42,7 +41,6 @@ std::pair<size_t, double> next_component(const T & c, const Ray * ry)
 	return { best_ind, best_t };
 }
 
-// Traces an individual ray for n interactions
 template <typename T>
 void trace_ray(const T &c, Ray* ry, int n, bool fill_up)
 {
@@ -91,7 +89,6 @@ void trace_ray(const T &c, Ray* ry, int n, bool fill_up)
 	}
 }
 
-// Traces a vector of rays through the components
 template <typename T>
 void trace(const T &c, std::vector<Ray*> &rays, int n, bool fill_up)
 {

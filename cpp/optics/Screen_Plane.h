@@ -17,6 +17,9 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
+// Describes a plane that 'absorbs' rays which hit it. Further tracing of 
+// rays that hit Screen_Plane will not occur.
+//
 #pragma once
 #include "Plane.h"
 class Screen_Plane :

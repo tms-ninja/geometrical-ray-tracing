@@ -94,10 +94,6 @@ void Refract_Sph::hit(Ray* ry, int n) const
 		v[0] -= 2 * disc_term[0];
 		v[1] -= 2 * disc_term[1];
 	}
-
-
-
-
 }
 
 Refract_Sph * Refract_Sph::clone() const
