@@ -25,7 +25,7 @@ Plane::Plane(arr start, arr end)
 	Plane::end = end;
 
 	// Compute unit vector pointing from start to end
-	double mag{ hypot(end[0] - start[0], end[1] - start[1]) };
+	double mag{ std::hypot(end[0] - start[0], end[1] - start[1]) };
 
 	Plane::D = { (end[0] - start[0]) / mag, (end[1] - start[1]) / mag };
 }
