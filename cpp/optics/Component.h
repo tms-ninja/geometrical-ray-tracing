@@ -17,6 +17,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
+// Abstract base class from which all optical component classes derive
+//
 #pragma once
 #define _USE_MATH_DEFINES
 #include <cmath>

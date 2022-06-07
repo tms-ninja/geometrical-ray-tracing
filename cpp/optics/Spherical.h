@@ -17,6 +17,10 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
+// Describes a surface in the shape of an arc
+// Note setting the start/end angles except in the constructor is non-trivial,
+// the relevant setting & getting methods should be used instead.
+//
 #pragma once
 #include "Component.h"
 
@@ -25,9 +29,11 @@ class Spherical :
 	public Component
 {
 protected:
-	arr end_p;  // Rotated end point
+	// Rotated end point relative to centre of arc, rotated such that the 
+	// start point lies on the positive x axis
+	arr end_p;  
 	double cos_start, sin_start;  // cos and sin of start
-	double  start, end;
+	double start, end;
 
 public:
 	arr centre;
@@ -39,8 +45,13 @@ public:
 	virtual double test_hit(const Ray* ry) const override;
 
 	// helper functions
+
+	// Determines if the point p satisfies start <= atan2(p) <= end
 	bool in_range(arr& p) const;
 
+	// Determines the time of interception of a ray with starting position
+	// r and initial direction v with the arc. Returns infinity if no
+	// interception occurs
 	double solve(const arr &r, const arr &v) const;
 
 	double get_start();

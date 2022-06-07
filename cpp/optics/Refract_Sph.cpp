@@ -72,7 +72,7 @@ void Refract_Sph::hit(Ray* ry, int n) const
 	}
 
 	// we are performing refraction
-	disc = sqrt(disc);
+	disc = std::sqrt(disc);
 
 	// Either side of +/- of resulting speeds
 	double disc_term[2];
@@ -89,15 +89,11 @@ void Refract_Sph::hit(Ray* ry, int n) const
 	double vf_dot_D{ v[0] * D[0] + v[1] * D[1] };
 
 
-	if (signbit(vi_dot_n) != signbit(vf_dot_n) || signbit(vi_dot_D) != signbit(vf_dot_D))
+	if (std::signbit(vi_dot_n) != std::signbit(vf_dot_n) || std::signbit(vi_dot_D) != std::signbit(vf_dot_D))
 	{
 		v[0] -= 2 * disc_term[0];
 		v[1] -= 2 * disc_term[1];
 	}
-
-
-
-
 }
 
 Refract_Sph * Refract_Sph::clone() const

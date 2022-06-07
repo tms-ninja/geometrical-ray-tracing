@@ -22,10 +22,10 @@
 Spherical::Spherical(arr centre, double R, double start, double end)
 	: start(start), end(end), centre(centre), R(R)
 {
-	cos_start = cos(start);
-	sin_start = sin(start);
+	cos_start = std::cos(start);
+	sin_start = std::sin(start);
 
-	end_p = { R * cos(end), R * sin(end) };
+	end_p = { R * std::cos(end), R * std::sin(end) };
 	end_p = rotate(end_p, start);
 }
 
@@ -36,7 +36,6 @@ double Spherical::test_hit(const Ray* ry) const
 
 bool Spherical::in_range(arr & p) const
 {
-	// Determines if the point p satisfies start <= atan2(p) <= end
 	arr temp{ p[0] - centre[0], p[1] - centre[1] };
 
 	arr p_rot;
@@ -74,8 +73,8 @@ double Spherical::solve(const arr & r, const arr & v) const
 
 	double t_vals[2];
 
-	t_vals[0] = -gamma + sqrt(disc);
-	t_vals[1] = -gamma - sqrt(disc);
+	t_vals[0] = -gamma + std::sqrt(disc);
+	t_vals[1] = -gamma - std::sqrt(disc);
 
 	bool found_sol{ false };
 	double best_t;
@@ -112,10 +111,10 @@ void Spherical::set_start(double new_start)
 {
 	start = new_start;
 
-	cos_start = cos(start);
-	sin_start = sin(start);
+	cos_start = std::cos(start);
+	sin_start = std::sin(start);
 
-	end_p = { R * cos(end), R * sin(end) };
+	end_p = { R * std::cos(end), R * std::sin(end) };
 	end_p = rotate(end_p, start);
 }
 
@@ -128,7 +127,7 @@ void Spherical::set_end(double new_end)
 {
 	end = new_end;
 
-	end_p = { R * cos(end), R * sin(end) };
+	end_p = { R * std::cos(end), R * std::sin(end) };
 	end_p = rotate(end_p, start);
 }
 
@@ -142,11 +141,11 @@ void Spherical::print(std::ostream & os) const
 
 		tp = start + (end - start) * static_cast<double>(i) / static_cast<double>(N);
 
-		os << centre[0] + R * cos(tp) << '\t';
+		os << centre[0] + R * std::cos(tp) << '\t';
 	}
 
 	// print final x value
-	os << centre[0] + R * cos(end) << '\n';
+	os << centre[0] + R * std::cos(end) << '\n';
 
 	for (int i = 0; i < N - 1; ++i)  // y values
 	{
@@ -154,10 +153,10 @@ void Spherical::print(std::ostream & os) const
 
 		tp = start + (end - start) * static_cast<double>(i) / static_cast<double>(N);
 
-		os << centre[1] + R * sin(tp) << '\t';
+		os << centre[1] + R * std::sin(tp) << '\t';
 	}
 
 	// print final x value
-	os << centre[1] + R * sin(end) << '\n';
+	os << centre[1] + R * std::sin(end) << '\n';
 
 }

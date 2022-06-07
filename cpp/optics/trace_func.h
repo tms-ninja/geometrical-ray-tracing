@@ -27,7 +27,7 @@
 #include <string>
 #include <tuple>
 
-// Determines the nect index in c of the next component the ray hits and the time it hits
+// Determines the index in c of the next component the ray hits and the time it hits
 // Returns time of infinity if no component is next to interact
 template <typename T>
 std::pair<size_t, double> next_component(const T &c, const Ray* r);

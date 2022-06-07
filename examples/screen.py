@@ -17,7 +17,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-# Simple example to lens focusing light onto a screen
+# Simple example to show a lens focusing light onto a screen
 
 import numpy as np
 import matplotlib.pyplot as plt

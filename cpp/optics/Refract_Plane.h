@@ -17,6 +17,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
+// Describes a plane at which refraction occurs
+//
 #pragma once
 #include "Plane.h"
 class Refract_Plane :

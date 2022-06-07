@@ -17,6 +17,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
+// Describes an arc across which refraction occurs
+//
 #pragma once
 #include "Spherical.h"
 class Refract_Sph :

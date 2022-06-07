@@ -17,6 +17,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
+// Describes a mirror in the shape of an arc
+//
 #pragma once
 #include "Spherical.h"
 

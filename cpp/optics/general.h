@@ -49,12 +49,12 @@ std::pair<size_t, double> next_component(const T &c, const Ray* r);
 template <typename T>
 void trace_ray(const T &c, Ray* ry, int n, bool fill_up = true);
 
-template <typename T>
 // Traces a vector of rays through the components
+template <typename T>
 void trace(const T &c, std::vector<Ray*> &rays, int n, bool fill_up = true);
 
 
-// Adds a component to the vector to the vector vec
+// Adds a component to the vector to the comp_list
 template <typename T>
 void add_component(comp_list &vec, T c)
 {
@@ -69,7 +69,7 @@ void save_components(comp_list &comps, std::string path);
 
 // Helper functions
 
-// Rotates the coordinates by alpha (rotates axis, not point)
+// Rotates the point by theta clockwise
 arr rotate(const arr &r, const double theta);
 
 // Absolute comparison between v1 and v2
