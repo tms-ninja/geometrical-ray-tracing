@@ -18,6 +18,7 @@
 
 
 # distutils: language = c++
+from cpython.ref cimport Py_INCREF
 from cython.operator import dereference
 from libcpp.memory cimport shared_ptr
 from libcpp.vector cimport vector
@@ -26,6 +27,9 @@ from cython_header cimport *
 
 import numpy as np
 cimport numpy as np
+
+# Initialise numpy's C API
+np.import_array()
 
 
 # Problem with cython's code generation of std::move, use explicit definition
@@ -79,7 +83,50 @@ cdef arr make_arr_from_numpy(double[:] n):
     a[0], a[1] = n[0], n[1]
     
     return a
+
+
+# make_np_view_from_arr function
+
+cdef make_np_view_from_arr(arr& a, object owning_obj):
+    """
+    Exposes the arr as a numpy view.
+
+    Parameters
+    ----------
+    a : arr&
+        arr object that will form the base of the numpy view.
+    owning_obj : object
+        Python object that own's a's memory.
+
+    Returns
+    -------
+    np_view : np.ndarray
+        A numpy view onto the arr's data.
     
+    """
+
+    # Uses PyArray_SimpleNewFromData() from numpy C API to create numpy view
+    # See https://numpy.org/doc/stable/reference/c-api/array.html
+
+    cdef int nd = 1  # number of dimensions in arr
+    cdef int typenum = np.NPY_FLOAT64
+    cdef np.npy_intp[1] dims = [2]  # Number of elements in each dimension
+
+    # PyArray_SimpleNewFromData() creates a numpy array from the given pointer
+    cdef np.ndarray np_view = np.PyArray_SimpleNewFromData(nd, &(dims[0]), typenum, a.data())
+
+    # PyArray_SetBaseObject() steals a reference so we need to pre-increment
+    Py_INCREF(owning_obj)
+
+    # Ensures Python's reference counting system knows it needs to keep
+    # owning_obj around while the numpy view is around
+    cdef int set_base_err = np.PyArray_SetBaseObject(np_view, owning_obj)
+
+    if set_base_err==-1:
+        raise RuntimeError("Failed to set base of numpy view")
+    
+    return np_view
+
 # PyTrace function
 
 def PyTrace(list components, list rays, int n, bool fill_up=True):
@@ -171,10 +218,6 @@ cdef class PyRay:
     
     cdef Ray* c_data
     
-    # Memory views & numpy views onto them used for properties that return numpy views
-    cdef double[::1] v_mem_view
-    cdef np.ndarray  v_np
-    
     def __cinit__(self, double[:] init not None, double[:] v not None):
         """
         Creates an instance of PyRay
@@ -212,7 +255,7 @@ cdef class PyRay:
         None.
 
         """
-        
+
         del self.c_data
         
     @property
@@ -250,11 +293,7 @@ cdef class PyRay:
 
         """
         
-        self.v_mem_view = <double[:2]>( dereference(self.c_data).v.data() )
-        
-        v_np = np.asarray(self.v_mem_view)
-        
-        return v_np
+        return make_np_view_from_arr(self.c_data.v, self)
     @v.setter
     def v(self, double[:] v not None):
         if tuple(v.shape) != _arr_shape:
@@ -380,12 +419,7 @@ cdef class _PyPlane(_PyComponent):
     """
     
     cdef Plane* c_plane_ptr
-    
-    # Memory views & numpy views onto them used for properties that return numpy views
-    cdef double[::1] start_mem_view
-    cdef np.ndarray  start_np
-    cdef double[::1] end_mem_view
-    cdef np.ndarray  end_np
+
 
     cdef _load_Plane(self, Plane* pln_ptr):
         """
@@ -406,13 +440,6 @@ cdef class _PyPlane(_PyComponent):
         self.c_plane_ptr = pln_ptr
         self._load_component(<Component*>pln_ptr)
 
-        # load properties now self.c_plane_ptr is valid
-        self.start_mem_view = <double[:2]>( dereference(self.c_plane_ptr).start.data() )
-        self.start_np = np.asarray(self.start_mem_view)
-
-        self.end_mem_view = <double[:2]>( dereference(self.c_plane_ptr).end.data() )
-        self.end_np = np.asarray(self.end_mem_view)
-
     @property
     def start(self):
         """
@@ -426,7 +453,7 @@ cdef class _PyPlane(_PyComponent):
 
         """
 
-        return self.start_np
+        return make_np_view_from_arr(self.c_plane_ptr.start, self)
     @start.setter
     def start(self, double[:] start not None):
         if tuple(start.shape) != _arr_shape:
@@ -447,7 +474,7 @@ cdef class _PyPlane(_PyComponent):
 
         """
         
-        return self.end_np
+        return make_np_view_from_arr(self.c_plane_ptr.end, self)
     @end.setter
     def end(self, double[:] end not None):
         if tuple(end.shape) != _arr_shape:
@@ -605,6 +632,7 @@ cdef class PyRefract_Plane(_PyPlane):
         dereference(self.c_data).n2 = n2
         
 # class Screen_Plane
+
 cdef class PyScreen_Plane(_PyPlane):
     """A class to represent a planar, absorbing screen"""
 
@@ -651,9 +679,6 @@ cdef class _PySpherical(_PyComponent):
     
     cdef Spherical* c_sph_ptr
     
-    # Memory views & numpy views onto them used for properties that return numpy views
-    cdef double[::1] centre_mem_view
-    cdef np.ndarray  centre_np
 
     cdef _load_Sph(self, Spherical* sph_ptr):
         """
@@ -673,10 +698,6 @@ cdef class _PySpherical(_PyComponent):
 
         self.c_sph_ptr = sph_ptr
         self._load_component(<Component*>sph_ptr)
-
-        # load properties now self.c_sph_ptr is valid
-        self.centre_mem_view = <double[:2]>( dereference(sph_ptr).centre.data() )
-        self.centre_np = np.asarray(self.centre_mem_view)
     
     @property
     def centre(self):
@@ -691,7 +712,7 @@ cdef class _PySpherical(_PyComponent):
 
         """
 
-        return self.centre_np
+        return make_np_view_from_arr(self.c_sph_ptr.centre, self)
     @centre.setter
     def centre(self, double[:] centre not None):
         if tuple(centre.shape) != _arr_shape:
