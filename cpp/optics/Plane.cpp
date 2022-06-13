@@ -39,6 +39,34 @@ double Plane::test_hit(const Ray* ry) const
 	return t;
 }
 
+arr& Plane::get_start()
+{
+	return this->start;
+}
+
+void Plane::set_start(const arr& start)
+{
+	this->start = start;
+
+	double mag{ std::hypot(end[0] - start[0], end[1] - start[1]) };
+
+	D = { (end[0] - start[0]) / mag, (end[1] - start[1]) / mag };
+}
+
+arr& Plane::get_end()
+{
+	return this->end;
+}
+
+void Plane::set_end(const arr& end)
+{
+	this->end = end;
+
+	double mag{ std::hypot(end[0] - start[0], end[1] - start[1]) };
+
+	D = { (end[0] - start[0]) / mag, (end[1] - start[1]) / mag };
+}
+
 void Plane::print(std::ostream & os) const
 {
 	for (int i = 0; i < 2; ++i)
