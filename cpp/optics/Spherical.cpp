@@ -20,13 +20,10 @@
 #include "Spherical.h"
 
 Spherical::Spherical(arr centre, double R, double start, double end)
-	: start(start), end(end), centre(centre), R(R)
+	: centre(centre), R(R)
 {
-	cos_start = std::cos(start);
-	sin_start = std::sin(start);
-
-	end_p = { R * std::cos(end), R * std::sin(end) };
-	end_p = rotate(end_p, start);
+	set_start(start);
+	set_end(end);
 }
 
 double Spherical::test_hit(const Ray* ry) const
