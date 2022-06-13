@@ -80,8 +80,14 @@ cdef extern from "Plane.cpp":
     
 cdef extern from "Plane.h":
     cdef cppclass Plane(Component):
-        arr start, end
         double test_hit(Ray*)
+        
+        arr& get_start()
+        void set_start(arr&)
+
+        arr& get_end()
+        void set_end(arr&)
+
 
 
 cdef extern from "Mirror_Plane.cpp":

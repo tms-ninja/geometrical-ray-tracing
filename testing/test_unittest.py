@@ -49,10 +49,14 @@ class useful_checks:
         setattr(obj, attr, expected)
         unittest.TestCase.assertEqual(self, getattr(obj, attr), expected)
 
-    def check_np_view_shape_2_set(self, obj, attr, expected, new_vw):
-        """Checks a numpy view with shape (2, )
-        Checks the view equals what we expect it to equal
-        and changing it elementwise and by copy
+    def check_writable_np_view_shape_2_set(self, obj, attr, expected, new_vw):
+        """
+        Checks a writeable numpy view with shape (2, )
+        Checks the view equals what we expect it to equal and changing it 
+        elementwise and by copy
+        Note this should only be used for a numpy view with the writable
+        flag set to True. Otherwise the non-writable version of this function
+        should be used
         """
 
         vw = getattr(obj, attr)
@@ -74,6 +78,30 @@ class useful_checks:
         setattr(obj, attr, exp_cp)
 
         assert_array_equal(getattr(obj, attr), exp_cp)
+
+    def check_non_writable_np_view_shape_2_set(self, obj, attr, expected, new_vw):
+        """
+        Checks a non-writeable numpy view with shape (2, )
+        Checks the view equals what we expect it to equal and changing it 
+        by copy & that it rejects being set element wise
+        Note this should only be used for a numpy view with the writable
+        flag set to False. Otherwise the writable version of this function
+        should be used
+        """
+
+        vw = getattr(obj, attr)
+
+        # Check it is what we initialy expect
+        assert_array_equal(getattr(obj, attr), expected)
+
+        # Check it rejects elementwise assignment
+        with self.assertRaises(ValueError) as _:
+            vw[0], vw[1] = new_vw[0], new_vw[1]
+
+        # Change by copy to new_vw
+        setattr(obj, attr, new_vw)
+
+        assert_array_equal(getattr(obj, attr), new_vw)
 
 # Tests for PyRay and PyTrace
 class Test_PyRay(unittest.TestCase, useful_checks):
@@ -135,7 +163,7 @@ class Test_PyRay(unittest.TestCase, useful_checks):
         """Tests PyRay.v set"""
         r = self.create_obj()
 
-        self.check_np_view_shape_2_set(r, 'v', self._v, np.array([6.7, 8.9]))
+        self.check_writable_np_view_shape_2_set(r, 'v', self._v, np.array([6.7, 8.9]))
 
     # Testing property pos
     def test_PyRay_v_get(self):
@@ -375,7 +403,7 @@ class Test_PyMirror_Plane(unittest.TestCase, useful_checks):
         """Tests property start setting"""
         m = self.create_Obj()
 
-        self.check_np_view_shape_2_set(m, 'start', self._start, np.array([6.7, 8.9]))
+        self.check_non_writable_np_view_shape_2_set(m, 'start', self._start, np.array([6.7, 8.9]))
         
     def test_PyMirror_Plane_start_set_none_not_allowed(self):
         """Tests property start can't be set to None"""
@@ -395,7 +423,7 @@ class Test_PyMirror_Plane(unittest.TestCase, useful_checks):
         """Tests property end setting"""
         m = self.create_Obj()
 
-        self.check_np_view_shape_2_set(m, 'end', self._end, np.array([6.7, 8.9]))
+        self.check_non_writable_np_view_shape_2_set(m, 'end', self._end, np.array([6.7, 8.9]))
 
     def test_PyMirror_Plane_end_set_none_not_allowed(self):
         """Tests property end cannot be set to None"""
@@ -499,7 +527,7 @@ class Test_PyRefract_Plane(unittest.TestCase, useful_checks):
         """Tests property start setting"""
         m = self.create_Obj()
 
-        self.check_np_view_shape_2_set(m, 'start', self._start, np.array([6.7, 8.9]))
+        self.check_non_writable_np_view_shape_2_set(m, 'start', self._start, np.array([6.7, 8.9]))
         
     def test_PyRefract_Plane_start_set_none_not_allowed(self):
         """Tests property end can't be set to None"""
@@ -519,7 +547,7 @@ class Test_PyRefract_Plane(unittest.TestCase, useful_checks):
         """Tests property end setting"""
         m = self.create_Obj()
 
-        self.check_np_view_shape_2_set(m, 'end', self._end, np.array([6.7, 8.9]))
+        self.check_non_writable_np_view_shape_2_set(m, 'end', self._end, np.array([6.7, 8.9]))
 
     def test_PyRefract_Plane_end_set_none_not_allowed(self):
         """Tests property end cannot be set to None"""
@@ -686,7 +714,7 @@ class Test_PyScreen_Plane(unittest.TestCase, useful_checks):
         """Tests property start setting"""
         m = self.create_Obj()
 
-        self.check_np_view_shape_2_set(m, 'start', self._start, np.array([6.7, 8.9]))
+        self.check_non_writable_np_view_shape_2_set(m, 'start', self._start, np.array([6.7, 8.9]))
         
     def test_PyScreen_Plane_start_set_none_not_allowed(self):
         """Tests property start can't be set to None"""
@@ -706,7 +734,7 @@ class Test_PyScreen_Plane(unittest.TestCase, useful_checks):
         """Tests property end setting"""
         m = self.create_Obj()
 
-        self.check_np_view_shape_2_set(m, 'end', self._end, np.array([6.7, 8.9]))
+        self.check_non_writable_np_view_shape_2_set(m, 'end', self._end, np.array([6.7, 8.9]))
 
     def test_PyScreen_Plane_end_set_none_not_allowed(self):
         """Tests property end cannot be set to None"""
@@ -810,7 +838,7 @@ class Test_PyMirror_Sph(unittest.TestCase, useful_checks):
         """Tests property centre setting"""
         m = self.create_Obj()
 
-        self.check_np_view_shape_2_set(m, 'centre', self._centre, self._centre + 10.0)
+        self.check_writable_np_view_shape_2_set(m, 'centre', self._centre, self._centre + 10.0)
 
     def test_PyMirror_Sph_centre_set_none_not_allowed(self):
         """Tests property centre cannot be set to None"""
@@ -1066,7 +1094,7 @@ class Test_PyRefract_Sph(unittest.TestCase, useful_checks):
         """Tests property centre setting"""
         m = self.create_Obj()
 
-        self.check_np_view_shape_2_set(m, 'centre', self._centre, self._centre + 10.0)
+        self.check_writable_np_view_shape_2_set(m, 'centre', self._centre, self._centre + 10.0)
 
     def test_PyRefract_Sph_centre_set_none_not_allowed(self):
         """Tests property centre cannot be set to None"""
@@ -1403,7 +1431,7 @@ class Test_PyLens(unittest.TestCase, useful_checks):
         """Tests property lens_centre setting"""
         m = self.create_Obj()
 
-        self.check_np_view_shape_2_set(m, 'lens_centre', self._lens_centre, self._lens_centre + 10.0)
+        self.check_writable_np_view_shape_2_set(m, 'lens_centre', self._lens_centre, self._lens_centre + 10.0)
 
     # Testing property R_lens
     def test_PyLens_R_lens_get(self):

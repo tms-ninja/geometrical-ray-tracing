@@ -449,17 +449,22 @@ cdef class _PyPlane(_PyComponent):
         Returns
         -------
         start_np : numpy.ndarray
-            A 2d numpy view of the start point.
+            A read-only numpy view of the start point.
 
         """
 
-        return make_np_view_from_arr(self.c_plane_ptr.start, self)
+        cdef np.ndarray start_np = make_np_view_from_arr(self.c_plane_ptr.get_start(), self)
+
+        # Make array read-only as Plane.start can't be set trivially
+        start_np.flags.writeable = False
+
+        return start_np
     @start.setter
     def start(self, double[:] start not None):
         if tuple(start.shape) != _arr_shape:
             raise wrong_np_shape_except("start", start)
         
-        dereference(self.c_plane_ptr).start = make_arr_from_numpy(start)
+        self.c_plane_ptr.set_start(make_arr_from_numpy(start))
 
     @property
     def end(self):
@@ -470,17 +475,22 @@ cdef class _PyPlane(_PyComponent):
         Returns
         -------
         end_np : numpy.ndarray
-            A numpy view with shape (2,) of the end point.
+            A read only numpy view with shape (2,) of the end point.
 
         """
         
-        return make_np_view_from_arr(self.c_plane_ptr.end, self)
+        cdef np.ndarray end_np = make_np_view_from_arr(self.c_plane_ptr.get_end(), self)
+
+        # Make array read-only as Plane.start can't be set trivially
+        end_np.flags.writeable = False
+
+        return end_np
     @end.setter
     def end(self, double[:] end not None):
         if tuple(end.shape) != _arr_shape:
             raise wrong_np_shape_except("end", end)
 
-        dereference(self.c_plane_ptr).end = make_arr_from_numpy(end)
+        self.c_plane_ptr.set_end(make_arr_from_numpy(end))
         
     def plot(self):
         """
@@ -1285,11 +1295,11 @@ class PyLens(PyCC_Wrap):
         self._right_arc.centre += diff
 
         # planes
-        self._top_plane.start += diff
-        self._top_plane.end += diff
+        self._top_plane.start = self._top_plane.start + diff
+        self._top_plane.end = self._top_plane.end + diff
 
-        self._bottom_plane.start += diff
-        self._bottom_plane.end += diff
+        self._bottom_plane.start = self._bottom_plane.start + diff
+        self._bottom_plane.end = self._bottom_plane.end + diff
 
     @property
     def R_lens(self):

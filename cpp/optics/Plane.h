@@ -26,15 +26,24 @@
 class Plane :
 	public Component
 {
-public:
+protected:
 	arr start;  // Start and end positions of plane
 	arr end;
 	arr D;      // Unit vector pointing from start to end
 
+public:
 	Plane(arr start, arr end);
 
 	// function for testing for hits
 	virtual double test_hit(const Ray* ry) const override;
+
+	// getter/setter methods for start & end
+	// getter methods shouldn't be used to modify start end values
+	arr& get_start();
+	void set_start(const arr& start);
+
+	arr& get_end();
+	void set_end(const arr& end);
 
 	// Printing
 	virtual void print(std::ostream& os) const override;
