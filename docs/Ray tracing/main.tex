@@ -1,3 +1,22 @@
+% geometrical-ray-tracing: Program to perform geometrical ray tracing
+% Copyright (C) 2022  Tom Spencer (tspencerprog@gmail.com)
+%
+% This file is part of geometrical-ray-tracing
+%
+% geometrical-ray-tracing is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+
 \documentclass{article}
 \usepackage[utf8]{inputenc}
 \usepackage[a4paper, total={6in, 8in}]{geometry}
@@ -40,7 +59,7 @@
 \newcommand{\mrm}[1]{\mathrm{#1}}
 
 
-\title{Ray tracing}
+\title{geometrical-ray-tracing}
 \author{Tom Spencer}
 \date{\currenttime, \today}
 
@@ -59,106 +78,69 @@
 \maketitle
 
 \section{Introduction}
-Aiming to make a program for tracing light rays through various optical components such as lenses, prisms and mirrors. Hope to implement it in Python first, then re-implement it in C++ and finally get Python running it in C++ (might need to use Cython or C to do this).
+\texttt{geometrical-ray-tracing} is a Python library that performs geometrical ray tracing in two dimensions. It provides several basic components such as a planar mirror as well as the ability to create new components composed of other components. The ray tracing itself is implemented in C++, with a Cython wrapper to interface with Python.
 
-It allows me to explore various object orientated programming concepts in C++ such as polymorphism and virtual functions.
+This work makes extensive use of Cython and NumPy \cite{behnel2011cython, harris2020array}. The examples provided also make use of the Matplotlib and SciPy libraries \cite{Hunter:2007, 2020SciPy-NMeth}.
 
 \section{Program implementation}
-We define a base class called \texttt{component} from which each type of component derives. E.g. we have derived classes including \texttt{mirror} and \texttt{lens}. The base class declares the methods \texttt{test\_hit()} which tests if a light ray interacts with the component and \texttt{hit()}, which performs the interaction. In Python we also have a \texttt{plot()} method that plots the component to the current plot.
+In this section, we consider the only C++ details of the implementation. The details on the Python side are discussed in Section~\ref{sec:calling from python}.
 
-All components present in an optical system are simply stored in a Python list.
-
-\subsection{C++ complications}
-In C++ there isn't a simple way of storing all our components in a list like container such as \texttt{std::vector} as all elements must be of the same type. Without cheating and using something like \texttt{boost::any}, this can be overcome by making use of polymorphism.
-
-Any sort of component (such as a mirror or lens) is described by a class (\texttt{Mirror} and \texttt{Lens}) that derives from a \texttt{Component} base class. The \texttt{Component} class defines the \texttt{test\_hit()} and \texttt{hit()} methods as virtual functions. These are then overridden in the derived classes.
-
-C++ allows us to create a pointer \texttt{ptr} of type \texttt{\textsuperscript{*}Component} to a derived class such as \texttt{Mirror}. Suppose \texttt{ptr} points at an instance of \texttt{Mirror}. Since \texttt{hit()} is a virtual finction, when we call it using \texttt{ptr->hit()}, the \texttt{hit()} method in the \texttt{Mirror} class is called. This is because the \texttt{hit()} defined in \texttt{Mirror} is `more derived' than the \texttt{hit()} in \texttt{Component} and when a virtual function is called, the implementation that is executed corresponds to the `most derived.' Equivalently if \texttt{ptr} was pointing at an instance of \texttt{Lens}, it would call the \texttt{hit()} method defined in \texttt{Lens}.
-
-We then store all the components in a \texttt{std::vector} of type \texttt{\textsuperscript{*}Component}. All elements in the vector are then the same type, even though they point to different types of component. To avoid having to manage the memory it would probably be a good idea to use a smart pointer like \texttt{std::unique\_ptr} rather than a raw pointer.
-
-\subsection{Memory structures}
-We know now how to store and describe the system of optical components we wish to trace the rays through. Now we need to work out how to structure the rays themselves.
-
-In the original pure Python implementation, we used a 3 dimensional \texttt{numpy} array, with the first index identifying the ray, the second the interaction point and the third discriminating x and y coordinate. \texttt{numpy} allows us to easily slice the array to extract specific components. In C++, it doesn't seem we can do this. There would seem to be two options:
-\begin{itemize}
-    \item Create a class to define a 3d array
-    \begin{itemize}
-        \item Has the advantage memory is all in one place
-        \item Can directly interact with a \texttt{numpy} array when using python
-    \end{itemize}
-    \item Create a \texttt{Ray} class that contains vectors of x and y coordinates
-    \begin{itemize}
-        \item Memory is all over the place
-        \item Would need to copy everything into a \texttt{numpy} array if we wanted to do that
-    \end{itemize}
-\end{itemize}
-It would be easier to create a \texttt{Ray} class to keep track of everything and then wrap it in \texttt{Cython}. We can always add a function to convert it to a \texttt{numpy} array and we're never going to be dealing with large numbers of rays, so memory probably isn't an issue. It also means we just need to pass a reference to the ray to any function and the function can work out get whatever it wants.
-
-We can create a \texttt{Ray} class, with member variables describing the current direction of the ray as a \texttt{std::array<double, 2>} and the interaction points as a \linebreak {\texttt{std::vector<std::array<double, 2>>}}. This has the benefit that a single mathematical vector is described as a \texttt{std::array<double, 2>}, and this can easily be passed to functions. Also the position data of a single ray is contiguous. All the rays are then stored in a vector.
-
-When initialising the \texttt{Ray} class, we should reserve the memory required for the vector, depending on how many tracings we want to do. When we compute the new position, we can then just \texttt{push\_back} the answer into the vector.
-
-\subsection{Final}
+\subsection{Rays}
 Each ray is described by an instance of a \texttt{Ray} class. This includes:
 \begin{itemize}
     \item A \texttt{std::array<double, 2>} used to describe the direction of the ray
     \item A vector of \texttt{std::array<double, 2>} used to describe the initial and interaction points of the ray
+    \item A \texttt{reset()} method to reset the \texttt{Ray} to its initial position and direction of travel, optionally allowing a change of initial position.
 \end{itemize}
 
-Each component ultimately derives from the \texttt{Component} class. This declares:
+\subsection{Components}
+We define an abstract base class \texttt{Component} from which all components ultimately derive. This declares:
 \begin{itemize}
-    \item A \texttt{test\_hit()} method that tests whether a ray interacts with the component. Takes a reference to a instance of \texttt{Ray} as an argument. Returns positive infinity if the ray does not interact, otherwise the time to interaction
-    \item A \texttt{hit()} method that performs the interaction. Takes a pointer to a instance of \texttt{Ray} and maximum number of interactions to perform as arguments. Doesn't return anything, modifies the existing \texttt{Ray} instance.
-    \item Several helper functions for performing common tasks:
-    \begin{itemize}
-        \item Rotate function. Takes a \texttt{std::array<double, 2>} and rotates it by $-\theta$. Equivalent to rotating to a coordinate system rotated by $\theta$
-        \item A method \texttt{compute\_t()} which returns the time for a ray to reach a certain position. Assumes the position does lie along the ray's path. Uses the larger of $v_x$ or $v_y$ in magnitude so it so numerically stable.
-    \end{itemize}
+    \item A \texttt{test\_hit()} method that tests whether a ray interacts with the component. It takes a reference to a instance of \texttt{Ray} as an argument. Returns positive infinity if the ray does not interact, otherwise the time to interaction
+    \item A \texttt{hit()} method that performs the interaction. It takes a reference to a instance of \texttt{Ray} and a maximum number of interactions to perform as arguments. It has no return value as it modifies the existing \texttt{Ray} instance.
 \end{itemize}
-From this three helper classes are derived. These aren't meant to be initialised directly and are still abstract classes, but help in the construction of classes that are. They are:
+From this two helper classes are derived. These aren't meant to be initialised directly and are still abstract classes. They are:
 \begin{itemize}
     \item \texttt{Plane}
     \begin{itemize}
         \item Describes a simple planar component
-        \item Declares \texttt{start} and \texttt{end} member variables to define the start and end points of the plane
+        \item Declares to define the start and end points of the plane and a unit vector pointing from the plane's start to its end 
         \item Defines a constructor to initialise the class with given start and end points
         \item Implements the \texttt{test\_hit()} method to test for a ray hitting the plane
     \end{itemize}
     \item \texttt{Spherical}
     \begin{itemize}
         \item Describes a circular component or arc
-        \item Declares member variables for describing centre of circle/arc, its radius, and start/end angles for defining arc
+        \item Declares member variables for describing centre of circle/arc, its radius, and start/end angles for defining arc, the end angle should be larger than the start angle
         \item Defines constructor for these variables
         \item Implements the \texttt{test\_hit()} method to test for a ray hitting the circle/arc
     \end{itemize}
-    \item \texttt{Complex\_Component}
-    \begin{itemize}
-        \item Describes a complex component composed of several other components
-        \item Declares a vector of type \texttt{std::shared\_ptr<Component>} to store the sub-components of this component. We use \texttt{std::shared\_ptr<Component>} as Cython wrappers also need to hold onto a pointer
-        \item Implements both the \texttt{test\_hit()} and \texttt{hit()} method:
-        \begin{itemize}
-            \item For \texttt{test\_hit()}, we simply need to iterate over all the sub-components, return positive infinity if there are no interactions, otherwise the smallest positive time
-            \item For \texttt{hit()}, we wish to trace a ray through these sub-components with a maximum number of interactions
-            \item This is the same as the original problem, so we can just call the \texttt{trace\_ray()} function that will do this for us
-        \end{itemize}
-    \end{itemize}
 \end{itemize}
-From these there are five basic components implemented:
+Note in this work ``spherical" and ``arc" are taken to be synonymous. From these there are five basic components implemented:
 \begin{itemize}
-    \item \texttt{Mirror} - plane mirror
+    \item \texttt{Mirror\_Plane} - plane mirror
     \item \texttt{Mirror\_Sph} - spherical mirror
     \item \texttt{Refract\_Plane} - refraction at a planar boundary
     \item \texttt{Refract\_Sph} - refraction at a spherical boundary
     \item \texttt{Screen\_Plane} - a planar, absorbing screen
 \end{itemize}
+Finally we have the \texttt{Complex\_Component} class for describing a component composed of several other components. These can include the five components above as well as other instances of \texttt{Complex\_Component}.
+\begin{itemize}
+    \item Declares a vector of type \texttt{std::shared\_ptr<Component>} to store the sub-components of this component. We use \texttt{std::shared\_ptr<Component>} as Cython wrappers of C++ component classes also need to hold onto a pointer.
+    \item Implements both the \texttt{test\_hit()} and \texttt{hit()} methods:
+    \begin{itemize}
+        \item For \texttt{test\_hit()}, we simply need to iterate over all the sub-components, return positive infinity if there are no interactions, otherwise the smallest positive time.
+        \item For \texttt{hit()}, we wish to trace a ray through these sub-components with a maximum number of interactions. This is the same as the original problem, so we can just call the \texttt{trace\_ray()} function described below.
+    \end{itemize}
+\end{itemize}
 
-Once these basic components have been implemented, complex components such as prisms or lenses should be straightforward to implement. All that would need to be implemented would be a constructor that constructs the sub-components and adds them to the vector of sub-components.
+\texttt{Complex\_Component} should make components such as prisms or lenses straightforward to implement. All that would need to be implemented would be a constructor that constructs the sub-components and adds them to the vector of sub-components.
 
+\subsection{Tracing functions}
 To perform the tracing, there are two relevant functions:
 \begin{itemize}
-    \item \texttt{trace\_ray()} traces a single ray through a number of components, up to a maximum number of iteration, $n$. Takes a reference to a \texttt{Ray} instance, vector of \texttt{std::shared\_ptr<Component>} and maximum number of iterations as arguments. Works directly on the ray instance
-    \item \texttt{trace()} takes a vector of rays and traces them through the components given using \texttt{trace\_ray()}
+    \item \texttt{trace\_ray()} traces a single ray through a number of components, up to a maximum number of iteration, $n$. Takes a reference to a \texttt{Ray} instance, vector of \texttt{std::shared\_ptr<Component>}, maximum number of iterations and whether the \texttt{Ray} should be ``filled up" to the maximum as arguments. Works directly on the ray instance.
+    \item \texttt{trace()} takes a vector of rays and traces them through the components given using \texttt{trace\_ray()}.
 \end{itemize}
 
 \section{Determining the intersection of a ray with a surface}
@@ -166,9 +148,9 @@ We shall always consider the light ray in question to start at $\vec{r}_0 = x_0 
 \begin{equation}
     \vec{r}(t) = \vec{r}_0 + \vec{v}t,
 \end{equation}
-where $\vec{v}$ is a unit vector indicating the direction of travel. $t$ is a time-like quantity and for an interaction we must have $t > 0$ for the interaction to be in the future. If there are multiple components that could interact we select the one with the smallest $t$.
+where $\vec{v}$ is a unit vector indicating the direction of travel. $t$ is a dimensionless quantity and for we must have $t > 0$ for the interaction to be in the future. If there are multiple components that could interact we select the one with the smallest positive $t$.
 
-We first determine expressions for computing where a ray interested with either a planar or spherical surface, since all components possess a combination of planar and spherical surfaces.
+We first determine expressions for computing where a ray interested with either a planar or spherical surface, since all components possess a combination of planar and/or spherical surfaces.
 
 \subsection{Ray intersection with a planar surface}
 We define a plane as starting at $\vec{r}_1$ and ending at $\vec{r}_2$. It is described by,
@@ -214,11 +196,9 @@ We can derive where a ray intersects as obeying,
     \frac{v_y(x_1 - x_0) - v_x(y_1 - y_0)}{v_x(y_2 - y_1) - v_y(x_2 - x_1)}, &
     t
     &=
-    \frac{x_{0} \left(- y_{1} + y_{2}\right) - x_{1} y_{2} + x_{2} y_{1} + y_{0} \left(x_{1} - x_{2}\right)}{v_{x} \left(y_{1} - y_{2}\right) + v_{y} \left(- x_{1} + x_{2}\right)}
+    \frac{x_{0} \left(- y_{1} + y_{2}\right) - x_{1} y_{2} + x_{2} y_{1} + y_{0} \left(x_{1} - x_{2}\right)}{v_{x} \left(y_{1} - y_{2}\right) + v_{y} \left(- x_{1} + x_{2}\right)}.
 \end{align}
-Remember we require both a unique solution for $t$ to exist and $0 \le t' \le 1$ for it to intersect the plane. We have to check the denominator is not zero in both cases.
-
-
+We require both a unique solution for $t$ to exist and $0 \le t' \le 1$ for it to intersect the plane. We have to check the denominator is not zero in both cases.
 
 \subsection{Ray intersection with a circular surface}
 
@@ -230,8 +210,8 @@ Remember we require both a unique solution for $t$ to exist and $0 \le t' \le 1$
         
         \draw[black] (2.598, 1.5) arc (30:180:3);
         \draw[black, dashed] (-3, 0) arc (180:390:3);
-        \draw[black] (-3, 0) -- (-1.5, 0) node[below] {$R$} -- (0, 0) -- (2.598, 1.5);
-        \draw (0, 0) -- (3, 0);
+        \draw[black, dashed] (-3, 0) -- (-1.5, 0) node[below] {$R$} -- (0, 0) -- (2.598, 1.5);
+        \draw[black, dashed] (0, 0) -- (3, 0);
         
         \draw (1, 0) arc (0:30:1) node[pos=0.5, right] {$\theta_i$};
         \draw (0.5, 0) arc (0:180:0.5) node[pos=0.5,above] {$\theta_f$};
@@ -251,9 +231,10 @@ Remember we require both a unique solution for $t$ to exist and $0 \le t' \le 1$
         \draw[black, thick, ->] (-4, 0.75) -- (-3.549, 1.0);
         
         \draw[black, thick] (-3.549, 1.0) -- (-2.598, 1.5);
+        \draw[black, thick] (-2.598, 1.5) -- (-2.8, 2.8);
         
         \draw (0.5, 0) arc (0:150:0.5) node[pos=0.5, above] {$t'$};
-        \draw[black] (-2.598, 1.5) -- (0, 0) -- (3, 0);
+        \draw[black, dashed] (-2.598, 1.5) -- (0, 0) -- (3, 0);
         
         \draw[thick, ->] (-2.598, 1.5) -- (-1.848, 2.79 ) node[anchor=south] {$\vec{\hat{D}}$};
         \draw[thick, ->] (-2.598, 1.5) -- (-3.897, 2.25) node[anchor=south] {$\vec{\hat{n}}$};
@@ -274,7 +255,7 @@ We consider a circle with centre $(x_l, y_l)$ and radius $R$ as shown in Fig.~\r
     +
     (y_l + R\sin t') \uvecj.
 \end{equation}
-We define a normal unit vector $\vec{\hat{n}}$ that points radially outwards. We define the unit vector $\vec{\hat{D}}$ to be orthogonal to $\vec{\hat{n}}$, in a manner consistent with that of a plane and Eq.~\ref{eq:normal_vec_def}, namely,
+We define a normal unit vector $\vec{\hat{n}}$ that points radially outwards at the point of the ray's intersection. We define the unit vector $\vec{\hat{D}}$ to be orthogonal to $\vec{\hat{n}}$, in a manner consistent with that of a plane and Eq.~\ref{eq:normal_vec_def}, namely,
 \begin{equation}
     \vec{\hat{D}}
     =
@@ -285,21 +266,18 @@ We define a normal unit vector $\vec{\hat{n}}$ that points radially outwards. We
 
 When determining if a ray intersects an arc, we have the simultaneous equations,
 \begin{align}
-    x_0 + v_x t &= x_l + R\cos t' \\
+    x_0 + v_x t &= x_l + R\cos t', \\
     y_0 + v_y t &= y_l + R\sin t'.
 \end{align}
 Letting $\Delta x = x_0 - x_l$, $\Delta y = y_0 - y_l$ we get,
 \begin{align}
 \label{eq:sph_simulataneous_1}
-    \Delta x + v_x t &= R\cos t' \\
+    \Delta x + v_x t &= R\cos t', \\
 \label{eq:sph_simulataneous_2}
     \Delta y + v_y t &= R\sin t'.
 \end{align}
 
-We can solve for either $t$ or $t'$. Originally we solved for $t'$, but it is more efficient to solve for $t$ instead.
-
-\subsubsection{Solving for $t$}
-We can eliminate $t'$ by squaring Eqs.~\ref{eq:sph_simulataneous_1} \& \ref{eq:sph_simulataneous_2}, and utilising $\sin^2 \theta + \cos^2 \theta = 1$. This produces the quadratic,
+We can solve for either $t$ or $t'$. Originally we solved for $t'$, but it is more efficient to solve for $t$ instead. We can eliminate $t'$ by squaring Eqs.~\ref{eq:sph_simulataneous_1} \& \ref{eq:sph_simulataneous_2}, and utilising the identity $\sin^2 \theta + \cos^2 \theta = 1$. This produces the quadratic,
 \begin{align}
     0
     &=
@@ -315,7 +293,7 @@ We can eliminate $t'$ by squaring Eqs.~\ref{eq:sph_simulataneous_1} \& \ref{eq:s
     +
     \Delta x^2 + \Delta y^2 - R^2,
 \end{align}
-where we have uses the fact $\vec{v}$ is normalised and defined $\gamma = v_x \Delta x + v_y \Delta y$. The solutions for $t$ can be found as,
+where we have used the fact $\vec{v}$ is normalised and defined $\gamma = v_x \Delta x + v_y \Delta y$. The solutions for $t$ can be found as,
 \begin{equation}
     t
     =
@@ -323,20 +301,21 @@ where we have uses the fact $\vec{v}$ is normalised and defined $\gamma = v_x \D
     \pm
     \sqrt{\gamma^2 + R^2 - \Delta x^2 - \Delta y^2}.
 \end{equation}
-We can the compute the position of intersection, if there is one, and then use \texttt{atan2()} to compute $t'$. Trigonometric functions are only called when the ray has intersections in the future ($t>0$). By comparison, $\arccos$ is called for all possible intersections when solving for $t'$. $\sin$ may also be called there could be spurious $t'$ solutions that don't lie along the ray's path, at least using the method below. This leads to solving for $t$ being a more efficient method.
+We do not need to call any trigonometric functions to determine $t$ unlike if we solve for $t'$. This helps solving for $t$ to be a more efficient method.
 
-If we do not need the value of $t'$, we can avoid the call to \texttt{atan2()} and improve performance further. The new (non-rotation) methods for performing rotation and refraction do not require $t'$, allowing for a reasonable improvement. First consider the start and end points of the arc,
+If we do not need the value of $t'$, we can avoid the call to \texttt{atan2()} that would be used to determine it and improve performance further. The new (non-rotation) methods for performing reflection and refraction do not require $t'$. To check for an interaction, first consider the start and end points of the arc,
 \begin{align}
     r_\mrm{start} = R \cos \theta_i \uveci + R \sin \theta_i \, \uvecj,
     &&
     r_\mrm{end} = R \cos \theta_f \uveci + R \sin \theta_f \uvecj.
 \end{align}
 We can then rotate our coordinate system clockwise by $\theta_i$, with coordinates ($x'$, $y'$). We can test if the intersection point, $\vec{P}$, lies on the arc by comparing its components in this coordinate system to that of $\vec{r}_\mrm{end}$. There are two cases as illustrated in Fig.~\ref{fig:avoind_atan2}.
-
-In the first case, we have $r'_{\mrm{end},y} \geq 0$. If $P_y \geq 0$ and $P_x \geq r'_{\mrm{end},x}$ then the ray does intersect the arc, otherwise it does not.
-
-In the second case, we have $r'_{\mrm{end},y} < 0$. $P_y \geq 0$ is sufficient to know the ray does intersect the arc. If $P_y < 0$, we must have 
+\begin{itemize}
+    \item In the first case, we have $r'_{\mrm{end},y} \geq 0$. If $P_y \geq 0$ and $P_x \geq r'_{\mrm{end},x}$ then the ray does intersect the arc, otherwise it does not.
+    \item In the second case, we have $r'_{\mrm{end},y} < 0$. $P_y \geq 0$ is sufficient to know the ray does intersect the arc. If $P_y < 0$, we must have 
 $P_x \leq r'_{\mrm{end},x}$ for intersection.
+\end{itemize}
+
 
 \begin{figure}
     \centering
@@ -370,76 +349,6 @@ $P_x \leq r'_{\mrm{end},x}$ for intersection.
 \end{figure}
 
 
-\subsubsection{Solving for $t'$}
-This section is kept for reference with earlier versions of the code. Eliminating $t$ from Eqs.~\ref{eq:sph_simulataneous_1} \& \ref{eq:sph_simulataneous_2} produces,
-\begin{equation}
-    v_y \Delta x - v_x \Delta y
-    =
-    R v_y \cos t'
-    -
-    R v_x \sin t'.
-\end{equation}
-Defining $\delta= v_x \Delta y - v_y \Delta x$, we can eliminate $\sin t'$,
-\begin{align}
-    -\left(
-        \delta + R v_y \cos t'
-    \right)^2
-    &=
-    R^2 v_x^2 \sin^2 t' \\
-    &=
-    R^2 v_x^2 (1 - \cos^2 t').
-\end{align}
-This is a quadratic in $\cos t'$ with coefficients,
-\begin{align}
-    a
-    &=
-    R^2 \left( v_x^2 + v_y^2 \right), \\
-    b
-    &=
-    2 R v_y \delta, \\
-    c
-    &=
-    \delta^2 - R^2 v_x^2,
-\end{align}
-and solutions,
-\begin{equation}
-    \cos t'
-    =
-    \frac{1}{R}
-    \left(
-        -v_y
-        \delta
-        \pm
-        \sqrt{
-         \delta^2 
-        \left(
-            v_y^2 - 1
-        \right)
-        +
-        \left(
-            v_x R
-        \right)^2
-        }
-    \right),
-\end{equation}
-This will generate four solutions; two due to the $\pm$ and a further two since if $t'$ is a solution, then so is $2\pi - t'$. We will need to determine to correct solution for the intersection. The solution we are after, if one exists must satisfy the following conditions:
-\begin{itemize}
-    \item $\cos t'$ must be in the range $-1 \le \cos t' \le 1$, otherwise the ray never intersects the surface
-    \item $t'$ are in the necessary range for the surface, $\theta_i \le t' \le \theta_f$
-    \item Determine which solutions are true solutions and lie along the light ray's path
-    \item If there are two solutions left, choose the solution with the smaller but non-negative $t$ parameter
-\end{itemize}
-
-\section{Components}
-Ultimately, we would like to provide implementations for the following components:
-\begin{itemize}
-    \item Mirrors, plane and spherical
-    \item Refraction components, plane and spherical
-    \item Lenses
-    \item Prisms
-    \item Absorbing screen
-\end{itemize}
-We will first provide five basic components from which most other components we might be interested in can be described. These will be two that perform reflection/refraction at a planar surface and two that do the same but at a spherical (circular) surface.
 
 \section{Reflecting basic components}
 \subsection{Plane mirrors}
@@ -460,7 +369,7 @@ To find the new velocity, we compute the angle, $\alpha$, the plane makes with t
     \frac{y_2 - y_1}{x_2 - x_1}.
 \end{equation}
 
-Now we must be careful with the cases of $\alpha = \frac{\pi}{2}, \frac{3\pi}{2}$ since the tangent is infinite in these cases. Moreover as tangent is $\pi$ periodic, $\arctan$ will give the correct answer up to $\pm \pi$. Fortunately \texttt{numpy} has the function \texttt{arctan2(y, x)} which specifically accounts for these two cases, and also will always return the correct sign. In C++, the \texttt{cmath} header provides \texttt{atan2()}.
+We must be careful with the cases of $\alpha = \frac{\pi}{2}, \frac{3\pi}{2}$ since the tangent is infinite in these cases. Moreover as tangent is $\pi$ periodic, $\arctan$ will give the correct answer up to $\pm \pi$. Fortunately the \texttt{cmath} header provides \texttt{atan2()} which specifically accounts for these two cases and also will always return the correct sign.
 
 We can now perform the reflection by rotating our coordinates by $\alpha$ to coordinates $(x', y')$. In these coordinates the ray is normal to the plane so the reflection is then simply a case of negating the $y'$ component. The standard rotation matrix to rotate a point anticlockwise from $(x, y)$ to $x', y')$ by $\theta$ is,
 \begin{equation}
@@ -469,7 +378,7 @@ We can now perform the reflection by rotating our coordinates by $\alpha$ to coo
         \sin \theta &  \cos \theta
     \end{pmatrix}.
 \end{equation}
-However, this rotates a point anticlockwise, we want to rotate our coordinates, so we require a minus sign for our matrix,
+However, this rotates a point anticlockwise, we want to rotate our coordinates, so we require a slight cnahge of sign for our matrix,
 \begin{equation}
     \label{eq:rotation_matrix}
     R(\theta)
@@ -481,10 +390,10 @@ However, this rotates a point anticlockwise, we want to rotate our coordinates, 
 \end{equation}
 Once we've negated the $y'$ component, we can then rotate back using $R(-\theta)$ to get the new direction of the ray.
 
-The disadvantage of this method is performance. It involves call to trigonometric functions which are slow, especially \texttt{atan2(y, x)}. Fortunately we can avoid this.
+The disadvantage of this method is performance. It involves call to trigonometric functions which are slow, especially \texttt{atan2()}, each time we process a ray interaction. Fortunately we can avoid this.
 
 \subsubsection{Vector method}
-We don't really need to rotate the plane each time we perform a reflection. All we really want to do is reflect the component of $\vec{v}$. We can make use of $\vec{\hat{D}}$, the normal vector that points along the plane. The normalisation of $\vec{\hat{D}}$ does involve square rooting, but it only needs to be computed once. The component of $\vec{v}$ perpendicular plane is $\vec{v} - (\vec{v} \cdot \vec{\hat{D}}) \vec{\hat{D}}$ and so the reflections ca be performed as,
+We don't really need to rotate the plane each time we perform a reflection. All we really want to do is reflect the component of $\vec{v}$ normal to the plane. We can make use of $\vec{\hat{D}}$, the unit vector that points along the plane. The normalisation of $\vec{\hat{D}}$ does involve square rooting, but it only needs to be computed once. The component of $\vec{v}$ perpendicular to the plane is $\vec{v} - (\vec{v} \cdot \vec{\hat{D}}) \vec{\hat{D}}$ and so the reflections ca be performed as,
 \begin{equation}
     \vec{v}
     \rightarrow
@@ -506,31 +415,7 @@ A disadvantage of this method is $|\vec{v}|$ drifts from 1 over time. As all the
 Working to $\mathcal{O} \left(S-1\right)$ should be sufficient.
 
 \subsection{Spherical mirror}
-To reflect at a spherical surface, we follow a broadly similar method to that of a planar surface. 
-
-\subsubsection{Old method}
-First we determine the $t, t'$ values where the ray intersects the surface. The intersection location is given by,
-\begin{align}
-    x
-    &=
-    x_s + R \cos t',
-    &
-    y
-    &=
-    y_s + R \sin t',
-\end{align}
-for a surface with centre $(x_s, y_s)$.
-
-We must then determine the angle $\alpha$ as before. We can easily compute $\alpha$ with the help of a little geometry as we know the angle $t'$ where the intersection occurs. We then have,
-\begin{equation}
-    \label{eq:alpha_sph}
-    \alpha = t' - \frac{\pi}{2}.
-\end{equation}
-
-After that it is identical to the plane mirror. We use Eq.~\ref{eq:rotation_matrix} to rotate the axis by $\alpha$, negate the $y'$ component, and finally rotate back to get the new direction.
-
-\subsubsection{New method}
-The new method applies a similar method to the vector method for a plane. We use the normal vector of the circle to write the reflections as,
+To reflect at a spherical surface, we follow a broadly similar method to that of a planar surface. Again we originally followed a rotation based method similar to that of a plane and now use a similar method to the vector method for a plane. We use the normal vector of the circle at the point of intersection to write the reflections as,
 \begin{equation}
     \vec{v}_f 
     =
@@ -544,7 +429,7 @@ Refraction is based on Snell's law, that the angle of incidence, $\theta_i$, and
     =
     n_f \sin \theta_f,
 \end{equation}
-where both angles are measured from the normal of the surface. $n_i$ and $n_f$ are the refractive indices of the initial and final media. A complication of refraction is the possibility of total internal reflection. This occurs when,
+where both angles are measured from the normal of the surface and $n_i$, $n_f$ are the refractive indices of the initial and final media. A complication of refraction is the possibility of total internal reflection. This occurs when,
 \begin{equation}
     \sin \theta_f 
     =
@@ -579,7 +464,7 @@ where $\theta'$ is the angle of $\vec{v}'$, that is $\vec v$ in the rotated coor
         \frac{\pi}{2} - \theta_f
     \right)
     } \uvecj'.
-\end{equation}*
+\end{equation}
 Finally we then just have to rotate back to our original coordinates. If total internal reflection is determined to happen, then we simply need to reflect the ray at the point of intersection.
 
 \subsubsection{New method}
@@ -609,13 +494,13 @@ which have the solutions,
     v_\mrm{fy} &= n_x \gamma \pm n_y \sqrt{1-\gamma^2}.
 \end{align}
 
-Now consider when the discriminant $1 - \gamma^2$ is less than zero. This occurs for $\gamma > 1$ and $\gamma < -1$. Taking the magnitude of Eq.~\ref{eq:refraction_cross_prod}, $\gamma$ can be written in terms of the angle the incident ray makes to the normal of the plane as $\gamma = \frac{n_\mrm{i}}{n_\mrm{f}} \sin \theta$. We therefore do not have a real solution for $\vec{v}_\mrm{f}$ when,
+Now consider when the discriminant $1 - \gamma^2$ is less than zero. This occurs for $\gamma > 1$ and $\gamma < -1$. Taking the magnitude of Eq.~\ref{eq:refraction_cross_prod}, $\gamma$ can be written in terms of the angle the incident ray makes to the normal of the plane as $\gamma = \frac{n_\mrm{i}}{n_\mrm{f}} \sin \theta_\mrm{i}$. We therefore do not have a real solution for $\vec{v}_\mrm{f}$ when,
 \begin{align}
-    \sin \theta > \frac{n_\mrm{f}}{n_\mrm{i}} \quad \mathrm{or} \quad \sin \theta < -\frac{n_\mrm{f}}{n_\mrm{i}}.
+    \sin \theta_\mrm{i} > \frac{n_\mrm{f}}{n_\mrm{i}} \quad \mathrm{or} \quad \sin \theta_\mrm{i} < -\frac{n_\mrm{f}}{n_\mrm{i}}.
 \end{align}
 This corresponds to total internal reflection occurring. Therefore if the discriminant $1 - \gamma^2 < 0$, we should perform reflection instead of refraction.
 
-Now we determine how to assign $n_\mrm{i}$ and $n_\mrm{f}$ from the $n_1$ and $n_2$ parameters of the plane. The definition of $\vec{\hat{n}}$ in Eq.~\ref{eq:normal_vec_def} means $\vec{\hat{n}}$ points to the `left' of the plane when viewed from its start point towards its end. We can determine which side the ray originates on by considering $\vec{v_\mrm{i}} \cdot \vec{\hat{n}}$,
+Now we determine how to assign $n_\mrm{i}$ and $n_\mrm{f}$ from the $n_1$ and $n_2$ parameters of the plane. The definition of $\vec{\hat{n}}$ in Eq.~\ref{eq:normal_vec_def} means $\vec{\hat{n}}$ points to the `left' of the plane when viewed from its start point towards its end. Earlier, we defined $n_1$ to be on the side $\vec{\hat{n}}$ points towards. Therefore can determine which side the ray originates on by considering $\vec{v_\mrm{i}} \cdot \vec{\hat{n}}$,
 \begin{align}
     \vec{v_\mrm{i}} \cdot \vec{\hat{n}} 
     &>
@@ -630,7 +515,7 @@ Now we determine how to assign $n_\mrm{i}$ and $n_\mrm{f}$ from the $n_1$ and $n
 \end{align}
 This leaves the case of $\vec{v_\mrm{i}} \cdot \vec{\hat{n}} = 0$ where the ray travels along the plane. This should be considered in future.
 
-We must still determine which of the possible solutions in Eqs.~\ref{eq:refr_v_x} \& \ref{eq:refr_v_y} are physical. We start by checking $\vec{v}_\mrm{f}$ is normalised. Taking the same sign produces,
+We must still determine which of the possible solutions in Eqs.~\ref{eq:refr_v_x} \& \ref{eq:refr_v_y} are physical. We start by checking $\vec{v}_\mrm{f}$ is normalised. Taking the same sign in each of Eqs.~\ref{eq:refr_v_x} \& \ref{eq:refr_v_y} produces,
 \begin{align}
     |\vec{v}_\mrm{f}|^2
     &=
@@ -659,29 +544,17 @@ Therefore choosing both positive or both negative will always be correctly norma
     \pm
     4 n_x n_y \gamma \sqrt{1-\gamma^2}.
 \end{align}
-Choosing mixed solutions is only correctly normalised if the second term is zero. It is zero if $n_x=0$, or $n_y=0$ or $\gamma=1$. These three cases cause the second term in Eqs.~\ref{eq:refr_v_x} \& \ref{eq:refr_v_y} to be zero meaning the mixed sign solutions reduce to the same sign solutions. We do not need to consider these cases any further.
+Choosing mixed solutions is only correctly normalised if the second term is zero. There are four possible ways for it to be zero. The first three are $n_x=0$, or $n_y=0$ or $\gamma=1$. These three cases cause the second term in Eqs.~\ref{eq:refr_v_x} \& \ref{eq:refr_v_y} to be zero meaning the mixed sign solutions reduce to the same sign solutions. We do not need to consider these cases any further.
 
-$4 n_x n_y \gamma \sqrt{1-\gamma^2}$ is also zero when $\gamma=0$. Remembering $\gamma = \frac{n_\mrm{i}}{n_\mrm{f}} |\vec{\hat{n}} \times \vec{v}_\mrm{i}|$, $\gamma=0$ implies the ray travels perpendicular to the plane initially and so we must have $\vec{v}_\mrm{f} = \pm \vec{\hat{n}}$. Hence the solution we seek involves either both positive or both negative.
+$4 n_x n_y \gamma \sqrt{1-\gamma^2}$ is also zero when $\gamma=0$. Eqs.~\ref{eq:refr_v_x} \& \ref{eq:refr_v_y} give $\vec{v}_\mrm{f}$ as being parallel to the plane. However, remembering $\gamma = \frac{n_\mrm{i}}{n_\mrm{f}} |\vec{\hat{n}} \times \vec{v}_\mrm{i}|$, $\gamma=0$ implies the ray travels perpendicular to the plane initially and so we must have $\vec{v}_\mrm{f} = \pm \vec{\hat{n}}$. Hence we can conclude $4 n_x n_y \gamma \sqrt{1-\gamma^2}$ cannot reasonably be zero and only the solutions of Eqs.~\ref{eq:refr_v_x} \& \ref{eq:refr_v_y} that are either both positive or both negative are of interest.
 
 This leaves us with two possible solutions. To distinguish which of the solutions is the one we are after, we note the sign of $\vec{v} \cdot \vec{\hat{D}}$ and $\vec{v} \cdot \vec{\hat{n}}$ must be unchanged after refraction.
 
 \subsection{Refraction at a spherical surface}
-At a spherical surface we already have a method for determining where a ray intersects the surface.
-\subsubsection{Old method}
-The angle we must rotate through is given again by Eq.~\ref{eq:alpha_sph},
-\begin{equation}
-    \alpha = t' - \frac{\pi}{2}.
-\end{equation}
-Other than the different equation for computing $\alpha$, the method is very similar to that of a plane.
-
-\subsubsection{New method}
-The new method is very similar to that of a plane, but the definitions of $\vec{\hat{n}}$ and $\vec{\hat{D}}$ are different.
-
-\section{Screen}
-We also include a component intended to represent a screen. When a ray hits a screen, we stop tracing it any further. We will implement only a planar screen named \texttt{Screen\_Plane}.
+At a spherical surface we already have a method for determining where a ray intersects the surface. Again, we originally utilised a rotation based method but now use a vector based method for improved performance. This new method is very similar to that of a plane, but the definitions of $\vec{\hat{n}}$ and $\vec{\hat{D}}$ are different.
 
 \section{Complex components}
-A complex component is one that is composed of other sub-components. These include objects such as lenses and prisms that can be described in terms of basic sub-components or a objects such as system of lenses, which are composed themselves of complex components. Equally, a complex component could be created from a mixture of basic and complex components.
+A complex component is one that is composed of other sub-components. These include objects such as lenses and prisms that can be described in terms of basic sub-components or a objects such as system of lenses, which are themselves composed of complex components. Equally, a complex component could be created from a mixture of basic and complex components.
 
 \subsection{Lenses}
 We shall first consider a lens to be composed of four components. Two will always be planar boundaries corresponding to the top and bottom planes in Fig.~\ref{fig:convex lens}. The remaining two will be either arcs of planes depending on the type of lens, e.g. biconvex or plano-convex. A generic lens can then be described as a complex component composed of these four objects.
@@ -716,7 +589,7 @@ Finally we should check for self intersection if one or both of the lens arcs ar
         % Dashed lines on left & labels
         \draw[thick, dashed]  (-5.37,0) -- (-1.5, 2) -- (-1.5, -2) -- (-5.37,0) -- (-1.5, 0);
         
-        \draw[thick, |-|] (-0.75, -2.2) -- (-5.37, -2.2) node[pos=0.5, below] {$\Delta x_1$};
+        \draw[thick, -|] (-0.75, -2.2) -- (-5.37, -2.2) node[pos=0.5, below] {$\Delta x_1$};
         \draw[thick, |-|] (-1.6, 2.2) -- (-5.47, 0.2) node[pos=0.5, above] {$R_1$};
         
         % Dashed lines on right & labels
@@ -726,16 +599,17 @@ Finally we should check for self intersection if one or both of the lens arcs ar
         \draw[thick, |-|] (0.1, 2.2) -- (3.97, 0.2) node[pos=0.5, above] {$R_2$};
         
         % R_lens on right
-        \draw[thick, |-|] (4.15, 0.0) -- (4.15, -2.2) node[pos=0.5, right] {$R_\mathrm{lens}$};
+        \draw[thick, |-|] (4.15, 0.0) -- (4.15, -2.0) node[pos=0.5, right] {$R_\mathrm{lens}$};
     \end{tikzpicture}
 
-    \caption{Left: Parameters used to describe a lens, in this case a biconcave. $R_1$ and $R_2$ are the radii of curvature on the left and right sides respectively. $\Delta x_1$ and $\Delta x_2$ give the horizontal offset between the centre of the lens and its respective arc. $R_\mathrm{lens}$ give the radius of the lens and $d$ its thickness.}
+    \caption{Left: Parameters used to describe a lens, in this case a biconcave. $R_1$ and $R_2$ are the radii of curvature on the left and right sides respectively. $\Delta x_1$ and $\Delta x_2$ give the horizontal offset between the centre of the lens and each arc respectively. $R_\mathrm{lens}$ give the radius of the lens and $d$ its thickness.}
     \label{fig:convex lens}
 \end{figure}
 
 
 \section{Calling from Python}
-To call from Python we wrap the C++ using Cython. We wrap each C++ class to produce a similarly named class as that in C++ but roughly with "Py" at the front. Class equivalents are detailed in Tab.~\ref{tab:C++ to Cython mappings}. Similarly we also produce a tracing function that takes in Python components and traces them in C++ named \texttt{PyTrace}.
+\label{sec:calling from python}
+To call from Python we wrap the C++ using Cython. We wrap each C++ class to produce a similarly named class as that in C++ but roughly with ``Py" at the front. Class equivalents are detailed in Tab.~\ref{tab:C++ to Cython mappings}. Similarly we also produce a tracing function that takes in Python components and traces them in C++ named \texttt{PyTrace}.
 
 \begin{table}[h!]
 \centering
@@ -760,12 +634,11 @@ To call from Python we wrap the C++ using Cython. We wrap each C++ class to prod
     \label{tab:C++ to Cython mappings}
 \end{table}
 
-Properties such as the start and end points of planes are exposed as properties. In most cases points are returned as a \texttt{numpy} view. As such they can be edited element wise. The exception to this is \texttt{PyRay.pos} which returns a copy due to the way \texttt{Ray.pos} is stored in C++. Cython classes are initialised using a \texttt{\_\_cinit\_\_()} initialiser. Unfortunately this cannot be overloaded with the current version of Cython, though I do not believe this is an issue.
+Properties such as the start and end points of planes are exposed as properties. In most cases points are returned as a NumPy view. As such they may be edited element wise if the view is writable. The notable exception to this is \texttt{PyRay.pos} which returns a copy due to the way \texttt{Ray.pos} is stored in C++.
 
-Furthermore, we have an additional class, \texttt{PyCC\_Wrap}. \texttt{PyCC\_Wrap} is intended to allow easy creation of complex components from Python by simply inheriting from \texttt{PyCC\_Wrap} and passing the Cython components needed to describe the component to the \texttt{PyCC\_Wrap} initialiser. For example, a triangular prism defined through the positions of its vertices and interior/exterior refractive indices can be created using:
+Furthermore, we have some additional classes. \texttt{PyCC\_Wrap} is intended to allow easy creation of complex components from Python by simply inheriting from \texttt{PyCC\_Wrap} and passing the Cython components needed to describe the component to the \texttt{PyCC\_Wrap} initialiser. For example, a triangular prism defined through the positions of its vertices and interior/exterior refractive indices can be created using:
 \begin{lstlisting}[language=Python]
 class Prism(PyCC_Wrap):
-    
     def __init__(self, a, b, c, n_in, n_out=1.0):
         comps = [
                 PyRefract_Plane(a, b, n_out, n_in),
@@ -777,6 +650,8 @@ class Prism(PyCC_Wrap):
         super().__init__(comps)  
 \end{lstlisting}
 Like other components, \texttt{PyCC\_Wrap} provides a \texttt{Plot()} method useful for plotting the component.
+
+In addition to these classes, we also provide \texttt{PyLens} and \texttt{PyBiConvexLens} to model a generic lens and a bi-convex lens.
 
 % Bibliography
 \bibliographystyle{ieeetr}
