@@ -45,6 +45,12 @@ void trace(const T &c, std::vector<Ray*> &rays, int n, bool fill_up);
 template void trace(const std::vector<std::shared_ptr<Component>> &c, std::vector<Ray*> &rays, int n, bool fill_up);
 //template void trace(const std::vector<std::unique_ptr<Component>> &c, std::vector<Ray*> &rays, int n, bool fill_up);
 template void trace(const std::vector<Component*> &c, std::vector<Ray*> &rays, int n, bool fill_up);
+
+// Position of ray at time t
+arr compute_new_pos(const Ray& ry, const double t);
+
+// Only changes direction of ray, does not update position
+void reflect_ray(Ray& ry, const arr n_vec);
  
 // Saves rays to file
 void save_rays(std::vector<Ray> &rays, std::string path);

@@ -20,7 +20,9 @@
 // Describes a plane mirror
 //
 #pragma once
+#include "trace_func.h"
 #include "Plane.h"
+
 class Mirror_Plane :
 	public Plane
 {

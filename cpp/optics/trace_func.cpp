@@ -96,6 +96,31 @@ void trace(const T &c, std::vector<Ray*> &rays, int n, bool fill_up)
 		trace_ray(c, r, n, fill_up);
 }
 
+arr compute_new_pos(const Ray& ry, const double t)
+{
+	arr newPos;
+
+	const arr &r = ry.pos.back();
+	const arr &v = ry.v;
+
+	// Compute new position
+	for (int i = 0; i < 2; ++i)
+		newPos[i] = (r[i] + v[i] * t);
+
+	return newPos;
+}
+
+void reflect_ray(Ray& ry, const arr n_vec)
+{
+	arr &v = ry.v;
+
+	// Compute new direction
+	double v_dot_n{ v[0] * n_vec[0] + v[1] * n_vec[1] };
+
+	for (int i = 0; i < 2; ++i)
+		v[i] -= 2 * v_dot_n * n_vec[i];
+}
+
 void save_rays(std::vector<Ray>& rays, std::string path)
 {
 	std::ofstream write_file(path);
