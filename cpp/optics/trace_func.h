@@ -51,6 +51,10 @@ arr compute_new_pos(const Ray& ry, const double t);
 
 // Only changes direction of ray, does not update position
 void reflect_ray(Ray& ry, const arr n_vec);
+
+// Only changes direction of ray, does not update position
+// n1 should be on the side n_vec points towards
+void refract_ray(Ray& ry, const arr n_vec, const double n1, const double n2);
  
 // Saves rays to file
 void save_rays(std::vector<Ray> &rays, std::string path);
