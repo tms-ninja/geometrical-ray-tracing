@@ -322,11 +322,12 @@ $P_x \leq r'_{\mrm{end},x}$ for intersection.
     \begin{subfigure}[b]{0.49\textwidth}
          \centering
          \begin{tikzpicture}
-            \draw (0, 0) circle (3);
-            \draw (-2.4, 1.8) -- (0, 0) -- (3, 0);
+            \draw (3, 0) arc (0:143:3);
+            \draw[dashed] (-2.4, 1.8) arc (143:360:3);
+            \draw[dashed] (-2.4, 1.8) -- (0, 0) -- (3, 0);
             
             % centre of circle
-            \filldraw[black] (0, 0) circle (2pt);
+            \filldraw[black] (0, 0) circle (2pt) node[anchor=north] {Centre};
             \filldraw[black] (3, 0) circle (2pt) node[anchor=west] {Start};
             \filldraw[black] (-2.4, 1.8) circle (2pt) node[anchor=east] {End};
         \end{tikzpicture}
@@ -335,11 +336,12 @@ $P_x \leq r'_{\mrm{end},x}$ for intersection.
     \begin{subfigure}[b]{0.49\textwidth}
          \centering
          \begin{tikzpicture}
-            \draw (0, 0) circle (3);
-            \draw (-2.4, -1.8) -- (0, 0) -- (3, 0);
+            \draw (3, 0) arc (0:217:3);
+            \draw[dashed] (-2.4, -1.8) arc (217:360:3);
+            \draw[dashed] (-2.4, -1.8) -- (0, 0) -- (3, 0);
             
             % centre of circle
-            \filldraw[black] (0, 0) circle (2pt);
+            \filldraw[black] (0, 0) circle (2pt) node[anchor=south] {Centre};
             \filldraw[black] (3, 0) circle (2pt) node[anchor=west] {Start};
             \filldraw[black] (-2.4, -1.8) circle (2pt) node[anchor=east] {End};
         \end{tikzpicture}
