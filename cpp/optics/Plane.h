@@ -29,7 +29,7 @@ class Plane :
 protected:
 	arr start;  // Start and end positions of plane
 	arr end;
-	arr D;      // Unit vector pointing from start to end
+	arr n_vec;      // Normal unit vector pointing left of start to end
 
 public:
 	Plane(arr start, arr end);

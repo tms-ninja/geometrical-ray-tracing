@@ -42,7 +42,6 @@ void Refract_Plane::hit(Ray* ry, int n) const
 
 	// Now compute new direction, first determine order of refractive indices
 	double ni, nf;
-	arr n_vec = { -D[1], D[0] };  // normal vector
 
 	double vi_dot_n{ v[0] * n_vec[0] + v[1] * n_vec[1] };
 
@@ -77,6 +76,8 @@ void Refract_Plane::hit(Ray* ry, int n) const
 
 	disc_term[0] = n_vec[0] * disc;
 	disc_term[1] = n_vec[1] * disc;
+
+	arr D{n_vec[1], -n_vec[0]};
 
 	double vi_dot_D{ v[0] * D[0] + v[1] * D[1] };
 
