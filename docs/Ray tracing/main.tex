@@ -104,7 +104,7 @@ From this two helper classes are derived. These aren't meant to be initialised d
     \item \texttt{Plane}
     \begin{itemize}
         \item Describes a simple planar component
-        \item Declares to define the start and end points of the plane and a unit vector pointing from the plane's start to its end 
+        \item Declares to define the start and end points of the plane and a unit normal vector pointing to the ``left" of the plane when viewed from the plane's start to its end 
         \item Defines a constructor to initialise the class with given start and end points
         \item Implements the \texttt{test\_hit()} method to test for a ray hitting the plane
     \end{itemize}
@@ -395,13 +395,12 @@ Once we've negated the $y'$ component, we can then rotate back using $R(-\theta)
 The disadvantage of this method is performance. It involves call to trigonometric functions which are slow, especially \texttt{atan2()}, each time we process a ray interaction. Fortunately we can avoid this.
 
 \subsubsection{Vector method}
-We don't really need to rotate the plane each time we perform a reflection. All we really want to do is reflect the component of $\vec{v}$ normal to the plane. We can make use of $\vec{\hat{D}}$, the unit vector that points along the plane. The normalisation of $\vec{\hat{D}}$ does involve square rooting, but it only needs to be computed once. The component of $\vec{v}$ perpendicular to the plane is $\vec{v} - (\vec{v} \cdot \vec{\hat{D}}) \vec{\hat{D}}$ and so the reflections ca be performed as,
+We don't really need to rotate the plane each time we perform a reflection. All we really want to do is reflect the component of $\vec{v}$ normal to the plane. We can make use of $\vec{\hat{n}}$, the unit vector normal to the plane. The normalisation of $\vec{\hat{n}}$ does involve square rooting, but it only needs to be computed once. The component of $\vec{v}$ perpendicular to the plane is $(\vec{v} \cdot \vec{\hat{n}}) \vec{\hat{n}}$ and so the reflections ca be performed as,
 \begin{equation}
-    \vec{v}
-    \rightarrow
-    (\vec{v} \cdot \vec{\hat{D}}) \vec{\hat{D}} - \vec{v}.
+    \vec{v}_f 
+    =
+    \vec{v}_i - 2 (\vec{v}_i \cdot \vec{\hat{n}}) \vec{\hat{n}}.
 \end{equation}
-We could use $\vec{\hat{n}}$ instead and derive a similar formula.
 
 A disadvantage of this method is $|\vec{v}|$ drifts from 1 over time. As all the maths assumes $|\vec{v}|=1$, this quickly becomes catastrophic after as little as 15-20 interactions. This is easily resolved by re-normalising $\vec{v}$ after each interaction. Since we expect $|v-1| << 1$, we can avoid calls to \texttt{hypot()} by using a Taylor expansion. Denoting $S=v_x^2 + v_y^2$, expanding around $S=1$ produces,
 \begin{equation}
@@ -417,12 +416,7 @@ A disadvantage of this method is $|\vec{v}|$ drifts from 1 over time. As all the
 Working to $\mathcal{O} \left(S-1\right)$ should be sufficient.
 
 \subsection{Spherical mirror}
-To reflect at a spherical surface, we follow a broadly similar method to that of a planar surface. Again we originally followed a rotation based method similar to that of a plane and now use a similar method to the vector method for a plane. We use the normal vector of the circle at the point of intersection to write the reflections as,
-\begin{equation}
-    \vec{v}_f 
-    =
-    \vec{v}_i - 2 (\vec{v}_i \cdot \vec{\hat{n}}) \vec{\hat{n}}.
-\end{equation}
+To reflect at a spherical surface, we follow a broadly similar method to that of a planar surface. Again we originally followed a rotation based method similar to that of a plane and now use a similar method to the vector method for a plane.
 
 \section{Refracting basic components}
 Refraction is based on Snell's law, that the angle of incidence, $\theta_i$, and the angle of refraction, $\theta_f$, obey,
