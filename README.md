@@ -9,4 +9,4 @@
 It also allows for so-called complex components such as lenses that are composed of pre-defined sub-components. These can be defined within Python without needing to write any C++/Cython, so long as they are ultimately only composed of the five elements above. 
 
 ## Build Instructions
-The program can be built by running `python setup.py build_ext`, adding the `--inplace` flag to install locally if desired. Cython and NumPy are required to build, the included examples may have additional dependencies (mainly Matplotlib).
+The program runs under Python 3 and can be built by running `python setup.py build_ext`, adding the `--inplace` flag to install locally if desired. Cython and NumPy are required to build, the included examples may have additional dependencies (mainly Matplotlib).
