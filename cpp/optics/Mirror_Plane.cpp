@@ -26,25 +26,18 @@ Mirror_Plane::Mirror_Plane(arr start, arr end)
 
 void Mirror_Plane::hit(Ray* ry, int n) const
 {
-	arr newPos;
-
-	double t, tp;
+	double t;
 	arr &r = ry->pos.back();
 	arr &v = ry->v;
 
-	std::tie(t, tp) = solve(r, v);
+	std::tie(t, std::ignore) = solve(r, v);
 
-	// Compute new position
-	for (int i = 0; i < 2; ++i)
-		newPos[i] = (r[i] + v[i] * t);
-
+	// compute new position of ray
+	arr newPos = compute_new_pos(*ry, t);
 	ry->pos.push_back(newPos);
 
-	// Compute new direction
-	double v_dot_D{ v[0] * D[0] + v[1] * D[1] };
-
-	for (int i = 0; i < 2; ++i)
-		v[i] = 2*v_dot_D*D[i] - v[i];
+	// perform the change of direction
+	reflect_ray(*ry, n_vec);
 }
 
 Mirror_Plane* Mirror_Plane::clone() const

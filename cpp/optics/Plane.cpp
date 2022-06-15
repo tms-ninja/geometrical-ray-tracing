@@ -27,7 +27,7 @@ Plane::Plane(arr start, arr end)
 	// Compute unit vector pointing from start to end
 	double mag{ std::hypot(end[0] - start[0], end[1] - start[1]) };
 
-	Plane::D = { (end[0] - start[0]) / mag, (end[1] - start[1]) / mag };
+	Plane::n_vec = { -(end[1] - start[1]) / mag, (end[0] - start[0]) / mag };
 }
 
 double Plane::test_hit(const Ray* ry) const
@@ -50,7 +50,7 @@ void Plane::set_start(const arr& start)
 
 	double mag{ std::hypot(end[0] - start[0], end[1] - start[1]) };
 
-	D = { (end[0] - start[0]) / mag, (end[1] - start[1]) / mag };
+	n_vec = { -(end[1] - start[1]) / mag, (end[0] - start[0]) / mag };
 }
 
 arr& Plane::get_end()
@@ -64,7 +64,7 @@ void Plane::set_end(const arr& end)
 
 	double mag{ std::hypot(end[0] - start[0], end[1] - start[1]) };
 
-	D = { (end[0] - start[0]) / mag, (end[1] - start[1]) / mag };
+	n_vec = { -(end[1] - start[1]) / mag, (end[0] - start[0]) / mag };
 }
 
 void Plane::print(std::ostream & os) const

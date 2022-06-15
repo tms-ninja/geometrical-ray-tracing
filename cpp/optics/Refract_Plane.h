@@ -21,6 +21,8 @@
 //
 #pragma once
 #include "Plane.h"
+#include "trace_func.h"
+
 class Refract_Plane :
 	public Plane
 {

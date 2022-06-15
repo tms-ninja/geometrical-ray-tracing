@@ -21,6 +21,7 @@
 //
 #pragma once
 #include "Spherical.h"
+#include "trace_func.h"
 
 class Mirror_Sph :
 	public Spherical
