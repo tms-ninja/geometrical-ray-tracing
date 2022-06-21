@@ -73,27 +73,24 @@ double Spherical::solve(const arr & r, const arr & v) const
 	t_vals[0] = -gamma + std::sqrt(disc);
 	t_vals[1] = -gamma - std::sqrt(disc);
 
-	bool found_sol{ false };
-	double best_t;
+	// bool found_sol{ false };
+	double best_t{ infinity };
 	arr pos;
 
 	for (double t : t_vals)
 	{
 		// Check t is in the future, it's better than the current time and isn't where we are starting from
-		if (t > 0.0 && (!found_sol || t < best_t) && !is_close(t, 0.0))
+		if (t > 0.0 && t < best_t && !is_close(t, 0.0))
 		{
 			pos = { r[0] + v[0] * t, r[1] + v[1] * t };
 
 			// Avoid call to atan2() as we don't need tp, just if it's in range
 			if (in_range(pos))
-			{
-				found_sol = true;
 				best_t = t;
-			}
 		}
 	}
 
-	if (found_sol)
+	if (best_t != infinity)
 		return best_t;
 
 	return infinity;
