@@ -19,8 +19,11 @@
 
 #include "Component.h"
 
-std::ostream & operator<<(std::ostream & os, const Component & b)
+namespace optics
 {
-	b.print(os);
-	return os;
+	std::ostream& operator<<(std::ostream& os, const Component& b)
+	{
+		b.print(os);
+		return os;
+	}
 }

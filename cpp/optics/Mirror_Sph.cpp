@@ -19,31 +19,34 @@
 
 #include "Mirror_Sph.h"
 
-Mirror_Sph::Mirror_Sph(arr centre, double R, double start, double end)
-	: Spherical(centre, R, start, end)
+namespace optics
 {
-}
+	Mirror_Sph::Mirror_Sph(arr centre, double R, double start, double end)
+		: Spherical(centre, R, start, end)
+	{
+	}
 
-void Mirror_Sph::hit(Ray* ry, int n) const
-{
-	arr &r{ ry->pos.back() };
-	arr &v{ ry->v };
+	void Mirror_Sph::hit(Ray* ry, int n) const
+	{
+		arr& r{ ry->pos.back() };
+		arr& v{ ry->v };
 
-	double t;
+		double t;
 
-	t = solve(r, v);
+		t = solve(r, v);
 
-	// compute new position of ray
-	arr newPos = compute_new_pos(*ry, t);
-	ry->pos.push_back(newPos);
+		// compute new position of ray
+		arr newPos = compute_new_pos(*ry, t);
+		ry->pos.push_back(newPos);
 
-	arr n_vec = { (newPos[0] - centre[0]) / R, (newPos[1] - centre[1]) / R };
+		arr n_vec = { (newPos[0] - centre[0]) / R, (newPos[1] - centre[1]) / R };
 
-	// perform the change of direction
-	reflect_ray(*ry, n_vec);
-}
+		// perform the change of direction
+		reflect_ray(*ry, n_vec);
+	}
 
-Mirror_Sph * Mirror_Sph::clone() const
-{
-	return new Mirror_Sph{ *this };
+	Mirror_Sph* Mirror_Sph::clone() const
+	{
+		return new Mirror_Sph{ *this };
+	}
 }

@@ -23,33 +23,35 @@
 #include "Component.h"
 #include <tuple>
 
-class Plane :
-	public Component
+namespace optics
 {
-protected:
-	arr start;  // Start and end positions of plane
-	arr end;
-	arr n_vec;      // Normal unit vector pointing left of start to end
+	class Plane :
+		public Component
+	{
+	protected:
+		arr start;  // Start and end positions of plane
+		arr end;
+		arr n_vec;      // Normal unit vector pointing left of start to end
 
-public:
-	Plane(arr start, arr end);
+	public:
+		Plane(arr start, arr end);
 
-	// function for testing for hits
-	virtual double test_hit(const Ray* ry) const override;
+		// function for testing for hits
+		virtual double test_hit(const Ray* ry) const override;
 
-	// getter/setter methods for start & end
-	// getter methods shouldn't be used to modify start end values
-	arr& get_start();
-	void set_start(const arr& start);
+		// getter/setter methods for start & end
+		// getter methods shouldn't be used to modify start end values
+		arr& get_start();
+		void set_start(const arr& start);
 
-	arr& get_end();
-	void set_end(const arr& end);
+		arr& get_end();
+		void set_end(const arr& end);
 
-	// Printing
-	virtual void print(std::ostream& os) const override;
+		// Printing
+		virtual void print(std::ostream& os) const override;
 
-	// helper functions
-	// Solve for point of intersection, returns (t, tp)
-	std::tuple<double, double> solve(const arr &r, const arr &v) const;
-};
-
+		// helper functions
+		// Solve for point of intersection, returns (t, tp)
+		std::tuple<double, double> solve(const arr& r, const arr& v) const;
+	};
+}

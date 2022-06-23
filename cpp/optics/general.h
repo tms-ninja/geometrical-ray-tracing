@@ -29,55 +29,58 @@
 #include <utility>
 #include <vector>
 
-constexpr double infinity = std::numeric_limits<double>::infinity();
-
-class Component;  // Forward declare the Component class
-class Ray;
-
-// Type aliases for the length two std::array and component vector
-using arr = std::array<double, 2>;
-using comp_list = std::vector<std::shared_ptr<Component>>;
-
-// Forward declarations for tracing functions
-
-// Determines the nect index in c of the next component the ray hits and the time it hits
-// Returns time of infinity if no component is next to interact
-template <typename T>
-std::pair<size_t, double> next_component(const T &c, const Ray* r);
-
-// Traces an individual ray for n interactions
-template <typename T>
-void trace_ray(const T &c, Ray* ry, int n, bool fill_up = true);
-
-// Traces a vector of rays through the components
-template <typename T>
-void trace(const T &c, std::vector<Ray*> &rays, int n, bool fill_up = true);
-
-
-// Adds a component to the vector to the comp_list
-template <typename T>
-void add_component(comp_list &vec, T c)
+namespace optics
 {
-	vec.push_back(std::make_shared<T>(c));
+	constexpr double infinity = std::numeric_limits<double>::infinity();
+
+	class Component;  // Forward declare the Component class
+	class Ray;
+
+	// Type aliases for the length two std::array and component vector
+	using arr = std::array<double, 2>;
+	using comp_list = std::vector<std::shared_ptr<Component>>;
+
+	// Forward declarations for tracing functions
+
+	// Determines the nect index in c of the next component the ray hits and the time it hits
+	// Returns time of infinity if no component is next to interact
+	template <typename T>
+	std::pair<size_t, double> next_component(const T& c, const Ray* r);
+
+	// Traces an individual ray for n interactions
+	template <typename T>
+	void trace_ray(const T& c, Ray* ry, int n, bool fill_up = true);
+
+	// Traces a vector of rays through the components
+	template <typename T>
+	void trace(const T& c, std::vector<Ray*>& rays, int n, bool fill_up = true);
+
+
+	// Adds a component to the vector to the comp_list
+	template <typename T>
+	void add_component(comp_list& vec, T c)
+	{
+		vec.push_back(std::make_shared<T>(c));
+	}
+
+	// Saves rays to file
+	void save_rays(std::vector<Ray>& rays, std::string path);
+
+	// Save components to file
+	void save_components(comp_list& comps, std::string path);
+
+	// Helper functions
+
+	// Rotates the point by theta clockwise
+	arr rotate(const arr& r, const double theta);
+
+	// Absolute comparison between v1 and v2
+	inline bool is_close(double v1, double v2, double atol = 1e-8)
+	{
+		return abs(v1 - v2) < atol;
+	}
+
+	// Renormalises vector whose magnitude is close to 1 using first order Taylor series
+	// for 1/sqrt(abs(vec))
+	void renorm_unit_vec(arr& v);
 }
-
-// Saves rays to file
-void save_rays(std::vector<Ray> &rays, std::string path);
-
-// Save components to file
-void save_components(comp_list &comps, std::string path);
-
-// Helper functions
-
-// Rotates the point by theta clockwise
-arr rotate(const arr &r, const double theta);
-
-// Absolute comparison between v1 and v2
-inline bool is_close(double v1, double v2, double atol = 1e-8)
-{
-	return abs(v1 - v2) < atol;
-}
-
-// Renormalises vector whose magnitude is close to 1 using first order Taylor series
-// for 1/sqrt(abs(vec))
-void renorm_unit_vec(arr &v);

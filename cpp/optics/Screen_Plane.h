@@ -22,16 +22,19 @@
 //
 #pragma once
 #include "Plane.h"
-class Screen_Plane :
-	public Plane
+
+namespace optics
 {
-public:
-	
-	Screen_Plane(arr start, arr end);
-	
-	// Hit function
-	virtual void hit(Ray* ry, int n) const override;
+	class Screen_Plane :
+		public Plane
+	{
+	public:
 
-	virtual Screen_Plane* clone() const override;
-};
+		Screen_Plane(arr start, arr end);
 
+		// Hit function
+		virtual void hit(Ray* ry, int n) const override;
+
+		virtual Screen_Plane* clone() const override;
+	};
+}

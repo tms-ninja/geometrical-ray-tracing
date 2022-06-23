@@ -19,31 +19,36 @@
 
 #include "Refract_Sph.h"
 
-Refract_Sph::Refract_Sph(arr centre, double R, double start, double end, double n1, double n2)
-	:	Spherical(centre, R, start, end), n1(n1), n2(n2)
+namespace optics
 {
-}
 
-void Refract_Sph::hit(Ray* ry, int n) const
-{
-	arr &r{ ry->pos.back() };
-	arr &v{ ry->v };
+	Refract_Sph::Refract_Sph(arr centre, double R, double start, double end, double n1, double n2)
+		: Spherical(centre, R, start, end), n1(n1), n2(n2)
+	{
+	}
 
-	double t;
+	void Refract_Sph::hit(Ray* ry, int n) const
+	{
+		arr& r{ ry->pos.back() };
+		arr& v{ ry->v };
 
-	t = solve(r, v);
+		double t;
 
-	// Compute new position
-	arr newPos = compute_new_pos(*ry, t);
-	ry->pos.push_back(newPos);
+		t = solve(r, v);
 
-	// Now compute new direction
-	arr n_vec = { (newPos[0] - centre[0]) / R, (newPos[1] - centre[1]) / R };  // normal vector is radial vector
+		// Compute new position
+		arr newPos = compute_new_pos(*ry, t);
+		ry->pos.push_back(newPos);
 
-	refract_ray(*ry, n_vec, n1, n2);
-}
+		// Now compute new direction
+		arr n_vec = { (newPos[0] - centre[0]) / R, (newPos[1] - centre[1]) / R };  // normal vector is radial vector
 
-Refract_Sph * Refract_Sph::clone() const
-{
-	return new Refract_Sph{ *this };
+		refract_ray(*ry, n_vec, n1, n2);
+	}
+
+	Refract_Sph* Refract_Sph::clone() const
+	{
+		return new Refract_Sph{ *this };
+	}
+
 }

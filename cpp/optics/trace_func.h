@@ -27,37 +27,40 @@
 #include <string>
 #include <tuple>
 
-// Determines the index in c of the next component the ray hits and the time it hits
-// Returns time of infinity if no component is next to interact
-template <typename T>
-std::pair<size_t, double> next_component(const T &c, const Ray* r);
+namespace optics
+{
+	// Determines the index in c of the next component the ray hits and the time it hits
+	// Returns time of infinity if no component is next to interact
+	template <typename T>
+	std::pair<size_t, double> next_component(const T& c, const Ray* r);
 
-// Traces an individual ray for n interactions
-template <typename T>
-void trace_ray(const T &c, Ray* ry, int n, bool fill_up);
+	// Traces an individual ray for n interactions
+	template <typename T>
+	void trace_ray(const T& c, Ray* ry, int n, bool fill_up);
 
-// Traces a vector of rays through the components
-// Don't need to redefine 
-template <typename T>
-void trace(const T &c, std::vector<Ray*> &rays, int n, bool fill_up);
+	// Traces a vector of rays through the components
+	// Don't need to redefine 
+	template <typename T>
+	void trace(const T& c, std::vector<Ray*>& rays, int n, bool fill_up);
 
-// Explicity initiate these template types to allows component list to contain either unique_ptr or raw pointers
-template void trace(const std::vector<std::shared_ptr<Component>> &c, std::vector<Ray*> &rays, int n, bool fill_up);
-//template void trace(const std::vector<std::unique_ptr<Component>> &c, std::vector<Ray*> &rays, int n, bool fill_up);
-template void trace(const std::vector<Component*> &c, std::vector<Ray*> &rays, int n, bool fill_up);
+	// Explicity initiate these template types to allows component list to contain either unique_ptr or raw pointers
+	template void trace(const std::vector<std::shared_ptr<Component>>& c, std::vector<Ray*>& rays, int n, bool fill_up);
+	//template void trace(const std::vector<std::unique_ptr<Component>> &c, std::vector<Ray*> &rays, int n, bool fill_up);
+	template void trace(const std::vector<Component*>& c, std::vector<Ray*>& rays, int n, bool fill_up);
 
-// Position of ray at time t
-arr compute_new_pos(const Ray& ry, const double t);
+	// Position of ray at time t
+	arr compute_new_pos(const Ray& ry, const double t);
 
-// Only changes direction of ray, does not update position
-void reflect_ray(Ray& ry, const arr n_vec);
+	// Only changes direction of ray, does not update position
+	void reflect_ray(Ray& ry, const arr n_vec);
 
-// Only changes direction of ray, does not update position
-// n1 should be on the side n_vec points towards
-void refract_ray(Ray& ry, const arr n_vec, const double n1, const double n2);
- 
-// Saves rays to file
-void save_rays(std::vector<Ray> &rays, std::string path);
+	// Only changes direction of ray, does not update position
+	// n1 should be on the side n_vec points towards
+	void refract_ray(Ray& ry, const arr n_vec, const double n1, const double n2);
 
-// Save components to file
-void save_components(comp_list &comps, std::string path);
+	// Saves rays to file
+	void save_rays(std::vector<Ray>& rays, std::string path);
+
+	// Save components to file
+	void save_components(comp_list& comps, std::string path);
+}

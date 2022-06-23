@@ -34,9 +34,10 @@
 
 void test_Mirror_Sph()
 {
-	comp_list c;
+	using optics::Ray;
+	optics::comp_list c;
 
-	add_component(c, Mirror_Sph({ 0.0, 0.0 }, 10.0, 0.0, 2 * M_PI));
+	optics::add_component(c, optics::Mirror_Sph({ 0.0, 0.0 }, 10.0, 0.0, 2 * M_PI));
 
 	auto begin = std::chrono::steady_clock::now();
 
@@ -54,7 +55,7 @@ void test_Mirror_Sph()
 		for (auto &r : rays)
 			ray_ptrs.push_back(&r);
 
-		trace(c, ray_ptrs, 100);
+		optics::trace(c, ray_ptrs, 100);
 	}
 
 	auto end = std::chrono::steady_clock::now();
@@ -64,12 +65,13 @@ void test_Mirror_Sph()
 
 void test_Mirror_Plane()
 {
-	comp_list c;
+	using optics::Ray;
+	optics::comp_list c;
 
-	add_component(c, Mirror_Plane({ -10.0, 10.0 }, { 10.0, 10.0 }));
-	add_component(c, Mirror_Plane({ 10.0, 10.0 }, { 10.0, -10.0 }));
-	add_component(c, Mirror_Plane({ 10.0, -10.0 }, { -10.0, -10.0 }));
-	add_component(c, Mirror_Plane({ -10.0, -10.0 }, { -10.0, 10.0 }));
+	optics::add_component(c, optics::Mirror_Plane({ -10.0, 10.0 }, { 10.0, 10.0 }));
+	optics::add_component(c, optics::Mirror_Plane({ 10.0, 10.0 }, { 10.0, -10.0 }));
+	optics::add_component(c, optics::Mirror_Plane({ 10.0, -10.0 }, { -10.0, -10.0 }));
+	optics::add_component(c, optics::Mirror_Plane({ -10.0, -10.0 }, { -10.0, 10.0 }));
 
 	auto begin = std::chrono::steady_clock::now();
 
@@ -86,7 +88,7 @@ void test_Mirror_Plane()
 		for (auto &r : rays)
 			ray_ptrs.push_back(&r);
 
-		trace(c, ray_ptrs, 100);
+		optics::trace(c, ray_ptrs, 100);
 	}
 
 	auto end = std::chrono::steady_clock::now();
@@ -96,10 +98,11 @@ void test_Mirror_Plane()
 
 void test_Refract_Sph()
 {
-	comp_list c;
+	using optics::Ray;
+	optics::comp_list c;
 
 	// spherical mirror to keep rays trapped
-	add_component(c, Mirror_Sph({ 0.0, 0.0 }, 10.0, 0.0, 2 * M_PI));
+	optics::add_component(c, optics::Mirror_Sph({ 0.0, 0.0 }, 10.0, 0.0, 2 * M_PI));
 
 	std::vector<double> R = { 3.0, 5.0, 7.0, 9.0 };
 	std::vector<double> n_in = { 1.3, 1.4, 1.5, 1.6 };
@@ -107,7 +110,7 @@ void test_Refract_Sph()
 
 	for (size_t i = 0; i < R.size(); i++)
 	{
-		add_component(c, Refract_Sph({ 0.0, 0.0 }, R[i], 0.0, 2 * M_PI, n_out[i], n_in[i]));
+		optics::add_component(c, optics::Refract_Sph({ 0.0, 0.0 }, R[i], 0.0, 2 * M_PI, n_out[i], n_in[i]));
 	}
 
 	auto begin = std::chrono::steady_clock::now();
@@ -125,7 +128,7 @@ void test_Refract_Sph()
 		for (auto &r : rays)
 			ray_ptrs.push_back(&r);
 
-		trace(c, ray_ptrs, 100);
+		optics::trace(c, ray_ptrs, 100);
 	}
 
 	auto end = std::chrono::steady_clock::now();
@@ -135,13 +138,14 @@ void test_Refract_Sph()
 
 void test_Refract_Plane()
 {
-	comp_list c;
+	using optics::Ray;
+	optics::comp_list c;
 
 	// Mirrors so ray doesn't escape
-	add_component(c, Mirror_Plane({ -10.0, 10.0 }, { 10.0, 10.0 }));
-	add_component(c, Mirror_Plane({ 10.0, 10.0 }, { 10.0, -10.0 }));
-	add_component(c, Mirror_Plane({ 10.0, -10.0 }, { -10.0, -10.0 }));
-	add_component(c, Mirror_Plane({ -10.0, -10.0 }, { -10.0, 10.0 }));
+	optics::add_component(c, optics::Mirror_Plane({ -10.0, 10.0 }, { 10.0, 10.0 }));
+	optics::add_component(c, optics::Mirror_Plane({ 10.0, 10.0 }, { 10.0, -10.0 }));
+	optics::add_component(c, optics::Mirror_Plane({ 10.0, -10.0 }, { -10.0, -10.0 }));
+	optics::add_component(c, optics::Mirror_Plane({ -10.0, -10.0 }, { -10.0, 10.0 }));
 
 	double L_vals[] = { 5.0, 7.0, 9.0 };
 	double n_in[] = { 1.2, 1.3, 1.4 };
@@ -152,10 +156,10 @@ void test_Refract_Plane()
 	{
 		L = L_vals[i];
 
-		add_component(c, Refract_Plane({ -L, L }, { L, L }, n_out[i], n_in[i]));
-		add_component(c, Refract_Plane({ L, L }, { L, -L }, n_out[i], n_in[i]));
-		add_component(c, Refract_Plane({ L, -L }, { -L, -L }, n_out[i], n_in[i]));
-		add_component(c, Refract_Plane({ -L, -L }, { -L, L }, n_out[i], n_in[i]));
+		optics::add_component(c, optics::Refract_Plane({ -L, L }, { L, L }, n_out[i], n_in[i]));
+		optics::add_component(c, optics::Refract_Plane({ L, L }, { L, -L }, n_out[i], n_in[i]));
+		optics::add_component(c, optics::Refract_Plane({ L, -L }, { -L, -L }, n_out[i], n_in[i]));
+		optics::add_component(c, optics::Refract_Plane({ -L, -L }, { -L, L }, n_out[i], n_in[i]));
 	}
 
 	auto begin = std::chrono::steady_clock::now();
@@ -173,7 +177,7 @@ void test_Refract_Plane()
 		for (auto &r : rays)
 			ray_ptrs.push_back(&r);
 
-		trace(c, ray_ptrs, 100);
+		optics::trace(c, ray_ptrs, 100);
 	}
 
 	auto end = std::chrono::steady_clock::now();
@@ -184,10 +188,11 @@ void test_Refract_Plane()
 
 void test_concentric_Mirror_Sph()
 {
-	comp_list c;
+	using optics::Ray;
+	optics::comp_list c;
 
-	add_component(c, Mirror_Sph({ 0.0, 0.0 }, 10.0, 0.0, 2 * M_PI));
-	add_component(c, Mirror_Sph({ 0.0, 0.0 }, 5.0, 0.0, 2 * M_PI));
+	optics::add_component(c, optics::Mirror_Sph({ 0.0, 0.0 }, 10.0, 0.0, 2 * M_PI));
+	optics::add_component(c, optics::Mirror_Sph({ 0.0, 0.0 }, 5.0, 0.0, 2 * M_PI));
 
 	auto begin = std::chrono::steady_clock::now();
 
@@ -203,7 +208,7 @@ void test_concentric_Mirror_Sph()
 	for (auto &r : rays)
 		ray_ptrs.push_back(&r);
 
-	trace(c, ray_ptrs, 25);
+	optics::trace(c, ray_ptrs, 25);
 
 	auto end = std::chrono::steady_clock::now();
 
