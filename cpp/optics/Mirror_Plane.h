@@ -23,16 +23,18 @@
 #include "trace_func.h"
 #include "Plane.h"
 
-class Mirror_Plane :
-	public Plane
+namespace optics
 {
-public:
-	
-	Mirror_Plane(arr start, arr end);
-	
-	// Hit function
-	virtual void hit(Ray* ry, int n) const override;
+	class Mirror_Plane :
+		public Plane
+	{
+	public:
 
-	virtual Mirror_Plane* clone() const override;
-};
+		Mirror_Plane(arr start, arr end);
 
+		// Hit function
+		virtual void hit(Ray* ry, int n) const override;
+
+		virtual Mirror_Plane* clone() const override;
+	};
+}

@@ -23,14 +23,16 @@
 #include "Spherical.h"
 #include "trace_func.h"
 
-class Mirror_Sph :
-	public Spherical
+namespace optics
 {
-public:
-	Mirror_Sph(arr centre, double R, double start, double end);
+	class Mirror_Sph :
+		public Spherical
+	{
+	public:
+		Mirror_Sph(arr centre, double R, double start, double end);
 
-	virtual void hit(Ray* ry, int n = 1) const override;
+		virtual void hit(Ray* ry, int n = 1) const override;
 
-	virtual Mirror_Sph* clone() const override;
-};
-
+		virtual Mirror_Sph* clone() const override;
+	};
+}

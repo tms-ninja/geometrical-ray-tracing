@@ -24,44 +24,45 @@
 #pragma once
 #include "Component.h"
 
-
-class Spherical :
-	public Component
+namespace optics
 {
-protected:
-	// Rotated end point relative to centre of arc, rotated such that the 
-	// start point lies on the positive x axis
-	arr end_p;  
-	double cos_start, sin_start;  // cos and sin of start
-	double start, end;
+	class Spherical :
+		public Component
+	{
+	protected:
+		// Rotated end point relative to centre of arc, rotated such that the 
+		// start point lies on the positive x axis
+		arr end_p;
+		double cos_start, sin_start;  // cos and sin of start
+		double start, end;
 
-public:
-	arr centre;
+	public:
+		arr centre;
 
-	double R;
+		double R;
 
-	Spherical(arr centre, double R, double start = 0.0, double end = 0.0);
+		Spherical(arr centre, double R, double start = 0.0, double end = 0.0);
 
-	virtual double test_hit(const Ray* ry) const override;
+		virtual double test_hit(const Ray* ry) const override;
 
-	// helper functions
+		// helper functions
 
-	// Determines if the point p satisfies start <= atan2(p) <= end
-	bool in_range(arr& p) const;
+		// Determines if the point p satisfies start <= atan2(p) <= end
+		bool in_range(arr& p) const;
 
-	// Determines the time of interception of a ray with starting position
-	// r and initial direction v with the arc. Returns infinity if no
-	// interception occurs
-	double solve(const arr &r, const arr &v) const;
+		// Determines the time of interception of a ray with starting position
+		// r and initial direction v with the arc. Returns infinity if no
+		// interception occurs
+		double solve(const arr& r, const arr& v) const;
 
-	double get_start();
+		double get_start();
 
-	void set_start(double new_start);
+		void set_start(double new_start);
 
-	double get_end();
+		double get_end();
 
-	void set_end(double new_end);
+		void set_end(double new_end);
 
-	virtual void print(std::ostream& os) const;
-};
-
+		virtual void print(std::ostream& os) const;
+	};
+}

@@ -19,28 +19,31 @@
 
 #include "Mirror_Plane.h"
 
-Mirror_Plane::Mirror_Plane(arr start, arr end)
-	: Plane(start, end)
+namespace optics
 {
-}
+	Mirror_Plane::Mirror_Plane(arr start, arr end)
+		: Plane(start, end)
+	{
+	}
 
-void Mirror_Plane::hit(Ray* ry, int n) const
-{
-	double t;
-	arr &r = ry->pos.back();
-	arr &v = ry->v;
+	void Mirror_Plane::hit(Ray* ry, int n) const
+	{
+		double t;
+		arr& r = ry->pos.back();
+		arr& v = ry->v;
 
-	std::tie(t, std::ignore) = solve(r, v);
+		std::tie(t, std::ignore) = solve(r, v);
 
-	// compute new position of ray
-	arr newPos = compute_new_pos(*ry, t);
-	ry->pos.push_back(newPos);
+		// compute new position of ray
+		arr newPos = compute_new_pos(*ry, t);
+		ry->pos.push_back(newPos);
 
-	// perform the change of direction
-	reflect_ray(*ry, n_vec);
-}
+		// perform the change of direction
+		reflect_ray(*ry, n_vec);
+	}
 
-Mirror_Plane* Mirror_Plane::clone() const
-{
-	return new Mirror_Plane{ *this };
+	Mirror_Plane* Mirror_Plane::clone() const
+	{
+		return new Mirror_Plane{ *this };
+	}
 }

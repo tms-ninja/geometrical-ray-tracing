@@ -19,31 +19,36 @@
 
 #include "Screen_Plane.h"
 
-Screen_Plane::Screen_Plane(arr start, arr end)
-	: Plane(start, end)
+namespace optics
 {
-}
 
-void Screen_Plane::hit(Ray* ry, int n) const
-{
-	arr newPos;
+	Screen_Plane::Screen_Plane(arr start, arr end)
+		: Plane(start, end)
+	{
+	}
 
-	double t{}, tp{};
-	arr &r = ry->pos.back();
-	arr &v = ry->v;
+	void Screen_Plane::hit(Ray* ry, int n) const
+	{
+		arr newPos;
 
-	std::tie(t, tp) = solve(r, v);
+		double t{}, tp{};
+		arr& r = ry->pos.back();
+		arr& v = ry->v;
 
-	// Compute new position
-	for (int i = 0; i < 2; ++i)
-		newPos[i] = (r[i] + v[i] * t);
+		std::tie(t, tp) = solve(r, v);
 
-	// Add collision point, no need to update v
-	ry->pos.push_back(newPos);
-	ry->continue_tracing = false;
-}
+		// Compute new position
+		for (int i = 0; i < 2; ++i)
+			newPos[i] = (r[i] + v[i] * t);
 
-Screen_Plane * Screen_Plane::clone() const
-{
-	return new Screen_Plane{ *this };
+		// Add collision point, no need to update v
+		ry->pos.push_back(newPos);
+		ry->continue_tracing = false;
+	}
+
+	Screen_Plane* Screen_Plane::clone() const
+	{
+		return new Screen_Plane{ *this };
+	}
+
 }
