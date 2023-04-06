@@ -11,4 +11,5 @@ It also allows for so-called complex components such as lenses that are composed
 ![plot](./docs/lenses.png)
 
 ## Build Instructions
-The program runs under Python 3 and can be built by running `python setup.py build_ext`, adding the `--inplace` flag to install locally if desired. Cython and NumPy are required to build, the included examples may have additional dependencies (mainly Matplotlib).
+The program runs under Python 3 and can be installed using pip via `pip install .`. Cython and NumPy are required to build, the included examples may have additional dependencies (mainly Matplotlib). Alternatively one can use `python setup.py build_ext --inplace` for an inplace build.
+
