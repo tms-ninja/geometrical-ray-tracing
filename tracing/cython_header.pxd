@@ -18,7 +18,6 @@
 
 
 # distutils: language = c++
-
 from libcpp.vector cimport vector
 from libcpp.memory cimport shared_ptr
 from libcpp cimport bool
